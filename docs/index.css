@@ -1,3 +1,52 @@
 body{
-    background-image: "assets/Andromeda_Galaxy_560mm_FL.jpg";
+    background-image: url("assets/Andromeda_Galaxy_560mm_FL.jpg");
+    background-size: cover;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.credit-box a{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    font-size: 10px;
+    color: white;
+    text-decoration: none;
+    
+}
+
+h1{
+    margin: 2vw;
+    font-size: 5vw;
+    display: block;
+    width: fit-content;
+    background-color: black;
+    color: white;
+}
+
+.content{
+    margin: 80px auto;
+    width: 622px;
+text-align: center;
+
+}
+
+.links{
+    margin: 50px 0;
+    height: 3em;
+    background-color: black;
+    display: flex;
+    align-items: center;
+}
+
+.links>a{
+    flex-grow: 1;
+    color: white;
+    text-decoration: none;
+}
+
+.description{
+    color:white;
+    background-color: black;
+border-bottom: dotted white 2px;
 }
