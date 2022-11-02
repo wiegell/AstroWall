@@ -31,10 +31,19 @@ namespace AstroWall
             // Init state
             state = new State(this.StatusMenu, statusBarItem);
             state.SetStateInitializing();
+
+            // Load prefs and image collection from disk
+            // Create if non-present
             state.LoadOrCreateDB();
             state.LoadOrCreatePrefs();
+
+            // Check online site
             await state.UpdateStateFromOnline();
+
+            // Populate menu
             state.PopulateMenu();
+
+            // Give back control to the user
             state.SetStateIdle();
         }
 
