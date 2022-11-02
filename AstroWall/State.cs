@@ -107,10 +107,10 @@ namespace AstroWall
             RunDownloadIconAnimation();
         }
 
-        public async Task LoadFromDBOrOnline()
+        public async Task LoadFromOnline()
         {
             Console.WriteLine("load data");
-            await db.LoadDataButNoImgFromOnlineStartingAtDate(25, DateTime.Now);
+            await db.LoadDataButNoImgFromOnlineStartingAtDate(15, DateTime.Now);
             Console.WriteLine("load img");
             await db.LoadImgs();
             Console.WriteLine("wraplist: " + db.ImgWrapList.Count);

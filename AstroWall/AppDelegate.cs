@@ -24,16 +24,16 @@ namespace AstroWall
             // Create a Status Bar Menu
             statusBar = NSStatusBar.SystemStatusBar;
             statusBarItem = statusBar.CreateStatusItem(NSStatusItemLength.Variable);
-
             MacOShelpers.InitIcon(statusBarItem, this.StatusMenu);
-
+            string version = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
+            MenuTitle.Title = "Astrowall v" + version;
 
             // Init state
             state = new State(this.StatusMenu, statusBarItem);
             state.SetStateInitializing();
             state.loadOrCreateDB();
             state.loadOrCreatePrefs();
-            await state.LoadFromDBOrOnline();
+            await state.LoadFromOnline();
             state.PopulateMenu();
             state.setStateIdle();
         }
@@ -47,16 +47,15 @@ namespace AstroWall
         }
         #endregion
 
-
-
         partial void MenuManualCheckPic(Foundation.NSObject sender)
         {
-            state.setStateIdle();
+            //state.setStateIdle();
             //MacOShelpers.InitIcon2(statusBarItem, this.StatusMenu);
             //string imgurl = HTMLHelpers.getImgUrl();
             //Task<string> tmpFilePath = FileHelpers.DownloadUrlToTmpPath(imgurl);
             ////MacOShelpers.SetWallpaper(tmpFilePath);
             //Console.WriteLine("file dl");
+            //MacOShelpers.RunPKGUpdate();
         }
 
 

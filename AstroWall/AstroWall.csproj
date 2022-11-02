@@ -125,6 +125,8 @@
     </Compile>
     <Compile Include="Database.cs" />
     <Compile Include="Preferences.cs" />
+    <Compile Include="DateTimeHelpers.cs" />
+    <Compile Include="Updates.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

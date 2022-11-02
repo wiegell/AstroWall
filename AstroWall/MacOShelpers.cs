@@ -122,6 +122,20 @@ namespace AstroWall
             else ac();
         }
 
+        public static void RunPKGUpdate(string pathToPkg)
+        {
+            NSTask nstask = new NSTask();
+            nstask.LaunchPath = "/bin/bash";
+            nstask.Arguments = new string[]
+            {
+                "-c",
+            "installer -pkg ~/downloads/Astro\\ Wall-1.0.4.pkg -target CurrentUserHomeDirectory"
+            };
+            nstask.Launch();
+            
+            
+        }
+
         //private void consThread()
         //{
         //    Console.WriteLine("Current thread: " + );

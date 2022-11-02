@@ -24,7 +24,7 @@ namespace AstroWall
             return MacOShelpers.getAstroDirectory() + Guid.NewGuid();
         }
 
-        public static async Task<String> DownloadUrlToTmpPath(string imgurl)
+        public static async Task<String> DownloadUrlToImageStorePath(string imgurl)
         {
             WebClient client = new WebClient();
             Uri uri = new Uri(imgurl);
@@ -32,11 +32,26 @@ namespace AstroWall
 
             string localFileName = getImageStoreDirectory() + ext;
             Console.WriteLine("Downloading file: " + imgurl);
-            Console.WriteLine("Writing to tmp path: " + localFileName);
+            Console.WriteLine("Writing to path: " + localFileName);
             Task t = client.DownloadFileTaskAsync(uri, localFileName);
             await t;
             Console.WriteLine("Write complete");
 
+            return localFileName;
+        }
+
+        public static async Task<String> DownloadUrlToTmpPath(string downloadUrl)
+        {
+            WebClient client = new WebClient();
+            Uri uri = new Uri(downloadUrl);
+            string ext = System.IO.Path.GetExtension(downloadUrl);
+
+            string localFileName = Path.GetTempFileName() + ext;
+            Console.WriteLine("Downloading file: " + downloadUrl);
+            Console.WriteLine("Writing to tmp path: " + localFileName);
+            Task t = client.DownloadFileTaskAsync(uri, localFileName);
+            await t;
+            Console.WriteLine("Write complete");
             return localFileName;
         }
 

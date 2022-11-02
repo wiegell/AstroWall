@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -319,7 +320,7 @@
                 <customObject id="7YF-ec-DPm" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <menu identifier="StatusMenu" id="9mV-Tt-jhF">
                     <items>
-                        <menuItem title="Astro Wall 0.1.0" enabled="NO" identifier="header" id="XzL-bp-nyZ">
+                        <menuItem title="{{title placeholder}}" enabled="NO" identifier="header" id="XzL-bp-nyZ">
                             <modifierMask key="keyEquivalentModifierMask"/>
                         </menuItem>
                         <menuItem title="Initializing..." enabled="NO" identifier="state" id="gSP-HT-QMc">
@@ -384,6 +385,7 @@
                 <customObject id="9tX-R6-oug" customClass="AppDelegate">
                     <connections>
                         <outlet property="MenuStateOutlet" destination="gSP-HT-QMc" id="5uS-8e-R3d"/>
+                        <outlet property="MenuTitle" destination="XzL-bp-nyZ" id="O06-rg-uWS"/>
                         <outlet property="StatusMenu" destination="9mV-Tt-jhF" id="JYk-r7-5Kq"/>
                     </connections>
                 </customObject>

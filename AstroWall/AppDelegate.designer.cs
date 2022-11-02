@@ -12,6 +12,9 @@ namespace AstroWall
 	partial class AppDelegate
 	{
 		[Outlet]
+		AppKit.NSMenuItem MenuTitle { get; set; }
+
+		[Outlet]
 		AppKit.NSMenu StatusMenu { get; set; }
 
 		[Action ("ManualCheckForNewPic:")]
@@ -31,6 +34,11 @@ namespace AstroWall
 			if (StatusMenu != null) {
 				StatusMenu.Dispose ();
 				StatusMenu = null;
+			}
+
+			if (MenuTitle != null) {
+				MenuTitle.Dispose ();
+				MenuTitle = null;
 			}
 		}
 	}

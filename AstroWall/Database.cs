@@ -35,6 +35,12 @@ namespace AstroWall
             return ImgWrapList.Select((iw) => iw.PublishDate.ToString(HTMLHelpers.NASADateFormat)).ToArray();
         }
 
+        /// <summary>
+        /// checks if dates are in db starting at <c>date</c> and going back <c>n</c> days
+        /// </summary>
+        /// <param name="date">first date to check</param>
+        /// <param name="n">n dates to check starting from (and including) date argument and going backwards</param>
+        /// <returns></returns>
         private bool checkDatesAreInDB(int n, DateTime date)
         {
             string[] datesLoadedCache = datesLoaded();
@@ -62,7 +68,11 @@ namespace AstroWall
             foreach (ImgWrap iw in ImgWrapList) Console.WriteLine("localUrl: " + iw.ImgLocalUrl);
             Console.WriteLine("datesindb: " + checkDatesAreInDB(n, date));
             Console.WriteLine("allOfDBHasDataLoaded: " + allOfDBHasDataLoaded);
+
+            // Everything is loaded, no need to download
             if (checkDatesAreInDB(n, date) && allOfDBHasDataLoaded && !forceReload) return;
+
+
 
             DataLoadList = new Task[n];
             for (int i = 0; i < n; i++)
@@ -134,11 +144,7 @@ namespace AstroWall
         public override bool Equals(object o)
         {
             if (!(o is ImgWrap)) return false;
-            bool isEqual = true;
-            if (!(this.PublishDate.Year == ((ImgWrap)o).PublishDate.Year)) isEqual = false;
-            if (!(this.PublishDate.Day == ((ImgWrap)o).PublishDate.Day)) isEqual = false;
-            if (!(this.PublishDate.Month == ((ImgWrap)o).PublishDate.Month)) isEqual = false;
-            return isEqual;
+            return DateTimeHelpers.DTEquals(this.PublishDate, ((ImgWrap)o).PublishDate);
         }
         public override int GetHashCode()
         {
@@ -207,7 +213,7 @@ namespace AstroWall
 
             try
             {
-                ImgLocalUrl = await FileHelpers.DownloadUrlToTmpPath(ImgOnlineUrl);
+                ImgLocalUrl = await FileHelpers.DownloadUrlToImageStorePath(ImgOnlineUrl);
                 await createPreviewFromFullSize();
             }
             catch (Exception ex)
