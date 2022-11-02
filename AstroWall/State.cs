@@ -67,12 +67,12 @@ namespace AstroWall
             this.cancellationToken = taskCancellationSource.Token;
         }
 
-        public void loadOrCreateDB()
+        public void LoadOrCreateDB()
         {
             db = new Database();
         }
 
-        public void loadOrCreatePrefs()
+        public void LoadOrCreatePrefs()
         {
             prefs = Preferences.fromSaveOrNew();
         }
@@ -107,7 +107,7 @@ namespace AstroWall
             RunDownloadIconAnimation();
         }
 
-        public async Task LoadFromOnline()
+        public async Task UpdateStateFromOnline()
         {
             Console.WriteLine("load data");
             await db.LoadDataButNoImgFromOnlineStartingAtDate(15, DateTime.Now);
@@ -190,7 +190,7 @@ namespace AstroWall
             MacOShelpers.SetWallpaper(
                 prefs.hasAstroWall() ? prefs.currentAstroWallpaper.ImgLocalUrl : prefs.currentPathToNonAstroWallpaper
                 , true);
-            setStateIdle();
+            SetStateIdle();
         }
 
         private void cancelEndBrowsingStateWithDelay()
@@ -199,7 +199,7 @@ namespace AstroWall
             renewCancellationSource();
         }
 
-        public void setStateIdle()
+        public void SetStateIdle()
         {
             iconUpdateTimer.Stop();
             Console.WriteLine("set state idle:");

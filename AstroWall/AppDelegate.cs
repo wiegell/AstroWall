@@ -31,11 +31,11 @@ namespace AstroWall
             // Init state
             state = new State(this.StatusMenu, statusBarItem);
             state.SetStateInitializing();
-            state.loadOrCreateDB();
-            state.loadOrCreatePrefs();
-            await state.LoadFromOnline();
+            state.LoadOrCreateDB();
+            state.LoadOrCreatePrefs();
+            await state.UpdateStateFromOnline();
             state.PopulateMenu();
-            state.setStateIdle();
+            state.SetStateIdle();
         }
 
         public override void WillTerminate(NSNotification notification)
