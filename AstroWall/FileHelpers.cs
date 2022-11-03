@@ -92,15 +92,6 @@ namespace AstroWall
             File.WriteAllText(path, jsonString);
         }
 
-        //public static List<T> DeSerializeNow<T>(string path)
-        //{
-
-        //    string jsonString = String.Join("", File.ReadAllLines(path));
-        //    //dynamic json = JsonConvert.DeserializeObject(jsonString);
-        //    List<T> result = JsonConvert.DeserializeObject<List<T>>(jsonString);
-        //    return result;
-        //}
-
         public static T DeSerializeNow<T>(string path)
         {
 

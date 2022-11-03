@@ -151,6 +151,12 @@
     <InterfaceDefinition Include="Main.storyboard" />
     <InterfaceDefinition Include="SubMenuItemHover.xib" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\cli4\cli4.csproj">
+      <Project>{E0CDA15D-4849-4199-827A-86FDE70425D7}</Project>
+      <Name>UpdateLibrary</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
   <Import Project="..\packages\SkiaSharp.NativeAssets.macOS.2.88.3\build\xamarinmac2.0\SkiaSharp.NativeAssets.macOS.targets" Condition="Exists('..\packages\SkiaSharp.NativeAssets.macOS.2.88.3\build\xamarinmac2.0\SkiaSharp.NativeAssets.macOS.targets')" />
 </Project>

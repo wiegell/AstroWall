@@ -10,11 +10,13 @@ namespace AstroWall
         {
         }
 
+        private AstroCLI.UpdateManifest manifest;
+
         private string pathToLatestPkg;
 
         public  async Task DownloadLatestAndUpdate()
         {
-            pathToLatestPkg = await FileHelpers.DownloadUrlToTmpPath("https://github.com/wiegell/release_test/releases/download/v1.0.0tag/Astro.Wall-1.0.pkg");
+            pathToLatestPkg = await FileHelpers.DownloadUrlToTmpPath("https://github.com/wiegell/AstroWall/releases/download/v0.0.2-alpha/Astro.pkg");
             Console.Write("Downloaded new pkg to path: "+pathToLatestPkg);
             RunPKGUpdate();
        }

@@ -5,6 +5,10 @@ VisualStudioVersion = 25.0.1703.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AstroWall", "AstroWall\AstroWall.csproj", "{56081B0B-0F18-45C9-BEB6-054E4E96C5BA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdateLibrary", "UpdateLibrary\UpdateLibrary.csproj", "{E0CDA15D-4849-4199-827A-86FDE70425D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cli5", "cli5\cli5.csproj", "{2D70308B-7825-4D88-AF25-7CE299336D72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{56081B0B-0F18-45C9-BEB6-054E4E96C5BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56081B0B-0F18-45C9-BEB6-054E4E96C5BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56081B0B-0F18-45C9-BEB6-054E4E96C5BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0CDA15D-4849-4199-827A-86FDE70425D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0CDA15D-4849-4199-827A-86FDE70425D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0CDA15D-4849-4199-827A-86FDE70425D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0CDA15D-4849-4199-827A-86FDE70425D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D70308B-7825-4D88-AF25-7CE299336D72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D70308B-7825-4D88-AF25-7CE299336D72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D70308B-7825-4D88-AF25-7CE299336D72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D70308B-7825-4D88-AF25-7CE299336D72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
