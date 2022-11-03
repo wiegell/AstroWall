@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<installer-gui-script minSpecVersion="2">
+    <script>
+
+        function TestFunc(){
+        console.log("TEST");
+        return "/Applications";
+        }
+
+    </script>
+    <pkg-ref id="com.astro.wall.Astro-Wall">
+        <bundle-version>
+            <bundle id="com.astro.wall.Astro-Wall" path="Astro Wall.app" />
+        </bundle-version>
+    </pkg-ref>
+    <background file="b.jpg" />
+    <product id="com.astro.wall.Astro-Wall" version="0.0.1" />
+    <title>Astro Wall</title>
+    <options customize="never" require-scripts="false" hostArchitectures="x86_64" />
+    <welcome file="Welcome.html" mime-type="text/HTML" />
+    <license file="License.txt" mime-type="text/plain" />
+    <volume-check>
+        <allowed-os-versions>
+            <os-version min="11" />
+        </allowed-os-versions>
+    </volume-check>
+    <choices-outline>
+        <line choice="default">
+            <line choice="com.astro.wall.Astro-Wall" />
+        </line>
+    </choices-outline>
+    <choice id="default" title="Astro Wall" versStr="0.0.1" />
+    <choice id="com.astro.wall.Astro-Wall" title="Astro Wall" visible="true">
+        <pkg-ref id="com.astro.wall.Astro-Wall" />
+    </choice>
+    <pkg-ref id="com.astro.wall.Astro-Wall" version="0.0.1">#com.astro.wall.Astro-Wall.pkg</pkg-ref>
+</installer-gui-script>

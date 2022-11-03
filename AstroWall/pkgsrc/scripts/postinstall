@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+env > ~/env.txt
+
+if [ $LOGNAME == "root" ]
+then
+    if [ "$DSTROOT" == "/Applications/Astro Wall.app" ]
+    then
+        chown -R $USER /Applications/Astro\ Wall.app
+    fi
+fi
+exit 0
