@@ -53,6 +53,7 @@
       </CustomCommands>
     </CustomCommands>
     <AOTMode>None</AOTMode>
+    <XamMacArch>x86_64</XamMacArch>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

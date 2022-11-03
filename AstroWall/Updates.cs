@@ -12,19 +12,21 @@ namespace AstroWall
 
         private string pathToLatestPkg;
 
-        public async Task downloadLatest()
+        public  async Task DownloadLatestAndUpdate()
         {
             pathToLatestPkg = await FileHelpers.DownloadUrlToTmpPath("https://github.com/wiegell/release_test/releases/download/v1.0.0tag/Astro.Wall-1.0.pkg");
-        }
+            Console.Write("Downloaded new pkg to path: "+pathToLatestPkg);
+            RunPKGUpdate();
+       }
 
-        public static void RunPKGUpdate(string pathToPkg)
+        public void RunPKGUpdate()
         {
             NSTask nstask = new NSTask();
             nstask.LaunchPath = "/bin/bash";
             nstask.Arguments = new string[]
             {
                 "-c",
-            "installer -pkg "+pathToPkg+" -target CurrentUserHomeDirectory"
+            "installer -pkg "+pathToLatestPkg+" -target CurrentUserHomeDirectory"
             };
             nstask.Launch();
         }

@@ -65,6 +65,8 @@ namespace AstroWall
             ////MacOShelpers.SetWallpaper(tmpFilePath);
             //Console.WriteLine("file dl");
             //MacOShelpers.RunPKGUpdate();
+            Updates updates = new Updates();
+             updates.DownloadLatestAndUpdate();
         }
 
 
