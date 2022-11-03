@@ -37,7 +37,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <EnableCodeSigning>false</EnableCodeSigning>
-    <CreatePackage>true</CreatePackage>
+    <CreatePackage>false</CreatePackage>
     <EnablePackageSigning>false</EnablePackageSigning>
     <IncludeMonoRuntime>true</IncludeMonoRuntime>
     <UseSGen>true</UseSGen>
@@ -50,10 +50,17 @@
           <type>BeforeBuild</type>
           <command>/usr/local/bin/node ./scripts/pre-build.js</command>
         </Command>
+        <Command>
+          <type>AfterBuild</type>
+          <command>sh scripts/pack.sh</command>
+        </Command>
       </CustomCommands>
     </CustomCommands>
     <AOTMode>None</AOTMode>
     <XamMacArch>x86_64</XamMacArch>
+    <CodeSigningKey>Mac Developer</CodeSigningKey>
+    <CodeSignProvision></CodeSignProvision>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
