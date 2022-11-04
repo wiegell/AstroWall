@@ -155,6 +155,7 @@
     <ProjectReference Include="..\UpdateLibrary\UpdateLibrary.csproj">
       <Project>{E0CDA15D-4849-4199-827A-86FDE70425D7}</Project>
       <Name>UpdateLibrary</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />

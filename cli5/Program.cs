@@ -38,17 +38,30 @@ namespace cli5
             bool cleanTree = gitStatus.Contains("nothing to commit, working tree clean");
             bool isOnMaster = gitStatus.Contains("On branch master");
 
-            if (cleanTree && isOnMaster)
+            if (true || cleanTree && isOnMaster)
             {
-                Console.WriteLine("Git clean, ready to update info.plist with build version");
-
-            }else
+                string tag = runCommand("git describe");
+                Console.WriteLine("Git clean on tag: " + tag);
+                string newTag = runCommand("git describe --tags --abbrev=0 | awk -F. '{OFS=\\\".\\\"; $NF+=1; print $0}'");
+                Console.WriteLine("Incrementing to: " + newTag);
+                Console.WriteLine("Git clean, ready to update info.plist with build version: " + tag);
+                string prebuildOutput = runCommand("node ./scripts/pre-build", "./AstroWall");
+                Console.WriteLine("Update success");
+                Console.WriteLine("Building binaries...");
+                runCommand("msbuild ./AstroWall.sln /property:Configuration=Release");
+                Console.WriteLine("Binaries built");
+                Console.WriteLine("Creating pkg");
+                string shret = runCommand("sh ./scripts/pack.sh", "./AstroWall");
+                Console.WriteLine(shret);
+                Console.WriteLine("PKGs created");
+            }
+            else
             {
                 throw new Exception("Git not clean");
             }
         }
 
-        static string runCommand(string command)
+        static string runCommand(string command, string workdir = null)
         {
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = "sh";
@@ -56,6 +69,7 @@ namespace cli5
             psi.UseShellExecute = false;
             psi.RedirectStandardOutput = true;
             psi.RedirectStandardError = true;
+            if (workdir != null) psi.WorkingDirectory = workdir;
 
             Process proc = new Process
             {
@@ -68,7 +82,7 @@ namespace cli5
             string error = proc.StandardError.ReadToEnd();
 
             if (!string.IsNullOrEmpty(error))
-                return "error: " + error;
+                throw new Exception("error: " + error);
 
             string output = proc.StandardOutput.ReadToEnd();
 
