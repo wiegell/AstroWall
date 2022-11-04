@@ -152,7 +152,7 @@
     <InterfaceDefinition Include="SubMenuItemHover.xib" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\cli4\cli4.csproj">
+    <ProjectReference Include="..\UpdateLibrary\UpdateLibrary.csproj">
       <Project>{E0CDA15D-4849-4199-827A-86FDE70425D7}</Project>
       <Name>UpdateLibrary</Name>
     </ProjectReference>
