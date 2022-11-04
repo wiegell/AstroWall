@@ -11,7 +11,7 @@ namespace UpdateLibrary
         [JsonProperty]
         public Release[] Releases;
         [JsonProperty]
-        public Release[] PreReleases { get; private set; }
+        public Release[] PreReleases;
 
     }
 
