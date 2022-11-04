@@ -2,6 +2,7 @@
 using System.IO;
 using UpdateLibrary;
 using System.Linq;
+using System.Diagnostics;
 
 namespace cli5
 {
@@ -28,13 +29,53 @@ namespace cli5
 
             UpdateManifest manifest = readFromFile("./docs/assets/manifest.json");
 
-            listPreReleases(manifest);
+            regPreRelease();
         }
 
-        //static regPreRelease()
-        //{
+        static void regPreRelease()
+        {
+            string gitStatus = runCommand("git status");
+            bool cleanTree = gitStatus.Contains("nothing to commit, working tree clean");
+            bool isOnMaster = gitStatus.Contains("On branch master");
 
-        //}
+            if (cleanTree && isOnMaster)
+            {
+                Console.WriteLine("Git clean, ready to update info.plist with build version");
+
+            }else
+            {
+                throw new Exception("Git not clean");
+            }
+        }
+
+        static string runCommand(string command)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = "sh";
+            psi.Arguments = "-c \"" + command + "\"";
+            psi.UseShellExecute = false;
+            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardError = true;
+
+            Process proc = new Process
+            {
+                StartInfo = psi
+            };
+
+
+            proc.Start();
+
+            string error = proc.StandardError.ReadToEnd();
+
+            if (!string.IsNullOrEmpty(error))
+                return "error: " + error;
+
+            string output = proc.StandardOutput.ReadToEnd();
+
+            proc.WaitForExit();
+
+            return output;
+        }
 
         static UpdateManifest readFromFile(string path)
         {
