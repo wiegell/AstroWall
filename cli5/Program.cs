@@ -40,7 +40,7 @@ namespace cli5
                 Console.WriteLine("Incrementing to: " + newTagShort);
                 runCommand($"git tag -a \"{newTagShort}\" -m \"version {newTagShort}\"");
                 Console.WriteLine("Making empty commit");
-                runCommand($"git commit --allow-empty -m \"Auto commit for tag update to: {newTagShort}\"");
+                runCommand($"git commit --allow-empty -m \\\"Auto commit for tag update to: {newTagShort}\\\"");
                 string newTagLong = runCommand("git describe --tags --abbrev=0").Replace("\n", "").Replace("\r", "");
 
                 // Update plist
