@@ -7,9 +7,9 @@
     <key>CFBundleIdentifier</key>
     <string>com.astro.wall.Astro-Wall</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.0.2</string>
+    <string>0.0.5</string>
     <key>CFBundleVersion</key>
-    <string>0.0.2-alpha-3-g9a65e13</string>
+    <string>0.0.5-alpha-1-g9f45ad4</string>
     <key>LSMinimumSystemVersion</key>
     <string>11</string>
     <key>CFBundleDevelopmentRegion</key>

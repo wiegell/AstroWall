@@ -40,16 +40,27 @@ namespace cli5
 
             if (true || cleanTree && isOnMaster)
             {
+                // Update tag
                 string tag = runCommand("git describe");
                 Console.WriteLine("Git clean on tag: " + tag);
-                string newTag = runCommand("git describe --tags --abbrev=0 | awk -F. '{OFS=\\\".\\\"; $NF+=1; print $0}'");
+                string newTag = runCommand("git describe --tags --abbrev=0 | awk -F. '{OFS=\\\".\\\"; $NF+=1; print $0}'").Replace("\n", "").Replace("\r", "");
+                newTag += "-alpha";
                 Console.WriteLine("Incrementing to: " + newTag);
-                Console.WriteLine("Git clean, ready to update info.plist with build version: " + tag);
+                runCommand($"git tag -a \"{newTag}\" -m \"version {newTag}\"");
+                Console.WriteLine("Making empty commit");
+                runCommand($"git commit --allow-empty -m \"Auto commit for tag update to: {newTag}\"");
+
+                // Update plist
+                Console.WriteLine("Ready to update info.plist with build version: " + tag);
                 string prebuildOutput = runCommand("node ./scripts/pre-build", "./AstroWall");
                 Console.WriteLine("Update success");
+
+                // Build binaries
                 Console.WriteLine("Building binaries...");
                 runCommand("msbuild ./AstroWall.sln /property:Configuration=Release");
                 Console.WriteLine("Binaries built");
+
+                // Create pkgs
                 Console.WriteLine("Creating pkg");
                 string shret = runCommand("sh ./scripts/pack.sh", "./AstroWall");
                 Console.WriteLine(shret);
