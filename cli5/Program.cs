@@ -38,7 +38,7 @@ namespace cli5
                 string newTagShort = runCommand("git describe --tags --abbrev=0 | awk -F. '{OFS=\\\".\\\"; $NF+=1; print $0}'").Replace("\n", "").Replace("\r", "");
                 newTagShort += "-alpha";
                 Console.WriteLine("Incrementing to: " + newTagShort);
-                runCommand($"git tag -a \"{newTagShort}\" -m \"version {newTagShort}\"");
+                runCommand($"git tag -a \\\"{newTagShort}\\\" -m \\\"version {newTagShort}\\\"");
                 Console.WriteLine("Making empty commit");
                 runCommand($"git commit --allow-empty -m \\\"Auto commit for tag update to: {newTagShort}\\\"");
                 string newTagLong = runCommand("git describe --tags --abbrev=0").Replace("\n", "").Replace("\r", "");
@@ -73,7 +73,7 @@ namespace cli5
                 writeToFile(manifest);
 
                 // Commit manifest
-                runCommand($"git add . && git commit -m \"Updated manifest with release {newTagLong}\"");
+                runCommand($"git add . && git commit -m \\\"Updated manifest with release {newTagLong}\\\"");
 
                 // Push new tag to gh
                 Console.WriteLine("Pushing new tag to origin");
