@@ -30,7 +30,7 @@ namespace cli5
             bool cleanTree = gitStatus.Contains("nothing to commit, working tree clean");
             bool isOnMaster = gitStatus.Contains("On branch master");
 
-            if (true || cleanTree && isOnMaster)
+            if (cleanTree && isOnMaster)
             {
                 // Update tag
                 string tag = runCommand("git describe");

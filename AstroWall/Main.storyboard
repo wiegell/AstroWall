@@ -368,6 +368,26 @@
                             </menu>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="meX-bD-6fi"/>
+                        <menuItem title="Software updates" identifier="updates" id="F2x-wE-DFb">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <menu key="submenu" title="Software updates" id="9Ia-du-VA7">
+                                <items>
+                                    <menuItem title="Check now" identifier="checkupdatesnow" id="Bh6-Ah-sYx">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem isSeparatorItem="YES" id="Quc-ak-5iu"/>
+                                    <menuItem title="Check for updates on login" identifier="checkupdatesonlogin" id="J08-xS-oLK">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="Install updates automatically" identifier="autoinstallupdates" id="NdN-U6-8vE">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                    <menuItem title="Install updates silently" identifier="autoinstallsilently" id="YV0-yC-Wys">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                    </menuItem>
+                                </items>
+                            </menu>
+                        </menuItem>
                         <menuItem title="About" enabled="NO" identifier="about" id="cxH-p3-C8I">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>

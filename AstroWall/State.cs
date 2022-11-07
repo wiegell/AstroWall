@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using AppKit;
-using System.Linq;
-
-using CoreGraphics;
-using Foundation;
 
 namespace AstroWall
 {
@@ -41,13 +38,13 @@ namespace AstroWall
         private CancellationTokenSource taskCancellationSource;
         private CancellationToken cancellationToken;
 
+        // Updates
+        public Version currentVersion { private set; get; }
+        private Updates updates;
+        public UpdateLibrary.Release pendingUpdate { private set; get; }
 
-
-
-
-
-
-        public State(NSMenu menuArg, NSStatusItem statusItemArg)
+        // currentVersionString is the long tag from git including commit hash  
+        public State(NSMenu menuArg, NSStatusItem statusItemArg, string currentVersionString)
         {
             renewCancellationSource();
 
@@ -58,8 +55,19 @@ namespace AstroWall
             {
                 menuItemsById.Add(item.Identifier, item);
             }
+
+            updates = new Updates(currentVersionString);
         }
 
+        public async Task<Boolean> GetUpdateManifestAndCheckIfUpdatePending()
+        {
+            await updates.GetManifest();
+            Console.WriteLine("Update manifest downloaded and parsed");
+            pendingUpdate = updates.checkManifestForNewer();
+            bool hasPendingUpdate = pendingUpdate == null ? false : true;
+            Console.WriteLine("Has pending update: " + hasPendingUpdate);
+            return hasPendingUpdate;
+        }
 
         private void renewCancellationSource()
         {
@@ -110,7 +118,7 @@ namespace AstroWall
         public async Task UpdateStateFromOnline()
         {
             Console.WriteLine("load data");
-            await db.LoadDataButNoImgFromOnlineStartingAtDate(15, DateTime.Now);
+            await db.LoadDataButNoImgFromOnlineStartingAtDate(10, DateTime.Now);
             Console.WriteLine("load img");
             await db.LoadImgs();
             Console.WriteLine("wraplist: " + db.ImgWrapList.Count);
@@ -222,6 +230,19 @@ namespace AstroWall
             iconUpdateTimer.Elapsed += OnTimedEvent;
             iconUpdateTimer.AutoReset = true;
             iconUpdateTimer.Enabled = true;
+        }
+
+        public async Task FireUpdateHandler()
+        {
+            bool hasPendingUpdate = await GetUpdateManifestAndCheckIfUpdatePending();
+            if (hasPendingUpdate)
+            {
+                Console.WriteLine("Has pending update: {0}", pendingUpdate.version);
+            }
+            else
+            {
+                Console.WriteLine("No pending updates, is up to date");
+            }
         }
 
         private void OnTimedEvent(Object source, ElapsedEventArgs e)

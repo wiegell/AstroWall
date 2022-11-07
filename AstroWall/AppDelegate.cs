@@ -25,11 +25,11 @@ namespace AstroWall
             statusBar = NSStatusBar.SystemStatusBar;
             statusBarItem = statusBar.CreateStatusItem(NSStatusItemLength.Variable);
             MacOShelpers.InitIcon(statusBarItem, this.StatusMenu);
-            string version = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
-            MenuTitle.Title = "Astrowall v" + version;
+            string versionString = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
+            MenuTitle.Title = "Astrowall v" + versionString;
 
             // Init state
-            state = new State(this.StatusMenu, statusBarItem);
+            state = new State(this.StatusMenu, statusBarItem, versionString);
             state.SetStateInitializing();
 
             // Load prefs and image collection from disk
@@ -45,6 +45,11 @@ namespace AstroWall
 
             // Give back control to the user
             state.SetStateIdle();
+
+            // Check for updates
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            state.FireUpdateHandler();
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
         public override void WillTerminate(NSNotification notification)
@@ -65,8 +70,6 @@ namespace AstroWall
             ////MacOShelpers.SetWallpaper(tmpFilePath);
             //Console.WriteLine("file dl");
             //MacOShelpers.RunPKGUpdate();
-            Updates updates = new Updates();
-             updates.DownloadLatestAndUpdate();
         }
 
 
