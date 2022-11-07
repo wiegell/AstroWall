@@ -39,7 +39,6 @@ namespace AstroWall
 
         public static string getDBPath()
         {
-
             return getDBDirectory() + "db.json";
         }
         public static string getPrefsPath()

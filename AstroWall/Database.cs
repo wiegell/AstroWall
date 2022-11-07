@@ -27,6 +27,9 @@ namespace AstroWall
             {
                 Console.WriteLine("db exists, deserialize");
                 ImgWrapList = FileHelpers.DeSerializeNow<List<ImgWrap>>(MacOShelpers.getDBPath());
+            } else
+            {
+                Console.WriteLine("db not found");
             }
         }
 
@@ -51,11 +54,17 @@ namespace AstroWall
 
             // Check dates
             bool datesAreInDB = true;
-            foreach (string dateToCheck in datesToCheck) if (!datesLoadedCache.Contains(dateToCheck))
+            foreach (string dateToCheck in datesToCheck)
+            {
+                Console.Write("Checking date: {0}", dateToCheck);
+                if (!datesLoadedCache.Contains(dateToCheck))
                 {
-
+                    Console.Write(", date not found");
                     datesAreInDB = false;
                 }
+                else Console.Write(", date found");
+                Console.WriteLine();
+            }
 
             return datesAreInDB;
 
@@ -64,13 +73,14 @@ namespace AstroWall
         public async Task LoadDataButNoImgFromOnlineStartingAtDate(int n, DateTime date, bool forceReload = false)
         {
             bool allOfDBHasDataLoaded = ImgWrapList.All(iw => iw.OnlineDataExceptPicIsLoaded());
+            bool datesAreInDB = checkDatesAreInDB(n, date);
             Console.WriteLine("impwraplistafter deserialize: " + ImgWrapList.Count);
             foreach (ImgWrap iw in ImgWrapList) Console.WriteLine("localUrl: " + iw.ImgLocalUrl);
-            Console.WriteLine("datesindb: " + checkDatesAreInDB(n, date));
+            Console.WriteLine("datesindb: " + datesAreInDB);
             Console.WriteLine("allOfDBHasDataLoaded: " + allOfDBHasDataLoaded);
 
             // Everything is loaded, no need to download
-            if (checkDatesAreInDB(n, date) && allOfDBHasDataLoaded && !forceReload) return;
+            if (datesAreInDB && allOfDBHasDataLoaded && !forceReload) return;
 
 
 

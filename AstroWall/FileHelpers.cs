@@ -103,6 +103,7 @@ namespace AstroWall
 
         public static bool DBExists()
         {
+            Console.WriteLine("Checking, if db present at: "+ MacOShelpers.getDBPath());
             return File.Exists(MacOShelpers.getDBPath());
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AppKit;
 using Newtonsoft.Json;
 
 namespace AstroWall
@@ -11,6 +12,9 @@ namespace AstroWall
         public ImgWrap currentAstroWallpaper;
         [JsonProperty]
         public string currentPathToNonAstroWallpaper;
+        public bool checkUpdatesOnLogin;
+        public bool autoInstallUpdates;
+        public bool autoInstallSilent;
 
         public Preferences()
         {
@@ -22,14 +26,14 @@ namespace AstroWall
             FileHelpers.SerializeNow(this, MacOShelpers.getPrefsPath());
         }
 
-        public static Preferences fromSaveOrNew()
+        public static Preferences fromSave()
         {
             if (FileHelpers.PrefsExists())
             {
-                Console.WriteLine("db exists, deserialize");
+                Console.WriteLine("prefs exists, deserialize");
                 return FileHelpers.DeSerializeNow<Preferences>(MacOShelpers.getPrefsPath());
             }
-            else return new Preferences();
+            else return null;
         }
 
         public bool hasAstroWall()

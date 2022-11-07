@@ -80,9 +80,10 @@ namespace AstroWall
             db = new Database();
         }
 
-        public void LoadOrCreatePrefs()
+        public bool LoadPreftFromSave()
         {
-            prefs = Preferences.fromSaveOrNew();
+            prefs = Preferences.fromSave();
+            return prefs != null;
         }
 
         private void disableAllItems()
@@ -108,11 +109,35 @@ namespace AstroWall
 
         public void SetStateInitializing()
         {
-            Console.WriteLine("initializing");
+            statusItem.Enabled = true;
+            Console.WriteLine("State: Initializing");
             state = stateEnum.Initializing;
             disableAllItems();
             menuItemsById["state"].Title = "Initializing...";
             RunDownloadIconAnimation();
+        }
+
+        public void SetStateChoosePrefs()
+        {
+            Console.WriteLine("State: Choose prefs");
+            statusItem.Enabled = false;
+        }
+
+
+        public void SetStateIdle()
+        {
+            statusItem.Enabled = true;
+            iconUpdateTimer.Stop();
+            Console.WriteLine("set state idle:");
+            Task.Run(() =>
+            {
+                Task.Delay(500);
+                MacOShelpers.ChangeIconTo(statusItem, "staat");
+            });
+            state = stateEnum.Idle;
+            menuItemsById["state"].Title = "Idle";
+            menuItemsById["state"].Hidden = true;
+
         }
 
         public async Task UpdateStateFromOnline()
@@ -205,21 +230,6 @@ namespace AstroWall
         {
             this.taskCancellationSource.Cancel();
             renewCancellationSource();
-        }
-
-        public void SetStateIdle()
-        {
-            iconUpdateTimer.Stop();
-            Console.WriteLine("set state idle:");
-            Task.Run(() =>
-            {
-                Task.Delay(500);
-                MacOShelpers.ChangeIconTo(statusItem, "staat");
-            });
-            state = stateEnum.Idle;
-            menuItemsById["state"].Title = "Idle";
-            menuItemsById["state"].Hidden = true;
-
         }
 
         private void RunDownloadIconAnimation()

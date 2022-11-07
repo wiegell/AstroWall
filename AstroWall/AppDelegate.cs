@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AppKit;
 
 using Foundation;
+using GameController;
 
 
 namespace AstroWall
@@ -30,26 +31,52 @@ namespace AstroWall
 
             // Init state
             state = new State(this.StatusMenu, statusBarItem, versionString);
-            state.SetStateInitializing();
 
-            // Load prefs and image collection from disk
-            // Create if non-present
-            state.LoadOrCreateDB();
-            state.LoadOrCreatePrefs();
+            // Load prefs. If non-present halt further actions until
+            // preft are confirmed by user
+            bool prefsAreLoadedSuccessfully = state.LoadPreftFromSave();
+            Console.WriteLine("Prefs not found, creating new ones");
 
-            // Check online site
-            await state.UpdateStateFromOnline();
+            // Define delegate to use as callback
+            Func<Task> continueSetup = async () =>
+            {
+                state.SetStateInitializing();
+                state.LoadOrCreateDB();
 
-            // Populate menu
-            state.PopulateMenu();
+                // Check online site
+                await state.UpdateStateFromOnline();
 
-            // Give back control to the user
-            state.SetStateIdle();
+                // Populate menu
+                state.PopulateMenu();
 
-            // Check for updates
+                // Give back control to the user
+                state.SetStateIdle();
+
+                // Check for updates
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            state.FireUpdateHandler();
+                state.FireUpdateHandler();
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            };
+
+            if (prefsAreLoadedSuccessfully) await continueSetup();
+            else
+            {
+                state.SetStateChoosePrefs();
+                waitForUserToChosePrefs(continueSetup);
+            }
+        }
+
+        private void waitForUserToChosePrefs(Func<Task> callback)
+        {
+            var storyboard = NSStoryboard.FromName("Main", null);
+            var windowController = storyboard.InstantiateControllerWithIdentifier("updateswindowcontroller") as NSWindowController;
+            var window = windowController.Window;
+            window.Delegate = new UpdatesWindowDelegate(window);
+            var view = ((FreshInstallViewController)windowController.ContentViewController.View);
+            view.regSaveCallback(callback);
+            windowController.ShowWindow(windowController);
+            windowController.Window.Level = NSWindowLevel.Status;
+            NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
         }
 
         public override void WillTerminate(NSNotification notification)

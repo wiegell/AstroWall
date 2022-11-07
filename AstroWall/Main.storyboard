@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
+        <capability name="Image references" minToolsVersion="12.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -461,5 +462,150 @@
             </objects>
             <point key="canvasLocation" x="411" y="-9"/>
         </scene>
+        <!--Window Controller-->
+        <scene sceneID="EB1-HP-x1d">
+            <objects>
+                <windowController storyboardIdentifier="updateswindowcontroller" id="Xni-45-pKc" sceneMemberID="viewController">
+                    <window key="window" title="Astro Wall" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" animationBehavior="alertPanel" frameAutosaveName="" titlebarAppearsTransparent="YES" id="3Ih-pZ-eBd">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" fullSizeContentView="YES"/>
+                        <rect key="contentRect" x="774" y="553" width="430" height="410"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
+                        <view key="contentView" id="fvG-y0-doI">
+                            <rect key="frame" x="0.0" y="0.0" width="430" height="410"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </view>
+                        <connections>
+                            <outlet property="delegate" destination="Xni-45-pKc" id="EZ5-ke-ZCA"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="hhb-W6-Fbo" kind="relationship" relationship="window.shadowedContentViewController" id="tdY-eP-v9o"/>
+                    </connections>
+                </windowController>
+                <customObject id="W4h-Sm-Alt" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="685" y="-651"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="L1U-LD-vGn">
+            <objects>
+                <viewController id="hhb-W6-Fbo" sceneMemberID="viewController">
+                    <view key="view" id="cLM-t7-Y3c" customClass="FreshInstallViewController">
+                        <rect key="frame" x="0.0" y="0.0" width="430" height="440"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <visualEffectView fixedFrame="YES" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="EHM-6E-jYF">
+                                <rect key="frame" x="0.0" y="0.0" width="430" height="250"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <subviews>
+                                    <textField wantsLayer="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="F8q-0V-aVB">
+                                        <rect key="frame" x="18" y="195" width="246" height="35"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Software updates?" id="A0w-wM-Q0h">
+                                            <font key="font" metaFont="system" size="30"/>
+                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <imageView wantsLayer="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eAN-Zm-U47">
+                                        <rect key="frame" x="39" y="50.5" width="208" height="143"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyUpOrDown" id="sr0-8G-8hp">
+                                            <imageReference key="image" image="laptopcomputer.and.arrow.down" catalog="system" symbolScale="large"/>
+                                        </imageCell>
+                                    </imageView>
+                                    <button identifier="autoinstall" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="def-gt-IOp">
+                                        <rect key="frame" x="263" y="107" width="94" height="18"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="check" title="Auto install" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Tg4-MR-JYt">
+                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                    </button>
+                                    <button identifier="silentinstall" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XRf-bg-bLo">
+                                        <rect key="frame" x="263" y="61" width="100" height="18"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="check" title="Silent install" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="XjS-Us-tiJ">
+                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                    </button>
+                                    <button identifier="checkatlogin" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4qq-lO-ZeG">
+                                        <rect key="frame" x="263" y="152" width="113" height="18"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="check" title="Check at login" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="In6-9p-L3q">
+                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                    </button>
+                                    <button wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="olE-WM-Gbt">
+                                        <rect key="frame" x="184" y="13" width="64" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Bfs-TS-D02">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="saveAction:" target="cLM-t7-Y3c" id="lTx-ji-mON"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </visualEffectView>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9IZ-rh-MDG">
+                                <rect key="frame" x="18" y="346" width="217" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Install succesfull" id="Uup-B6-YVy">
+                                    <font key="font" metaFont="system" size="30"/>
+                                    <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wsV-tN-Wr1">
+                                <rect key="frame" x="47" y="315" width="202" height="17"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Check for        in the status bar" id="JS3-L5-0lL">
+                                    <font key="font" metaFont="system" size="14"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qj2-5t-Tfw">
+                                <rect key="frame" x="114" y="312" width="24" height="24"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="staat" id="RbY-io-uGk"/>
+                                <color key="contentTintColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
+                            </imageView>
+                            <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hFj-p7-UYe">
+                                <rect key="frame" x="249" y="329" width="54" height="54"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyUpOrDown" image="arrow.up.right" catalog="system" id="myb-hw-h7B"/>
+                            </imageView>
+                            <button identifier="runatlogin" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wuU-IJ-uth">
+                                <rect key="frame" x="266" y="278" width="98" height="18"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="check" title="Run at login" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="YGG-hs-EqJ">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                            </button>
+                        </subviews>
+                        <connections>
+                            <outlet property="autoinstall" destination="def-gt-IOp" id="Bao-Kx-mWp"/>
+                            <outlet property="checkupdatesatlogin" destination="4qq-lO-ZeG" id="WzI-SI-YYc"/>
+                            <outlet property="runatlogin" destination="wuU-IJ-uth" id="WZI-uf-jFg"/>
+                            <outlet property="save" destination="olE-WM-Gbt" id="tdz-p1-4fG"/>
+                            <outlet property="silentinstall" destination="XRf-bg-bLo" id="ULs-7i-6Iy"/>
+                        </connections>
+                    </view>
+                </viewController>
+                <customObject id="698-sy-x68" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="685" y="-1164"/>
+        </scene>
     </scenes>
+    <resources>
+        <image name="arrow.up.right" catalog="system" width="13" height="12"/>
+        <image name="laptopcomputer.and.arrow.down" catalog="system" width="28" height="19"/>
+        <image name="staat" width="24" height="24"/>
+    </resources>
 </document>

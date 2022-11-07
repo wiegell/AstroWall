@@ -146,6 +146,11 @@
     <Compile Include="Preferences.cs" />
     <Compile Include="DateTimeHelpers.cs" />
     <Compile Include="Updates.cs" />
+    <Compile Include="FreshInstallViewController.cs" />
+    <Compile Include="FreshInstallViewController.designer.cs">
+      <DependentUpon>FreshInstallViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UpdatesWindowDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
