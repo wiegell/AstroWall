@@ -1,3 +1,6 @@
+#Astro Wall
+A MacOS agent to fetch [Astronomy Picture of the Day](https://apod.nasa.gov/apod/astropix.html)
+
 ##Build instructions:
 - Install VS for mac
 - Install Xcode
