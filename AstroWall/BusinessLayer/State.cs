@@ -28,7 +28,7 @@ namespace AstroWall.BusinessLayer
         // Overall state
         public stateEnum state { get; private set; }
         private Database db;
-        public Preferences prefs { get; private set; }
+        public Preferences Prefs { get; private set; }
 
         // Updates
         public Version currentVersion { private set; get; }
@@ -45,7 +45,7 @@ namespace AstroWall.BusinessLayer
 
         public void setPrefs(Preferences prefsArg)
         {
-            this.prefs = prefsArg;
+            this.Prefs = prefsArg;
         }
 
         public async Task<Boolean> GetUpdateManifestAndCheckIfUpdatePending()
@@ -65,8 +65,8 @@ namespace AstroWall.BusinessLayer
 
         public bool LoadPrefsFromSave()
         {
-            prefs = Preferences.fromSave();
-            return prefs != null;
+            Prefs = Preferences.fromSave();
+            return Prefs != null;
         }
 
 
@@ -78,7 +78,7 @@ namespace AstroWall.BusinessLayer
 
         public void savePrefsToDisk()
         {
-            prefs.SaveToDisk();
+            Prefs.SaveToDisk();
         }
 
         public void SetStateInitializing()

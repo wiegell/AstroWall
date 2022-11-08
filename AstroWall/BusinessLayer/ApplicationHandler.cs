@@ -47,10 +47,11 @@ namespace AstroWall.BusinessLayer
 
         private bool primaryInitAndCheckIfPrefsAreAvail()
         {
+            // Create status bar icon / menu
+            currentVersionString = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
             MenuHandler.createStatusBar("Astrowall v" + currentVersionString);
 
             // Init state
-            currentVersionString = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
             State = new State(MenuHandler, currentVersionString);
 
             // Load prefs. If non-present halt further actions until
@@ -69,7 +70,7 @@ namespace AstroWall.BusinessLayer
             {
                 State.setPrefs(prefs);
             };
-            Wallpaper = new Wallpaper(State.prefs);
+            Wallpaper = new Wallpaper(State.Prefs);
             MenuHandler.updateMenuCheckMarksToReflectState(State);
 
             // Init state and db

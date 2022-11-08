@@ -20,7 +20,7 @@ namespace AstroWall.ApplicationLayer
             MenuTitle.Title = title;
         }
 
-        public void updateMenuCheckMarks(Preferences prefs)
+        public void updateMenuCheckMarks(BusinessLayer.Preferences prefs)
         {
             this.MenuOutletAutoInstallUpdates.State = prefs.autoInstallUpdates ? NSCellStateValue.On : NSCellStateValue.Off;
             this.MenuOutletCheckUpdatesAtLogin.State = prefs.checkUpdatesOnLogin ? NSCellStateValue.On : NSCellStateValue.Off;
@@ -95,7 +95,7 @@ namespace AstroWall.ApplicationLayer
             Action setPreviewWallpaperCallback,
             Action setFullWallpaperCallback,
             Action setEndBrowsingStateWithDelayCallback,
-            Action cancelTrackingCallback
+            Action onclickCallBack
             )
         {
             NSMenuItem item = new NSMenuItem(title);
@@ -127,11 +127,10 @@ namespace AstroWall.ApplicationLayer
                 }
                 if (e.Description == "Mouse Down" && previewIsLoaded)
                 {
-                    cancelTrackingCallback();
+                    onclickCallBack();
                     hoverView.DisableBGSelectionColor();
                     setFullWallpaperCallback();
-                    //prefs.currentAstroWallpaper = iw;
-                    //MacOShelpers.SetWallpaper(iw.ImgLocalUrl, true);
+                    StatusMenu.CancelTracking();
                 }
             };
             item.View = hoverView;

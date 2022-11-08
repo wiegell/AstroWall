@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using AppKit;
 using Newtonsoft.Json;
 
-namespace AstroWall
+namespace AstroWall.BusinessLayer
 {
     [JsonObject]
     public class Preferences

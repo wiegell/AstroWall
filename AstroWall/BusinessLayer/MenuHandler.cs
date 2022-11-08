@@ -31,18 +31,18 @@ namespace AstroWall.BusinessLayer
         {
             appDelegate = del;
             appHandler = app;
-            noAutoEnableMenuItems();
             renewCancellationSource();
         }
 
         public void createStatusBar(string title)
         {
             appDelegate.createStatusBar(title);
+            noAutoEnableMenuItems();
         }
 
         public void updateMenuCheckMarksToReflectState(State state)
         {
-            appDelegate.updateMenuCheckMarks(state.prefs);
+            appDelegate.updateMenuCheckMarks(state.Prefs);
         }
 
         public void DisableAllItems()
@@ -112,13 +112,17 @@ namespace AstroWall.BusinessLayer
                         stateRef,
                         iw.PreviewIsLoaded(),
                         cancelEndBrowsingStateWithDelay,
-                        appHandler.Wallpaper.SetPreviewWallpaper(iw),
-                        appHandler.Wallpaper.SetWallpaperAllScreens(iw),
-                        setEndBrowsingStateWithDelay,
+                        () => appHandler.Wallpaper.SetPreviewWallpaper(iw),
+                        () => appHandler.Wallpaper.SetWallpaperAllScreens(iw),
+                        () => setEndBrowsingStateWithDelay(),
+                        () =>
+                        {
+                            appHandler.State.Prefs.currentAstroWallpaper = iw;
+                            appHandler.Wallpaper.SetWallpaperAllScreens(iw);
+                        }
 
 
-
-                        )
+                        );
                 }
             }
         }

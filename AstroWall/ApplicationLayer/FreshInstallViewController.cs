@@ -10,7 +10,7 @@ namespace AstroWall
 {
     public partial class FreshInstallViewController : NSView
     {
-        private Func<Preferences, Task> callback;
+        private Func<BusinessLayer.Preferences, Task> callback;
 
         public FreshInstallViewController(IntPtr handle) : base(handle)
         {
@@ -23,14 +23,14 @@ namespace AstroWall
             callback(createPrefs());
         }
 
-        public void regSaveCallback(Func<Preferences, Task> callbackArg)
+        public void regSaveCallback(Func<BusinessLayer.Preferences, Task> callbackArg)
         {
             this.callback = callbackArg;
         }
 
-        private Preferences createPrefs()
+        private BusinessLayer.Preferences createPrefs()
         {
-            return new Preferences()
+            return new BusinessLayer.Preferences()
             {
                 autoInstallSilent = this.silentinstall.State != 0,
                 autoInstallUpdates = this.autoinstall.State != 0,

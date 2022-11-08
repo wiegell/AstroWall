@@ -28,7 +28,7 @@ namespace AstroWall.ApplicationLayer
             await appHandler.Init();
         }
 
-        public void waitForUserToChosePrefs(Func<Preferences, Task> callback)
+        public void waitForUserToChosePrefs(Func<BusinessLayer.Preferences, Task> callback)
         {
             // Launch prefs always on top window
             var storyboard = NSStoryboard.FromName("Main", null);
