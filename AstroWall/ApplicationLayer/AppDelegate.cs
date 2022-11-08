@@ -14,12 +14,15 @@ namespace AstroWall.ApplicationLayer
     public partial class AppDelegate : NSApplicationDelegate
     {
 
-        // Platform independent handler
+        // Refs
         AstroWall.BusinessLayer.ApplicationHandler appHandler;
+        AstroWall.BusinessLayer.MenuHandler menuHandler;
+
 
         public AppDelegate()
         {
             appHandler = new AstroWall.BusinessLayer.ApplicationHandler(this);
+            menuHandler = appHandler.MenuHandler;
         }
 
         #region Override Methods

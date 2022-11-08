@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Foundation;
 
-namespace AstroWall
+namespace AstroWall.BusinessLayer
 {
     public class Updates
     {

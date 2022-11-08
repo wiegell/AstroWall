@@ -85,6 +85,7 @@ namespace AstroWall.BusinessLayer
         {
             Console.WriteLine("State: Initializing");
             state = stateEnum.Initializing;
+            menuHandler.EnableStatusIcon();
             menuHandler.DisableAllItems();
             menuHandler.SetTitleInitialising();
             menuHandler.RunDownloadIconAnimation();
@@ -100,7 +101,7 @@ namespace AstroWall.BusinessLayer
         public void SetStateIdle()
         {
             Console.WriteLine("Setting state to idle:");
-            menuHandler.enableStatusIcon();
+            menuHandler.EnableStatusIcon();
             menuHandler.SetIconToDefault();
             state = stateEnum.Idle;
             menuHandler.HideState();
@@ -142,6 +143,12 @@ namespace AstroWall.BusinessLayer
         {
             Console.WriteLine("Setting state browsing");
             state = BusinessLayer.stateEnum.BrowsingWallpapers;
+        }
+
+        public void SetLaunchAgentToReflectPrefs()
+        {
+            if (Prefs.runAtLogin) MacOShelpers.SetAsLaunchAgent();
+            else MacOShelpers.RemoveLaunchAgent();
         }
 
     }

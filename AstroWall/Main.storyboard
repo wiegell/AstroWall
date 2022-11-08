@@ -338,18 +338,11 @@
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <menu key="submenu" title="Browse latest" id="xyK-CZ-rk8"/>
                         </menuItem>
-                        <menuItem isSeparatorItem="YES" id="F04-eT-csC"/>
-                        <menuItem title="Auto check pic on login" state="on" enabled="NO" identifier="autocheckpic" id="Jd6-If-7cB">
+                        <menuItem title="Daily check for new pic" state="on" enabled="NO" identifier="autocheckpic" id="Jd6-If-7cB">
                             <attributedString key="attributedTitle"/>
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
                                 <action selector="MenuOutletCheckPicOnLogin:" target="9tX-R6-oug" id="mbx-Dc-iwy"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Post process..." enabled="NO" identifier="post" id="KTK-6s-SRb">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="PostProcess:" target="9tX-R6-oug" id="qTA-9u-XnE"/>
                             </connections>
                         </menuItem>
                         <menuItem title="Filter criteria" id="h5H-H3-PAi">
@@ -368,7 +361,19 @@
                                 </items>
                             </menu>
                         </menuItem>
+                        <menuItem title="Post process..." enabled="NO" identifier="post" id="KTK-6s-SRb">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="PostProcess:" target="9tX-R6-oug" id="qTA-9u-XnE"/>
+                            </connections>
+                        </menuItem>
                         <menuItem isSeparatorItem="YES" id="meX-bD-6fi"/>
+                        <menuItem title="Run at login" id="l8k-1x-W3X">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="MenuActionRunAtLogin:" target="9tX-R6-oug" id="seW-nl-Ks8"/>
+                            </connections>
+                        </menuItem>
                         <menuItem title="Software updates" identifier="updates" id="F2x-wE-DFb">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <menu key="submenu" title="Software updates" id="9Ia-du-VA7">
@@ -423,6 +428,7 @@
                         <outlet property="MenuOutletInstallUpdatesSilently" destination="YV0-yC-Wys" id="QBa-D4-oZn"/>
                         <outlet property="MenuOutletPostProcess" destination="KTK-6s-SRb" id="fVo-7c-nL0"/>
                         <outlet property="MenuOutletQuit" destination="2p1-pg-8rT" id="TUC-7C-8nK"/>
+                        <outlet property="MenuOutletRunAtLogin" destination="l8k-1x-W3X" id="ocM-JM-g5L"/>
                         <outlet property="MenuOutletState" destination="gSP-HT-QMc" id="oyU-2i-wog"/>
                         <outlet property="MenuStateOutlet" destination="gSP-HT-QMc" id="5uS-8e-R3d"/>
                         <outlet property="MenuTitle" destination="XzL-bp-nyZ" id="O06-rg-uWS"/>

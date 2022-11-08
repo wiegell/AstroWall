@@ -30,6 +30,9 @@ namespace AstroWall.ApplicationLayer
 		AppKit.NSMenuItem MenuOutletQuit { get; set; }
 
 		[Outlet]
+		AppKit.NSMenuItem MenuOutletRunAtLogin { get; set; }
+
+		[Outlet]
 		AppKit.NSMenuItem MenuOutletState { get; set; }
 
 		[Outlet]
@@ -56,6 +59,9 @@ namespace AstroWall.ApplicationLayer
 		[Action ("MenuActionManualCheckUpdates:")]
 		partial void MenuActionManualCheckUpdates (Foundation.NSObject sender);
 
+		[Action ("MenuActionRunAtLogin:")]
+		partial void MenuActionRunAtLogin (Foundation.NSObject sender);
+
 		[Action ("MenuManualCheckPic:")]
 		partial void MenuManualCheckPic (Foundation.NSObject sender);
 
@@ -67,6 +73,11 @@ namespace AstroWall.ApplicationLayer
 			if (MenuOutletAutoInstallUpdates != null) {
 				MenuOutletAutoInstallUpdates.Dispose ();
 				MenuOutletAutoInstallUpdates = null;
+			}
+
+			if (MenuOutletBrowseLatest != null) {
+				MenuOutletBrowseLatest.Dispose ();
+				MenuOutletBrowseLatest = null;
 			}
 
 			if (MenuOutletCheckUpdatesAtLogin != null) {
@@ -84,16 +95,6 @@ namespace AstroWall.ApplicationLayer
 				MenuOutletPostProcess = null;
 			}
 
-			if (MenuTitle != null) {
-				MenuTitle.Dispose ();
-				MenuTitle = null;
-			}
-
-			if (StatusMenu != null) {
-				StatusMenu.Dispose ();
-				StatusMenu = null;
-			}
-
 			if (MenuOutletQuit != null) {
 				MenuOutletQuit.Dispose ();
 				MenuOutletQuit = null;
@@ -104,9 +105,19 @@ namespace AstroWall.ApplicationLayer
 				MenuOutletState = null;
 			}
 
-			if (MenuOutletBrowseLatest != null) {
-				MenuOutletBrowseLatest.Dispose ();
-				MenuOutletBrowseLatest = null;
+			if (MenuTitle != null) {
+				MenuTitle.Dispose ();
+				MenuTitle = null;
+			}
+
+			if (StatusMenu != null) {
+				StatusMenu.Dispose ();
+				StatusMenu = null;
+			}
+
+			if (MenuOutletRunAtLogin != null) {
+				MenuOutletRunAtLogin.Dispose ();
+				MenuOutletRunAtLogin = null;
 			}
 		}
 	}

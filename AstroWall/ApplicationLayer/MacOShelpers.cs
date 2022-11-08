@@ -119,15 +119,45 @@ namespace AstroWall
             "installer -pkg ~/downloads/Astro\\ Wall-1.0.4.pkg -target CurrentUserHomeDirectory"
             };
             nstask.Launch();
-
-
         }
 
-        //private void consThread()
-        //{
-        //    Console.WriteLine("Current thread: " + );
+        public static void SetAsLaunchAgent()
+        {
+            string ap = agentPath();
+            string agentXmlContent = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<!DOCTYPE plist PUBLIC ""-//Apple//DTD PLIST 1.0//EN"" ""http://www.apple.com/DTDs/PropertyList-1.0.dtd"">
+<plist version=""1.0"">
+<dict>
+    <key>Label</key>
+    <string>com.astro.wall.Astro-Wall</string>
+    <key>LimitLoadToSessionType</key>
+    <string>Aqua</string>
+    <key>Program</key>
+    <string>/Applications/Astro Wall.app/Contents/MacOS/Astro Wall</string>
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
+";
+            Console.WriteLine("Writing agent to: " + ap);
+            File.WriteAllText(ap, agentXmlContent);
+        }
 
-        //}
+        public static void RemoveLaunchAgent()
+        {
+            string ap = agentPath();
+            if (File.Exists(ap))
+            {
+                Console.WriteLine("Deleting agent at: " + ap);
+                File.Delete(ap);
+            };
+        }
+
+        private static string agentPath()
+        {
+            return NSFileManager.HomeDirectory + "/Library/LaunchAgents/com.astro.wall.Astro-Wall.plist";
+        }
+
     }
 }
 

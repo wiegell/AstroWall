@@ -136,6 +136,19 @@ namespace AstroWall.ApplicationLayer
             item.View = hoverView;
             MenuOutletBrowseLatest.Submenu.AddItem(item);
         }
+
+        partial void MenuActionRunAtLogin(NSObject sender)
+        {
+            var item = (NSMenuItem)sender;
+            bool curState = item.State == NSCellStateValue.On;
+            bool newState = !curState;
+            menuHandler.runAtLoginChangedInMenu(newState);
+        }
+
+        public void SetRunAtLoginMenuItemState(bool val)
+        {
+            MenuOutletRunAtLogin.State = val ? NSCellStateValue.On : NSCellStateValue.Off;
+        }
     }
 }
 

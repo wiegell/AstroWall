@@ -55,7 +55,7 @@ namespace AstroWall.BusinessLayer
             appDelegate.noAutoEnableMenuItems();
         }
 
-        public void enableStatusIcon()
+        public void EnableStatusIcon()
         {
             appDelegate.enableStatusIcon();
         }
@@ -125,6 +125,18 @@ namespace AstroWall.BusinessLayer
                         );
                 }
             }
+        }
+
+        public void runAtLoginChangedInMenu(bool val)
+        {
+            appHandler.State.Prefs.runAtLogin = val;
+            appHandler.State.SetLaunchAgentToReflectPrefs();
+            appDelegate.SetRunAtLoginMenuItemState(val);
+        }
+
+        public void changeLoginMenuItemState(bool val)
+        {
+            appDelegate.SetRunAtLoginMenuItemState(val);
         }
 
         private void renewCancellationSource()

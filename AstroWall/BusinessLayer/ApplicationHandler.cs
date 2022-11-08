@@ -44,7 +44,6 @@ namespace AstroWall.BusinessLayer
             State.savePrefsToDisk();
         }
 
-
         private bool primaryInitAndCheckIfPrefsAreAvail()
         {
             // Create status bar icon / menu
@@ -72,6 +71,10 @@ namespace AstroWall.BusinessLayer
             };
             Wallpaper = new Wallpaper(State.Prefs);
             MenuHandler.updateMenuCheckMarksToReflectState(State);
+
+            // Set run at login
+            State.SetLaunchAgentToReflectPrefs();
+            MenuHandler.changeLoginMenuItemState(State.Prefs.runAtLogin);
 
             // Init state and db
             State.SetStateInitializing();
