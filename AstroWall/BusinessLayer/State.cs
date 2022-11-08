@@ -31,7 +31,7 @@ namespace AstroWall
         // Overall state
         public stateEnum state { get; private set; }
         private Database db;
-        private Preferences prefs;
+        public Preferences prefs { get; private set; }
 
         // Browsing state
         private Task restoreToIdleWithDelayTask;
@@ -57,6 +57,10 @@ namespace AstroWall
             }
 
             updates = new Updates(currentVersionString);
+        }
+
+        public void setPrefs(Preferences prefsArg) {
+            this.prefs = prefsArg;
         }
 
         public async Task<Boolean> GetUpdateManifestAndCheckIfUpdatePending()

@@ -116,45 +116,49 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="UIlayer\" />
+    <Folder Include="ApplicationLayer\" />
+    <Folder Include="DataLayer\" />
+    <Folder Include="BusinessLayer\" />
+    <Folder Include="ServiceLayer\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
     <None Include="packages.config" />
-    <None Include="EmptyXmlFile.xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
-    <Compile Include="AppDelegate.cs" />
     <Compile Include="ViewController.cs" />
     <Compile Include="ViewController.designer.cs">
       <DependentUpon>ViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="MacOShelpers.cs" />
-    <Compile Include="FileHelpers.cs" />
-    <Compile Include="HTMLHelpers.cs" />
-    <Compile Include="AppDelegate.designer.cs">
-      <DependentUpon>AppDelegate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="State.cs" />
     <Compile Include="View.cs" />
-    <Compile Include="SubMenuItemHover.cs" />
-    <Compile Include="SubMenuItemHover.designer.cs">
+    <Compile Include="UIlayer\SubMenuItemHover.cs" />
+    <Compile Include="UIlayer\SubMenuItemHover.designer.cs">
       <DependentUpon>SubMenuItemHover.cs</DependentUpon>
     </Compile>
-    <Compile Include="Database.cs" />
-    <Compile Include="Preferences.cs" />
-    <Compile Include="DateTimeHelpers.cs" />
-    <Compile Include="Updates.cs" />
-    <Compile Include="FreshInstallViewController.cs" />
-    <Compile Include="FreshInstallViewController.designer.cs">
+    <Compile Include="ApplicationLayer\AppDelegate.cs" />
+    <Compile Include="ApplicationLayer\AppDelegate.designer.cs">
+      <DependentUpon>AppDelegate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UIlayer\FreshInstallViewController.cs" />
+    <Compile Include="UIlayer\FreshInstallViewController.designer.cs">
       <DependentUpon>FreshInstallViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="UpdatesWindowDelegate.cs" />
+    <Compile Include="BusinessLayer\DateTimeHelpers.cs" />
+    <Compile Include="DataLayer\FileHelpers.cs" />
+    <Compile Include="ServiceLayer\HTMLHelpers.cs" />
+    <Compile Include="ApplicationLayer\MacOShelpers.cs" />
+    <Compile Include="BusinessLayer\Database.cs" />
+    <Compile Include="BusinessLayer\Preferences.cs" />
+    <Compile Include="BusinessLayer\State.cs" />
+    <Compile Include="BusinessLayer\Updates.cs" />
+    <Compile Include="UIlayer\UpdatesWindowDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
-    <InterfaceDefinition Include="SubMenuItemHover.xib" />
+    <InterfaceDefinition Include="UIlayer\SubMenuItemHover.xib" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UpdateLibrary\UpdateLibrary.csproj">

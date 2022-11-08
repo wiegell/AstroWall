@@ -10,7 +10,7 @@ namespace AstroWall
 {
     public partial class FreshInstallViewController : NSView
     {
-        private Func<Task> callback;
+        private Func<Preferences, Task> callback;
 
         public FreshInstallViewController(IntPtr handle) : base(handle)
         {
@@ -20,18 +20,29 @@ namespace AstroWall
         {
             this.Window.Close();
             if (callback == null) throw new Exception("Callback not registered");
-            callback();
+            callback(createPrefs());
         }
 
-        public void regSaveCallback(Func<Task> callbackArg)
+        public void regSaveCallback(Func<Preferences, Task> callbackArg)
         {
             this.callback = callbackArg;
+        }
+
+        private Preferences createPrefs()
+        {
+            return new Preferences()
+            {
+                autoInstallSilent = this.silentinstall.State != 0,
+                autoInstallUpdates = this.autoinstall.State != 0,
+                checkUpdatesOnLogin = this.checkupdatesatlogin.State != 0,
+                runAtLogin = this.runatlogin.State != 0
+            };
         }
 
         public void runCallback()
         {
             if (callback == null) throw new Exception("Callback not registered");
-            callback();
+            callback(createPrefs());
         }
     }
 }

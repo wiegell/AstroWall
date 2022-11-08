@@ -37,9 +37,20 @@ namespace AstroWall
             bool prefsAreLoadedSuccessfully = state.LoadPreftFromSave();
             Console.WriteLine("Prefs not found, creating new ones");
 
-            // Define delegate to use as callback
-            Func<Task> continueSetup = async () =>
+            // Define delegate to use as callback, if the setup needs to halt
+            // (only the case after welcome screen post-install)
+            Func<Preferences, Task> continueSetup = async (Preferences prefs) =>
             {
+                // Set prefs from post-install welcome screen,
+                // if calls comes from there
+                if (prefs != null)
+                {
+                    state.setPrefs(prefs);
+                    this.MenuOutletAutoInstallUpdates.State = prefs.autoInstallUpdates ? NSCellStateValue.On : NSCellStateValue.Off;
+                    this.MenuOutletCheckUpdatesAtLogin.State = prefs.checkUpdatesOnLogin ? NSCellStateValue.On : NSCellStateValue.Off;
+                    this.MenuOutletInstallUpdatesSilently.State = prefs.autoInstallSilent ? NSCellStateValue.On : NSCellStateValue.Off;
+                };
+
                 state.SetStateInitializing();
                 state.LoadOrCreateDB();
 
@@ -58,7 +69,7 @@ namespace AstroWall
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             };
 
-            if (prefsAreLoadedSuccessfully) await continueSetup();
+            if (prefsAreLoadedSuccessfully) await continueSetup(null);
             else
             {
                 state.SetStateChoosePrefs();
@@ -66,7 +77,7 @@ namespace AstroWall
             }
         }
 
-        private void waitForUserToChosePrefs(Func<Task> callback)
+        private void waitForUserToChosePrefs(Func<Preferences, Task> callback)
         {
             var storyboard = NSStoryboard.FromName("Main", null);
             var windowController = storyboard.InstantiateControllerWithIdentifier("updateswindowcontroller") as NSWindowController;
@@ -98,6 +109,8 @@ namespace AstroWall
             //Console.WriteLine("file dl");
             //MacOShelpers.RunPKGUpdate();
         }
+
+
 
 
     }

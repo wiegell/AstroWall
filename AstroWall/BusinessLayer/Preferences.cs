@@ -15,6 +15,7 @@ namespace AstroWall
         public bool checkUpdatesOnLogin;
         public bool autoInstallUpdates;
         public bool autoInstallSilent;
+        public bool runAtLogin;
 
         public Preferences()
         {
