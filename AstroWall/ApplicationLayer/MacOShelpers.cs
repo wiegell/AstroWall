@@ -100,18 +100,6 @@ namespace AstroWall
             RunOnUIThread(ac);
         }
 
-        public static void ChangeIconTo(NSStatusItem item, string iconName)
-        {
-            Action ac = () =>
-            {
-                var image = NSImage.ImageNamed(iconName);
-                image.Template = true;
-                item.Button.Image = image;
-                item.HighlightMode = true;
-            };
-            RunOnUIThread(ac);
-        }
-
         public static void RunOnUIThread(Action ac)
         {
             if (Thread.CurrentThread.ManagedThreadId != 1)
@@ -131,8 +119,8 @@ namespace AstroWall
             "installer -pkg ~/downloads/Astro\\ Wall-1.0.4.pkg -target CurrentUserHomeDirectory"
             };
             nstask.Launch();
-            
-            
+
+
         }
 
         //private void consThread()

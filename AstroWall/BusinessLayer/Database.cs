@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using SkiaSharp;
 using Newtonsoft.Json;
 
-namespace AstroWall
+namespace AstroWall.BusinessLayer
 {
 
     public class Database
@@ -27,7 +27,8 @@ namespace AstroWall
             {
                 Console.WriteLine("db exists, deserialize");
                 ImgWrapList = FileHelpers.DeSerializeNow<List<ImgWrap>>(MacOShelpers.getDBPath());
-            } else
+            }
+            else
             {
                 Console.WriteLine("db not found");
             }

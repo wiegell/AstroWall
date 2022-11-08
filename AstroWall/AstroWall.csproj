@@ -116,7 +116,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
-    <Folder Include="UIlayer\" />
     <Folder Include="ApplicationLayer\" />
     <Folder Include="DataLayer\" />
     <Folder Include="BusinessLayer\" />
@@ -129,31 +128,35 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
-    <Compile Include="UIlayer\SubMenuItemHover.cs" />
-    <Compile Include="UIlayer\SubMenuItemHover.designer.cs">
+    <Compile Include="ApplicationLayer\SubMenuItemHover.cs" />
+    <Compile Include="ApplicationLayer\SubMenuItemHover.designer.cs">
       <DependentUpon>SubMenuItemHover.cs</DependentUpon>
     </Compile>
-    <Compile Include="ApplicationLayer\AppDelegate.cs" />
-    <Compile Include="ApplicationLayer\AppDelegate.designer.cs">
-      <DependentUpon>AppDelegate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="UIlayer\FreshInstallViewController.cs" />
-    <Compile Include="UIlayer\FreshInstallViewController.designer.cs">
+    <Compile Include="ApplicationLayer\FreshInstallViewController.cs" />
+    <Compile Include="ApplicationLayer\FreshInstallViewController.designer.cs">
       <DependentUpon>FreshInstallViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="BusinessLayer\DateTimeHelpers.cs" />
     <Compile Include="DataLayer\FileHelpers.cs" />
     <Compile Include="ServiceLayer\HTMLHelpers.cs" />
-    <Compile Include="ApplicationLayer\MacOShelpers.cs" />
     <Compile Include="BusinessLayer\Database.cs" />
     <Compile Include="BusinessLayer\Preferences.cs" />
     <Compile Include="BusinessLayer\State.cs" />
     <Compile Include="BusinessLayer\Updates.cs" />
-    <Compile Include="UIlayer\UpdatesWindowDelegate.cs" />
+    <Compile Include="ApplicationLayer\UpdatesWindowDelegate.cs" />
+    <Compile Include="ApplicationLayer\AppDelegate.cs" />
+    <Compile Include="ApplicationLayer\AppDelegate.designer.cs">
+      <DependentUpon>AppDelegate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationLayer\MacOShelpers.cs" />
+    <Compile Include="ApplicationLayer\AppDelegate.Menu.cs" />
+    <Compile Include="BusinessLayer\ApplicationHandler.cs" />
+    <Compile Include="BusinessLayer\MenuHandler.cs" />
+    <Compile Include="BusinessLayer\Wallpaper.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
-    <InterfaceDefinition Include="UIlayer\SubMenuItemHover.xib" />
+    <InterfaceDefinition Include="ApplicationLayer\SubMenuItemHover.xib" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UpdateLibrary\UpdateLibrary.csproj">

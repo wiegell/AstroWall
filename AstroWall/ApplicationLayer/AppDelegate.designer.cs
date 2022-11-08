@@ -7,7 +7,7 @@
 using Foundation;
 using System.CodeDom.Compiler;
 
-namespace AstroWall
+namespace AstroWall.ApplicationLayer
 {
 	partial class AppDelegate
 	{
@@ -15,10 +15,22 @@ namespace AstroWall
 		AppKit.NSMenuItem MenuOutletAutoInstallUpdates { get; set; }
 
 		[Outlet]
+		AppKit.NSMenuItem MenuOutletBrowseLatest { get; set; }
+
+		[Outlet]
 		AppKit.NSMenuItem MenuOutletCheckUpdatesAtLogin { get; set; }
 
 		[Outlet]
 		AppKit.NSMenuItem MenuOutletInstallUpdatesSilently { get; set; }
+
+		[Outlet]
+		AppKit.NSMenuItem MenuOutletPostProcess { get; set; }
+
+		[Outlet]
+		AppKit.NSMenuItem MenuOutletQuit { get; set; }
+
+		[Outlet]
+		AppKit.NSMenuItem MenuOutletState { get; set; }
 
 		[Outlet]
 		AppKit.NSMenuItem MenuTitle { get; set; }
@@ -52,6 +64,26 @@ namespace AstroWall
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (MenuOutletAutoInstallUpdates != null) {
+				MenuOutletAutoInstallUpdates.Dispose ();
+				MenuOutletAutoInstallUpdates = null;
+			}
+
+			if (MenuOutletCheckUpdatesAtLogin != null) {
+				MenuOutletCheckUpdatesAtLogin.Dispose ();
+				MenuOutletCheckUpdatesAtLogin = null;
+			}
+
+			if (MenuOutletInstallUpdatesSilently != null) {
+				MenuOutletInstallUpdatesSilently.Dispose ();
+				MenuOutletInstallUpdatesSilently = null;
+			}
+
+			if (MenuOutletPostProcess != null) {
+				MenuOutletPostProcess.Dispose ();
+				MenuOutletPostProcess = null;
+			}
+
 			if (MenuTitle != null) {
 				MenuTitle.Dispose ();
 				MenuTitle = null;
@@ -62,19 +94,19 @@ namespace AstroWall
 				StatusMenu = null;
 			}
 
-			if (MenuOutletCheckUpdatesAtLogin != null) {
-				MenuOutletCheckUpdatesAtLogin.Dispose ();
-				MenuOutletCheckUpdatesAtLogin = null;
+			if (MenuOutletQuit != null) {
+				MenuOutletQuit.Dispose ();
+				MenuOutletQuit = null;
 			}
 
-			if (MenuOutletAutoInstallUpdates != null) {
-				MenuOutletAutoInstallUpdates.Dispose ();
-				MenuOutletAutoInstallUpdates = null;
+			if (MenuOutletState != null) {
+				MenuOutletState.Dispose ();
+				MenuOutletState = null;
 			}
 
-			if (MenuOutletInstallUpdatesSilently != null) {
-				MenuOutletInstallUpdatesSilently.Dispose ();
-				MenuOutletInstallUpdatesSilently = null;
+			if (MenuOutletBrowseLatest != null) {
+				MenuOutletBrowseLatest.Dispose ();
+				MenuOutletBrowseLatest = null;
 			}
 		}
 	}

@@ -324,7 +324,7 @@
                         <menuItem title="{{title placeholder}}" enabled="NO" identifier="header" id="XzL-bp-nyZ">
                             <modifierMask key="keyEquivalentModifierMask"/>
                         </menuItem>
-                        <menuItem title="Initializing..." enabled="NO" identifier="state" id="gSP-HT-QMc">
+                        <menuItem title="{{state placeholder}}" enabled="NO" identifier="state" id="gSP-HT-QMc">
                             <modifierMask key="keyEquivalentModifierMask"/>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="EtY-B3-0Ek"/>
@@ -418,8 +418,12 @@
                 <customObject id="9tX-R6-oug" customClass="AppDelegate">
                     <connections>
                         <outlet property="MenuOutletAutoInstallUpdates" destination="NdN-U6-8vE" id="ygy-1y-V7t"/>
+                        <outlet property="MenuOutletBrowseLatest" destination="vCu-ml-Eap" id="cU3-fB-0eU"/>
                         <outlet property="MenuOutletCheckUpdatesAtLogin" destination="J08-xS-oLK" id="OuD-EG-trm"/>
                         <outlet property="MenuOutletInstallUpdatesSilently" destination="YV0-yC-Wys" id="QBa-D4-oZn"/>
+                        <outlet property="MenuOutletPostProcess" destination="KTK-6s-SRb" id="fVo-7c-nL0"/>
+                        <outlet property="MenuOutletQuit" destination="2p1-pg-8rT" id="TUC-7C-8nK"/>
+                        <outlet property="MenuOutletState" destination="gSP-HT-QMc" id="oyU-2i-wog"/>
                         <outlet property="MenuStateOutlet" destination="gSP-HT-QMc" id="5uS-8e-R3d"/>
                         <outlet property="MenuTitle" destination="XzL-bp-nyZ" id="O06-rg-uWS"/>
                         <outlet property="StatusMenu" destination="9mV-Tt-jhF" id="JYk-r7-5Kq"/>

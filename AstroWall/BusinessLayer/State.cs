@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using AppKit;
 
-namespace AstroWall
+namespace AstroWall.BusinessLayer
 {
     public enum stateEnum
     {
@@ -19,24 +19,16 @@ namespace AstroWall
         SettingWallpaper,
         BrowsingWallpapers
     }
+
     public class State
     {
-        // Menu
-        private NSMenu menu;
-        private NSStatusItem statusItem;
-        private Dictionary<string, NSMenuItem> menuItemsById = new Dictionary<string, NSMenuItem>();
-        private static System.Timers.Timer iconUpdateTimer;
-        private int flipCounter = 0;
+        // Refs
+        MenuHandler menuHandler;
 
         // Overall state
         public stateEnum state { get; private set; }
         private Database db;
         public Preferences prefs { get; private set; }
-
-        // Browsing state
-        private Task restoreToIdleWithDelayTask;
-        private CancellationTokenSource taskCancellationSource;
-        private CancellationToken cancellationToken;
 
         // Updates
         public Version currentVersion { private set; get; }
@@ -44,22 +36,15 @@ namespace AstroWall
         public UpdateLibrary.Release pendingUpdate { private set; get; }
 
         // currentVersionString is the long tag from git including commit hash  
-        public State(NSMenu menuArg, NSStatusItem statusItemArg, string currentVersionString)
+        public State(MenuHandler menuHandlerArg, string currentVersionString)
         {
-            renewCancellationSource();
-
-            menu = menuArg;
-            statusItem = statusItemArg;
-            menu.AutoEnablesItems = false;
-            foreach (NSMenuItem item in menu.Items)
-            {
-                menuItemsById.Add(item.Identifier, item);
-            }
+            this.menuHandler = menuHandlerArg;
 
             updates = new Updates(currentVersionString);
         }
 
-        public void setPrefs(Preferences prefsArg) {
+        public void setPrefs(Preferences prefsArg)
+        {
             this.prefs = prefsArg;
         }
 
@@ -73,33 +58,18 @@ namespace AstroWall
             return hasPendingUpdate;
         }
 
-        private void renewCancellationSource()
-        {
-            this.taskCancellationSource = new CancellationTokenSource();
-            this.cancellationToken = taskCancellationSource.Token;
-        }
-
         public void LoadOrCreateDB()
         {
             db = new Database();
         }
 
-        public bool LoadPreftFromSave()
+        public bool LoadPrefsFromSave()
         {
             prefs = Preferences.fromSave();
             return prefs != null;
         }
 
-        private void disableAllItems()
-        {
-            foreach (NSMenuItem item in menu.Items)
-            {
-                item.Enabled = true;
-            }
-            menuItemsById["quit"].Enabled = true;
-            menuItemsById["about"].Enabled = true;
 
-        }
 
         public void saveDBToDisk()
         {
@@ -113,34 +83,27 @@ namespace AstroWall
 
         public void SetStateInitializing()
         {
-            statusItem.Enabled = true;
             Console.WriteLine("State: Initializing");
             state = stateEnum.Initializing;
-            disableAllItems();
-            menuItemsById["state"].Title = "Initializing...";
-            RunDownloadIconAnimation();
+            menuHandler.DisableAllItems();
+            menuHandler.SetTitleInitialising();
+            menuHandler.RunDownloadIconAnimation();
         }
 
         public void SetStateChoosePrefs()
         {
             Console.WriteLine("State: Choose prefs");
-            statusItem.Enabled = false;
+            menuHandler.disableStatusIcon();
         }
 
 
         public void SetStateIdle()
         {
-            statusItem.Enabled = true;
-            iconUpdateTimer.Stop();
-            Console.WriteLine("set state idle:");
-            Task.Run(() =>
-            {
-                Task.Delay(500);
-                MacOShelpers.ChangeIconTo(statusItem, "staat");
-            });
+            Console.WriteLine("Setting state to idle:");
+            menuHandler.enableStatusIcon();
+            menuHandler.SetIconToDefault();
             state = stateEnum.Idle;
-            menuItemsById["state"].Title = "Idle";
-            menuItemsById["state"].Hidden = true;
+            menuHandler.HideState();
 
         }
 
@@ -157,95 +120,6 @@ namespace AstroWall
             }
         }
 
-        public void PopulateMenu()
-        {
-
-            // Clear existing items of menu
-            menuItemsById["browse"].Submenu.RemoveAllItems();
-
-            foreach (ImgWrap iw in db.ImgWrapList.Where((iw) => iw.imgIsGettable))
-            {
-                string title = iw.Title;
-
-
-
-                NSMenuItem item = new NSMenuItem(title);
-                SubMenuItemHover hoverView = SubMenuItemHover.StdSize(title);
-                if (!iw.OnlineDataExceptPicIsLoaded() || !iw.integrity)
-                {
-                    //item.V = false;
-                }
-                else
-                {
-                    hoverView.OnDragChange += (sender, e) =>
-                    {
-                        if (e.Description == "Mouse Entered" && iw.PreviewIsLoaded())
-                        {
-                            if (state != stateEnum.BrowsingWallpapers)
-                            {
-                                Console.WriteLine("new browsing, setting img cache");
-                                state = stateEnum.BrowsingWallpapers;
-                            }
-                            cancelEndBrowsingStateWithDelay();
-                            MacOShelpers.SetWallpaper(iw.ImgLocalPreviewUrl);
-                        }
-                        if (e.Description == "Mouse Exited")
-                        {
-                            Console.WriteLine("Mouse exit");
-                            try
-                            {
-                                restoreToIdleWithDelayTask = setEndBrowsingStateWithDelay();
-                            }
-                            catch (OperationCanceledException ex)
-                            {
-                                Console.WriteLine("End browsing cancel");
-                            }
-
-                        }
-                        if (e.Description == "Mouse Down" && iw.PreviewIsLoaded())
-                        {
-                            //statusItem.Button.PerformClick(sender as NSObject);
-                            statusItem.Menu.CancelTracking();
-                            hoverView.DisableBGSelectionColor();
-                            prefs.currentAstroWallpaper = iw;
-                            MacOShelpers.SetWallpaper(iw.ImgLocalUrl, true);
-                        }
-                    };
-                    item.View = hoverView;
-                    menuItemsById["browse"].Submenu.AddItem(item);
-                }
-
-
-
-
-            }
-        }
-
-        private async Task setEndBrowsingStateWithDelay()
-        {
-            await Task.Delay(100, this.cancellationToken);
-            MacOShelpers.SetWallpaper(
-                prefs.hasAstroWall() ? prefs.currentAstroWallpaper.ImgLocalUrl : prefs.currentPathToNonAstroWallpaper
-                , true);
-            SetStateIdle();
-        }
-
-        private void cancelEndBrowsingStateWithDelay()
-        {
-            this.taskCancellationSource.Cancel();
-            renewCancellationSource();
-        }
-
-        private void RunDownloadIconAnimation()
-        {
-            // Create a timer with a two second interval.
-            iconUpdateTimer = new System.Timers.Timer(500);
-            // Hook up the Elapsed event for the timer. 
-            iconUpdateTimer.Elapsed += OnTimedEvent;
-            iconUpdateTimer.AutoReset = true;
-            iconUpdateTimer.Enabled = true;
-        }
-
         public async Task FireUpdateHandler()
         {
             bool hasPendingUpdate = await GetUpdateManifestAndCheckIfUpdatePending();
@@ -259,13 +133,15 @@ namespace AstroWall
             }
         }
 
-        private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        public List<ImgWrap> getPresentableImages()
         {
-            int flipCounter1based = flipCounter + 1;
-            string iconName = "download" + flipCounter1based;
-            MacOShelpers.ChangeIconTo(statusItem, iconName);
+            return db.ImgWrapList.Where((iw) => iw.imgIsGettable).ToList<ImgWrap>();
+        }
 
-            flipCounter = (flipCounter + 1) % 3;
+        public void setStateBrowsing()
+        {
+            Console.WriteLine("Setting state browsing");
+            state = BusinessLayer.stateEnum.BrowsingWallpapers;
         }
 
     }

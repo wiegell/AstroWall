@@ -22,3 +22,10 @@ From [public page](https://wiegell.github.io/AstroWall/) or to the right under r
 - Embed description in picture
 - Scaling options
 - Random picture of all time
+
+## Future thought
+- Porting to MAUI
+- Porting to Windows/Linux
+
+## Source organization
+Tries to follow the [application layers as described by Microsoft](https://learn.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/architecture#typical-application-layers). The UI-layer and Application layer is somewhat intertwined, but the business layer should be almost platform independent.
