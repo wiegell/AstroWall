@@ -157,6 +157,10 @@
     <Compile Include="BusinessLayer\MenuHandler.cs" />
     <Compile Include="BusinessLayer\Wallpaper.cs" />
     <Compile Include="ApplicationLayer\UpdateHelpers.MacOS.cs" />
+    <Compile Include="ApplicationLayer\UpdaterPrompViewController.cs" />
+    <Compile Include="ApplicationLayer\UpdaterPrompViewController.designer.cs">
+      <DependentUpon>UpdaterPrompViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

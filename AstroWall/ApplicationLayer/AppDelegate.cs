@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using AppKit;
+using AstroWall.BusinessLayer;
 using Foundation;
 using GameController;
 
@@ -43,6 +44,18 @@ namespace AstroWall.ApplicationLayer
             windowController.ShowWindow(windowController);
             windowController.Window.Level = NSWindowLevel.Status;
             NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
+        }
+
+        public void launchUpdatePrompt(UpdateLibrary.Release rel, Action<UpdatePromptResponse> callback)
+        {
+            // Launch prefs always on top window
+            var storyboard = NSStoryboard.FromName("Main", null);
+            var windowController = storyboard.InstantiateControllerWithIdentifier("updatespromptwindowcontroller") as NSWindowController;
+            var window = windowController.Window;
+            var view = ((UpdaterPrompViewController)windowController.ContentViewController.View);
+            view.SetRelease(rel);
+            view.RegChoiceCallback(callback);
+            windowController.ShowWindow(windowController);
         }
 
         public override void WillTerminate(NSNotification notification)

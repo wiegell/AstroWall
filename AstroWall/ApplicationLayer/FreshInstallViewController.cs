@@ -32,7 +32,6 @@ namespace AstroWall
         {
             return new BusinessLayer.Preferences()
             {
-                autoInstallSilent = this.silentinstall.State != 0,
                 autoInstallUpdates = this.autoinstall.State != 0,
                 checkUpdatesOnLogin = this.checkupdatesatlogin.State != 0,
                 runAtLogin = this.runatlogin.State != 0

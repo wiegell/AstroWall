@@ -7,6 +7,100 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Window Controller-->
+        <scene sceneID="aL7-SJ-C0X">
+            <objects>
+                <windowController storyboardIdentifier="updatespromptwindowcontroller" id="5Pg-lv-ysl" sceneMemberID="viewController">
+                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="YND-6X-EPF">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <rect key="contentRect" x="294" y="313" width="480" height="270"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
+                        <view key="contentView" id="vJW-n2-W9l">
+                            <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </view>
+                        <connections>
+                            <outlet property="delegate" destination="5Pg-lv-ysl" id="eNl-1S-jRa"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="jGL-va-V2O" kind="relationship" relationship="window.shadowedContentViewController" id="aDX-ku-M0O"/>
+                    </connections>
+                </windowController>
+                <customObject id="PgP-44-e6N" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-238" y="-1120"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="a31-lu-o5U">
+            <objects>
+                <viewController id="jGL-va-V2O" sceneMemberID="viewController">
+                    <view key="view" id="G8a-RA-t9m" customClass="UpdaterPrompViewController">
+                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IPZ-pT-KD1">
+                                <rect key="frame" x="22" y="61" width="438" height="148"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" borderStyle="bezel" drawsBackground="YES" id="XOc-Gd-lv5">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ti7-rx-zn9">
+                                <rect key="frame" x="20" y="217" width="190" height="33"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Update available:" id="ZWF-0G-xHE">
+                                    <font key="font" metaFont="system" size="25"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="EKy-Go-gZn">
+                                <rect key="frame" x="315" y="13" width="152" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Install and relaunch" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qy7-LZ-dXW">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="ActionInstall:" target="G8a-RA-t9m" id="7Zp-TX-r4F"/>
+                                </connections>
+                            </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f82-xR-aUQ">
+                                <rect key="frame" x="183" y="13" width="134" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Skip this version" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qef-vy-3oM">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="ActionSkip:" target="G8a-RA-t9m" id="6B7-Vd-P4H"/>
+                                </connections>
+                            </button>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="gdo-sg-0UR">
+                                <rect key="frame" x="214" y="217" width="250" height="33"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="{{Version placeholder}}" id="J3T-1t-dKe">
+                                    <font key="font" metaFont="system" size="25"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <connections>
+                            <outlet property="ActionInstall" destination="EKy-Go-gZn" id="ss9-Ji-Zi6"/>
+                            <outlet property="OutletDescription" destination="IPZ-pT-KD1" id="Cnk-sj-jN4"/>
+                            <outlet property="OutletVersion" destination="gdo-sg-0UR" id="ouc-Jo-YfO"/>
+                        </connections>
+                    </view>
+                </viewController>
+                <customObject id="OAa-Dz-QCj" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-238" y="-1611"/>
+        </scene>
         <!--Application-->
         <scene sceneID="ePP-oT-nQA">
             <objects>
@@ -391,16 +485,10 @@
                                             <action selector="MenuActionCheckUpdatesAtLogin:" target="9tX-R6-oug" id="v12-CA-qDY"/>
                                         </connections>
                                     </menuItem>
-                                    <menuItem title="Install updates automatically" identifier="autoinstallupdates" id="NdN-U6-8vE">
+                                    <menuItem title="Silent autoinstall" identifier="autoinstallupdates" id="NdN-U6-8vE">
                                         <modifierMask key="keyEquivalentModifierMask"/>
                                         <connections>
                                             <action selector="MenuActionAutoInstallUpdates:" target="9tX-R6-oug" id="PSZ-mr-923"/>
-                                        </connections>
-                                    </menuItem>
-                                    <menuItem title="Install updates silently" identifier="autoinstallsilently" id="YV0-yC-Wys">
-                                        <modifierMask key="keyEquivalentModifierMask"/>
-                                        <connections>
-                                            <action selector="MenuActionInstallUpdatesSilently:" target="9tX-R6-oug" id="Pvs-cO-oKZ"/>
                                         </connections>
                                     </menuItem>
                                 </items>
@@ -426,7 +514,6 @@
                         <outlet property="MenuOutletBrowseLatest" destination="vCu-ml-Eap" id="cU3-fB-0eU"/>
                         <outlet property="MenuOutletCheckUpdatesAtLogin" destination="J08-xS-oLK" id="OuD-EG-trm"/>
                         <outlet property="MenuOutletCheckUpdatesManual" destination="Bh6-Ah-sYx" id="L3n-1Q-boD"/>
-                        <outlet property="MenuOutletInstallUpdatesSilently" destination="YV0-yC-Wys" id="QBa-D4-oZn"/>
                         <outlet property="MenuOutletPostProcess" destination="KTK-6s-SRb" id="fVo-7c-nL0"/>
                         <outlet property="MenuOutletQuit" destination="2p1-pg-8rT" id="TUC-7C-8nK"/>
                         <outlet property="MenuOutletRunAtLogin" destination="l8k-1x-W3X" id="ocM-JM-g5L"/>
@@ -540,26 +627,10 @@
                                             <imageReference key="image" image="laptopcomputer.and.arrow.down" catalog="system" symbolScale="large"/>
                                         </imageCell>
                                     </imageView>
-                                    <button identifier="autoinstall" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="def-gt-IOp">
-                                        <rect key="frame" x="263" y="107" width="94" height="18"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="check" title="Auto install" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="Tg4-MR-JYt">
-                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                    </button>
                                     <button identifier="silentinstall" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XRf-bg-bLo">
-                                        <rect key="frame" x="263" y="61" width="100" height="18"/>
+                                        <rect key="frame" x="263" y="82" width="126" height="18"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="check" title="Silent install" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="XjS-Us-tiJ">
-                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
-                                            <font key="font" metaFont="system"/>
-                                        </buttonCell>
-                                    </button>
-                                    <button identifier="checkatlogin" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4qq-lO-ZeG">
-                                        <rect key="frame" x="263" y="152" width="113" height="18"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                        <buttonCell key="cell" type="check" title="Check at login" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="In6-9p-L3q">
+                                        <buttonCell key="cell" type="check" title="Silent autoinstall" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="XjS-Us-tiJ">
                                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                             <font key="font" metaFont="system"/>
                                         </buttonCell>
@@ -574,6 +645,14 @@
                                         <connections>
                                             <action selector="saveAction:" target="cLM-t7-Y3c" id="lTx-ji-mON"/>
                                         </connections>
+                                    </button>
+                                    <button identifier="checkatlogin" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4qq-lO-ZeG">
+                                        <rect key="frame" x="263" y="133" width="113" height="18"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="check" title="Check at login" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="In6-9p-L3q">
+                                            <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
                                     </button>
                                 </subviews>
                             </visualEffectView>
@@ -616,7 +695,6 @@
                             </button>
                         </subviews>
                         <connections>
-                            <outlet property="autoinstall" destination="def-gt-IOp" id="Bao-Kx-mWp"/>
                             <outlet property="checkupdatesatlogin" destination="4qq-lO-ZeG" id="WzI-SI-YYc"/>
                             <outlet property="runatlogin" destination="wuU-IJ-uth" id="WZI-uf-jFg"/>
                             <outlet property="save" destination="olE-WM-Gbt" id="tdz-p1-4fG"/>

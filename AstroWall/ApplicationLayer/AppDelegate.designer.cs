@@ -24,9 +24,6 @@ namespace AstroWall.ApplicationLayer
 		AppKit.NSMenuItem MenuOutletCheckUpdatesManual { get; set; }
 
 		[Outlet]
-		AppKit.NSMenuItem MenuOutletInstallUpdatesSilently { get; set; }
-
-		[Outlet]
 		AppKit.NSMenuItem MenuOutletPostProcess { get; set; }
 
 		[Outlet]
@@ -55,9 +52,6 @@ namespace AstroWall.ApplicationLayer
 
 		[Action ("MenuActionCheckUpdatesAtLogin:")]
 		partial void MenuActionCheckUpdatesAtLogin (Foundation.NSObject sender);
-
-		[Action ("MenuActionInstallUpdatesSilently:")]
-		partial void MenuActionInstallUpdatesSilently (Foundation.NSObject sender);
 
 		[Action ("MenuActionManualCheckUpdates:")]
 		partial void MenuActionManualCheckUpdates (Foundation.NSObject sender);
@@ -88,9 +82,9 @@ namespace AstroWall.ApplicationLayer
 				MenuOutletCheckUpdatesAtLogin = null;
 			}
 
-			if (MenuOutletInstallUpdatesSilently != null) {
-				MenuOutletInstallUpdatesSilently.Dispose ();
-				MenuOutletInstallUpdatesSilently = null;
+			if (MenuOutletCheckUpdatesManual != null) {
+				MenuOutletCheckUpdatesManual.Dispose ();
+				MenuOutletCheckUpdatesManual = null;
 			}
 
 			if (MenuOutletPostProcess != null) {
@@ -111,11 +105,6 @@ namespace AstroWall.ApplicationLayer
 			if (MenuOutletState != null) {
 				MenuOutletState.Dispose ();
 				MenuOutletState = null;
-			}
-
-			if (MenuOutletCheckUpdatesManual != null) {
-				MenuOutletCheckUpdatesManual.Dispose ();
-				MenuOutletCheckUpdatesManual = null;
 			}
 
 			if (MenuTitle != null) {

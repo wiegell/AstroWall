@@ -12,9 +12,10 @@ namespace AstroWall.BusinessLayer
         public ImgWrap currentAstroWallpaper;
         [JsonProperty]
         public string currentPathToNonAstroWallpaper;
+        [JsonProperty]
+        public Version userChosenToSkipUpdatesBeforeVersion;
         public bool checkUpdatesOnLogin;
         public bool autoInstallUpdates;
-        public bool autoInstallSilent;
         public bool runAtLogin;
 
         public Preferences()

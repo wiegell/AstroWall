@@ -25,7 +25,6 @@ namespace AstroWall.ApplicationLayer
         {
             this.MenuOutletAutoInstallUpdates.State = prefs.autoInstallUpdates ? NSCellStateValue.On : NSCellStateValue.Off;
             this.MenuOutletCheckUpdatesAtLogin.State = prefs.checkUpdatesOnLogin ? NSCellStateValue.On : NSCellStateValue.Off;
-            this.MenuOutletInstallUpdatesSilently.State = prefs.autoInstallSilent ? NSCellStateValue.On : NSCellStateValue.Off;
             this.MenuOutletRunAtLogin.State = prefs.runAtLogin ? NSCellStateValue.On : NSCellStateValue.Off;
         }
 
@@ -149,7 +148,6 @@ namespace AstroWall.ApplicationLayer
         {
             this.MenuOutletAutoInstallUpdates.Enabled = true;
             this.MenuOutletCheckUpdatesAtLogin.Enabled = true;
-            this.MenuOutletInstallUpdatesSilently.Enabled = true;
             this.MenuOutletCheckUpdatesManual.Enabled = true;
         }
 
@@ -160,13 +158,6 @@ namespace AstroWall.ApplicationLayer
         }
 
         partial void MenuActionCheckUpdatesAtLogin(NSObject sender)
-        {
-            bool newState = !getCheckmarkBoolFromSender(sender);
-            menuHandler.changedInMenuCheckUpdatesAtLogin(newState);
-        }
-
-
-        partial void MenuActionInstallUpdatesSilently(NSObject sender)
         {
             bool newState = !getCheckmarkBoolFromSender(sender);
             menuHandler.changedInMenuCheckUpdatesAtLogin(newState);

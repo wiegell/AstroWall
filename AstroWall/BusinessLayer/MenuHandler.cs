@@ -145,18 +145,11 @@ namespace AstroWall.BusinessLayer
             appHandler.Prefs.checkUpdatesOnLogin = newState;
             appHandler.Updates.unregisterWakeHandler();
             appDelegate.updateMenuCheckMarks(appHandler.Prefs);
-
-        }
-
-        public void changedInMenuInstallUpdatesSilently(bool newState)
-        {
-            appHandler.Prefs.autoInstallSilent = newState;
-            appDelegate.updateMenuCheckMarks(appHandler.Prefs);
         }
 
         public async void clickedInMenuManualCheckUpdates()
         {
-           await appHandler.Updates.CheckForUpdates(true);
+            await appHandler.Updates.CheckForUpdates(true);
         }
 
         private void renewCancellationSource()

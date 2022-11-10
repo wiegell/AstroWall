@@ -6,6 +6,12 @@ using Foundation;
 
 namespace AstroWall.BusinessLayer
 {
+    public class UpdatePromptResponse
+    {
+        public bool acceptOrSkipUpdate;
+        public string skippedVersion;
+    }
+
     public class Updates
     {
         // Refs
@@ -125,17 +131,15 @@ namespace AstroWall.BusinessLayer
             {
                 Console.WriteLine("Has pending update: {0}", pendingUpdate.version);
 
-                if (applicationHandler.Prefs.autoInstallUpdates &&
-                    applicationHandler.Prefs.autoInstallSilent)
+                if (applicationHandler.Prefs.autoInstallUpdates)
                 {
-                    pendingUpdatePKGpath = await DownloadPendingUpdate();
-                    Console.WriteLine("Running PKG update");
-                    RunPKGUpdate();
+                    await downloadAndUpdate();
                 }
                 else
                 {
                     // TODO
                     // Make interactive updater
+                    applicationHandler.AppDelegate.launchUpdatePrompt(pendingUpdate, updatePromptCallBack);
                 }
             }
             else
@@ -152,6 +156,26 @@ namespace AstroWall.BusinessLayer
             {
                 await CheckForUpdates();
             }
+        }
+
+        private async void updatePromptCallBack(UpdatePromptResponse resp)
+        {
+            if (resp.acceptOrSkipUpdate)
+            {
+                // Update accepted
+                await downloadAndUpdate();
+            }
+            else
+            {
+                applicationHandler.Prefs.userChosenToSkipUpdatesBeforeVersion = VersionFromString(resp.skippedVersion);
+            }
+        }
+
+        private async Task downloadAndUpdate()
+        {
+            pendingUpdatePKGpath = await DownloadPendingUpdate();
+            Console.WriteLine("Running PKG update");
+            RunPKGUpdate();
         }
     }
 }
