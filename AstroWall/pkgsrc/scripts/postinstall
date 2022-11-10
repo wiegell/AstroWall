@@ -7,6 +7,8 @@ then
     if [ "$DSTROOT" == "/Applications/Astro Wall.app" ]
     then
         chown -R $USER /Applications/Astro\ Wall.app
+        mv /Applications/Astro\ Wall.app /Users/$USER/Applications/Astro\ Wall.app
+        ln -s /Users/$USER/Applications/Astro\ Wall.app /Applications/Astro\ Wall.app
     fi
 fi
 exit 0
