@@ -94,16 +94,8 @@
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-128.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-128%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-16.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-16%402x.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-256.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-256%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-32.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-32%402x.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-512.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-512%402x.png" />
     <ImageAsset Include="Assets.xcassets\Contents.json" />
     <ImageAsset Include="Assets.xcassets\staat.imageset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\staat.imageset\astro.png" />
@@ -113,6 +105,17 @@
     <ImageAsset Include="Assets.xcassets\download3.imageset\dl3.png" />
     <ImageAsset Include="Assets.xcassets\download2.imageset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\download2.imageset\dl2.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-1.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-9.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-8.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-10.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-3.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-2.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-6.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-7.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-5.png" />
+    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-4.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
