@@ -26,7 +26,7 @@ namespace AstroWall.BusinessLayer
             if (FileHelpers.DBExists())
             {
                 Console.WriteLine("db exists, deserialize");
-                ImgWrapList = FileHelpers.DeSerializeNow<List<ImgWrap>>(MacOShelpers.getDBPath());
+                ImgWrapList = FileHelpers.DeSerializeNow<List<ImgWrap>>(GeneralHelpers.getDBPath());
             }
             else
             {
@@ -116,16 +116,22 @@ namespace AstroWall.BusinessLayer
             await Task.WhenAll(ImgLoadList);
         }
 
-
         public void SaveToDisk()
         {
-            FileHelpers.SerializeNow(ImgWrapList, MacOShelpers.getDBPath());
+            FileHelpers.SerializeNow(ImgWrapList, GeneralHelpers.getDBPath());
+        }
+
+        public List<ImgWrap> getPresentableImages()
+        {
+            return ImgWrapList.Where((iw) => iw.imgIsGettable).ToList<ImgWrap>();
         }
 
         private bool loadDBFromDisk()
         {
             return true;
         }
+
+
     }
 
     [JsonObject(MemberSerialization.OptOut)]

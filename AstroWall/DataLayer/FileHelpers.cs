@@ -21,7 +21,7 @@ namespace AstroWall
 
         public static string getImageStoreDirectory()
         {
-            return MacOShelpers.getAstroDirectory() + Guid.NewGuid();
+            return GeneralHelpers.getAstroDirectory() + Guid.NewGuid();
         }
 
         public static async Task<String> DownloadUrlToImageStorePath(string imgurl)
@@ -103,13 +103,13 @@ namespace AstroWall
 
         public static bool DBExists()
         {
-            Console.WriteLine("Checking, if db present at: "+ MacOShelpers.getDBPath());
-            return File.Exists(MacOShelpers.getDBPath());
+            Console.WriteLine("Checking, if db present at: "+ GeneralHelpers.getDBPath());
+            return File.Exists(GeneralHelpers.getDBPath());
         }
 
         public static bool PrefsExists()
         {
-            return File.Exists(MacOShelpers.getPrefsPath());
+            return File.Exists(GeneralHelpers.getPrefsPath());
         }
 
     }

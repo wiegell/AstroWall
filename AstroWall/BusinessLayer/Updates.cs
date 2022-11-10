@@ -1,23 +1,49 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AppKit;
 using Foundation;
 
 namespace AstroWall.BusinessLayer
 {
     public class Updates
     {
-        private Version currentVersion;
+        // Refs
+        private ApplicationHandler applicationHandler;
 
-        public Updates(string currentVersionString)
+        // Platform specific helpers
+        private ApplicationLayer.UpdateHelpers updateHelpers = new ApplicationLayer.UpdateHelpers();
+
+        // Misc
+        public UpdateLibrary.Release pendingUpdate { private set; get; }
+        private Version currentVersion;
+        private string pendingUpdatePKGpath;
+
+        public Updates(ApplicationHandler applicationHandlerArg, string currentVersionString)
         {
+            this.applicationHandler = applicationHandlerArg;
             this.currentVersion = VersionFromString(currentVersionString);
             Console.WriteLine("currentVersion: " + VersionFromString(currentVersionString));
+            registerWakeHandler();
         }
 
         private UpdateLibrary.UpdateManifest manifest;
 
-        private string pathToLatestPkg;
+        public void registerWakeHandler()
+        {
+            updateHelpers.RegisterWakeHandler(this.wakeHandler);
+        }
+
+        public void unregisterWakeHandler()
+        {
+            updateHelpers.UnRegisterWakeHandler();
+        }
+
+        public void wakeHandler(NSNotification not)
+        {
+            Console.WriteLine("Wake, checking for software updates");
+            GetUpdateManifestAndCheckIfUpdatePending();
+        }
 
         public async Task GetManifest()
         {
@@ -35,8 +61,8 @@ namespace AstroWall.BusinessLayer
             UpdateLibrary.Release[] allReleases = manifest.getAllReleasesDateSorted();
 
             if (allReleases.Length == 0) return null;
-
             UpdateLibrary.Release latestRelease = allReleases[allReleases.Length - 1];
+
             Version latestVersion = VersionFromString(latestRelease.version);
 
             Console.WriteLine("comparing currentversion: " + currentVersion);
@@ -61,11 +87,11 @@ namespace AstroWall.BusinessLayer
         }
 
 
-        public async Task DownloadLatestAndUpdate()
+        public async Task<string> DownloadPendingUpdate()
         {
-            pathToLatestPkg = await FileHelpers.DownloadUrlToTmpPath("https://github.com/wiegell/AstroWall/releases/download/v0.0.2-alpha/Astro.pkg");
-            Console.Write("Downloaded new pkg to path: " + pathToLatestPkg);
-            RunPKGUpdate();
+            string pathToPkg = await FileHelpers.DownloadUrlToTmpPath(pendingUpdate.DirectPKGurl);
+            Console.Write("Downloaded new pkg to path: " + pathToPkg);
+            return pathToPkg;
         }
 
         public void RunPKGUpdate()
@@ -75,9 +101,56 @@ namespace AstroWall.BusinessLayer
             nstask.Arguments = new string[]
             {
                 "-c",
-            "installer -pkg "+pathToLatestPkg+" -target CurrentUserHomeDirectory"
+            "installer -pkg "+pendingUpdatePKGpath+" -target CurrentUserHomeDirectory"
             };
             nstask.Launch();
+            nstask.WaitUntilExit();
+        }
+
+        public async Task<Boolean> GetUpdateManifestAndCheckIfUpdatePending()
+        {
+            await GetManifest();
+            Console.WriteLine("Update manifest downloaded and parsed");
+            pendingUpdate = checkManifestForNewer();
+            bool hasPendingUpdate = pendingUpdate == null ? false : true;
+            Console.WriteLine("Has pending update: " + hasPendingUpdate);
+            return hasPendingUpdate;
+        }
+
+        public async Task CheckForUpdates(bool manualCheck = false)
+        {
+            bool hasPendingUpdate = await GetUpdateManifestAndCheckIfUpdatePending();
+            if (hasPendingUpdate)
+            {
+                Console.WriteLine("Has pending update: {0}", pendingUpdate.version);
+
+                if (applicationHandler.Prefs.autoInstallUpdates &&
+                    applicationHandler.Prefs.autoInstallSilent)
+                {
+                    pendingUpdatePKGpath = await DownloadPendingUpdate();
+                    Console.WriteLine("Running PKG update");
+                    RunPKGUpdate();
+                }
+                else
+                {
+                    // TODO
+                    // Make interactive updater
+                }
+            }
+            else
+            {
+                Console.WriteLine("No pending updates, is up to date");
+                if (manualCheck)
+                    updateHelpers.AlertNoUpdates(currentVersion.ToString());
+            }
+        }
+
+        public async void ConsiderCheckingForUpdates()
+        {
+            if (applicationHandler.Prefs.checkUpdatesOnLogin)
+            {
+                await CheckForUpdates();
+            }
         }
     }
 }

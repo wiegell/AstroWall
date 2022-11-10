@@ -23,7 +23,7 @@ From [public page](https://wiegell.github.io/AstroWall/) or to the right under r
 - Scaling options
 - Random picture of all time
 
-## Future thought
+## Future thoughts
 - Porting to MAUI
 - Porting to Windows/Linux
 

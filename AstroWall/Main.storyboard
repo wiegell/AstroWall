@@ -425,6 +425,7 @@
                         <outlet property="MenuOutletAutoInstallUpdates" destination="NdN-U6-8vE" id="ygy-1y-V7t"/>
                         <outlet property="MenuOutletBrowseLatest" destination="vCu-ml-Eap" id="cU3-fB-0eU"/>
                         <outlet property="MenuOutletCheckUpdatesAtLogin" destination="J08-xS-oLK" id="OuD-EG-trm"/>
+                        <outlet property="MenuOutletCheckUpdatesManual" destination="Bh6-Ah-sYx" id="L3n-1Q-boD"/>
                         <outlet property="MenuOutletInstallUpdatesSilently" destination="YV0-yC-Wys" id="QBa-D4-oZn"/>
                         <outlet property="MenuOutletPostProcess" destination="KTK-6s-SRb" id="fVo-7c-nL0"/>
                         <outlet property="MenuOutletQuit" destination="2p1-pg-8rT" id="TUC-7C-8nK"/>

@@ -148,11 +148,12 @@
     <Compile Include="ApplicationLayer\AppDelegate.designer.cs">
       <DependentUpon>AppDelegate.cs</DependentUpon>
     </Compile>
-    <Compile Include="ApplicationLayer\MacOShelpers.cs" />
+    <Compile Include="ApplicationLayer\GeneralHelpers.MacOS.cs" />
     <Compile Include="ApplicationLayer\AppDelegate.Menu.cs" />
     <Compile Include="BusinessLayer\ApplicationHandler.cs" />
     <Compile Include="BusinessLayer\MenuHandler.cs" />
     <Compile Include="BusinessLayer\Wallpaper.cs" />
+    <Compile Include="ApplicationLayer\UpdateHelpers.MacOS.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

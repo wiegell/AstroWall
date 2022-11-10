@@ -19,12 +19,12 @@ namespace AstroWall.BusinessLayer
 
         public Preferences()
         {
-            currentPathToNonAstroWallpaper = MacOShelpers.getCurrentWallpaperPath();
+            currentPathToNonAstroWallpaper = GeneralHelpers.getCurrentWallpaperPath();
         }
 
         public void SaveToDisk()
         {
-            FileHelpers.SerializeNow(this, MacOShelpers.getPrefsPath());
+            FileHelpers.SerializeNow(this, GeneralHelpers.getPrefsPath());
         }
 
         public static Preferences fromSave()
@@ -32,7 +32,7 @@ namespace AstroWall.BusinessLayer
             if (FileHelpers.PrefsExists())
             {
                 Console.WriteLine("prefs exists, deserialize");
-                return FileHelpers.DeSerializeNow<Preferences>(MacOShelpers.getPrefsPath());
+                return FileHelpers.DeSerializeNow<Preferences>(GeneralHelpers.getPrefsPath());
             }
             else return null;
         }

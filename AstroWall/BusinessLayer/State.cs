@@ -23,120 +23,47 @@ namespace AstroWall.BusinessLayer
     public class State
     {
         // Refs
-        MenuHandler menuHandler;
+        ApplicationHandler applicationHandler;
 
         // Overall state
         public stateEnum state { get; private set; }
-        private Database db;
-        public Preferences Prefs { get; private set; }
-
-        // Updates
-        public Version currentVersion { private set; get; }
-        private Updates updates;
-        public UpdateLibrary.Release pendingUpdate { private set; get; }
 
         // currentVersionString is the long tag from git including commit hash  
-        public State(MenuHandler menuHandlerArg, string currentVersionString)
+        public State(ApplicationHandler applicationHandlerArg, string currentVersionString)
         {
-            this.menuHandler = menuHandlerArg;
-
-            updates = new Updates(currentVersionString);
+            this.applicationHandler = applicationHandlerArg;
         }
 
-        public void setPrefs(Preferences prefsArg)
-        {
-            this.Prefs = prefsArg;
-        }
-
-        public async Task<Boolean> GetUpdateManifestAndCheckIfUpdatePending()
-        {
-            await updates.GetManifest();
-            Console.WriteLine("Update manifest downloaded and parsed");
-            pendingUpdate = updates.checkManifestForNewer();
-            bool hasPendingUpdate = pendingUpdate == null ? false : true;
-            Console.WriteLine("Has pending update: " + hasPendingUpdate);
-            return hasPendingUpdate;
-        }
-
-        public void LoadOrCreateDB()
-        {
-            db = new Database();
-        }
-
-        public bool LoadPrefsFromSave()
-        {
-            Prefs = Preferences.fromSave();
-            return Prefs != null;
-        }
-
-
-
-        public void saveDBToDisk()
-        {
-            db.SaveToDisk();
-        }
-
-        public void savePrefsToDisk()
-        {
-            Prefs.SaveToDisk();
-        }
+        //public void setPrefs(Preferences prefsArg)
+        //{
+        //    this.Prefs = prefsArg;
+        //}
 
         public void SetStateInitializing()
         {
             Console.WriteLine("State: Initializing");
             state = stateEnum.Initializing;
-            menuHandler.EnableStatusIcon();
-            menuHandler.DisableAllItems();
-            menuHandler.SetTitleInitialising();
-            menuHandler.RunDownloadIconAnimation();
+            applicationHandler.MenuHandler.EnableStatusIcon();
+            applicationHandler.MenuHandler.DisableAllItems();
+            applicationHandler.MenuHandler.SetTitleInitialising();
+            applicationHandler.MenuHandler.RunDownloadIconAnimation();
         }
 
         public void SetStateChoosePrefs()
         {
             Console.WriteLine("State: Choose prefs");
-            menuHandler.disableStatusIcon();
+            applicationHandler.MenuHandler.disableStatusIcon();
         }
 
 
         public void SetStateIdle()
         {
             Console.WriteLine("Setting state to idle:");
-            menuHandler.EnableStatusIcon();
-            menuHandler.SetIconToDefault();
+            applicationHandler.MenuHandler.EnableStatusIcon();
+            applicationHandler.MenuHandler.SetIconToDefault();
             state = stateEnum.Idle;
-            menuHandler.HideState();
+            applicationHandler.MenuHandler.HideState();
 
-        }
-
-        public async Task UpdateStateFromOnline()
-        {
-            Console.WriteLine("load data");
-            await db.LoadDataButNoImgFromOnlineStartingAtDate(10, DateTime.Now);
-            Console.WriteLine("load img");
-            await db.LoadImgs();
-            Console.WriteLine("wraplist: " + db.ImgWrapList.Count);
-            foreach (ImgWrap pic in db.ImgWrapList)
-            {
-                Console.WriteLine("preview url: " + pic.ImgLocalPreviewUrl);
-            }
-        }
-
-        public async Task FireUpdateHandler()
-        {
-            bool hasPendingUpdate = await GetUpdateManifestAndCheckIfUpdatePending();
-            if (hasPendingUpdate)
-            {
-                Console.WriteLine("Has pending update: {0}", pendingUpdate.version);
-            }
-            else
-            {
-                Console.WriteLine("No pending updates, is up to date");
-            }
-        }
-
-        public List<ImgWrap> getPresentableImages()
-        {
-            return db.ImgWrapList.Where((iw) => iw.imgIsGettable).ToList<ImgWrap>();
         }
 
         public void setStateBrowsing()
@@ -147,8 +74,9 @@ namespace AstroWall.BusinessLayer
 
         public void SetLaunchAgentToReflectPrefs()
         {
-            if (Prefs.runAtLogin) MacOShelpers.SetAsLaunchAgent();
-            else MacOShelpers.RemoveLaunchAgent();
+            if (applicationHandler
+                .Prefs.runAtLogin) GeneralHelpers.SetAsLaunchAgent();
+            else GeneralHelpers.RemoveLaunchAgent();
         }
 
     }

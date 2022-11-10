@@ -8,9 +8,9 @@ using Foundation;
 namespace AstroWall
 {
 
-    public class MacOShelpers
+    public class GeneralHelpers
     {
-        public MacOShelpers()
+        public GeneralHelpers()
         {
         }
 
@@ -46,9 +46,6 @@ namespace AstroWall
 
             return getDBDirectory() + "prefs.json";
         }
-
-
-
 
         public static void SetWallpaper(String path, bool onAllScreens = false)
         {
@@ -89,7 +86,6 @@ namespace AstroWall
         {
             Action ac = () =>
             {
-
                 var image = NSImage.ImageNamed("staat");
                 image.Template = true;
                 item.Button.Image = image;
@@ -107,18 +103,6 @@ namespace AstroWall
                 CoreFoundation.DispatchQueue.MainQueue.DispatchSync(() => ac());
             }
             else ac();
-        }
-
-        public static void RunPKGUpdate(string pathToPkg)
-        {
-            NSTask nstask = new NSTask();
-            nstask.LaunchPath = "/bin/bash";
-            nstask.Arguments = new string[]
-            {
-                "-c",
-            "installer -pkg ~/downloads/Astro\\ Wall-1.0.4.pkg -target CurrentUserHomeDirectory"
-            };
-            nstask.Launch();
         }
 
         public static void SetAsLaunchAgent()
@@ -157,7 +141,6 @@ namespace AstroWall
         {
             return NSFileManager.HomeDirectory + "/Library/LaunchAgents/com.astro.wall.Astro-Wall.plist";
         }
-
     }
 }
 

@@ -40,9 +40,9 @@ namespace AstroWall.BusinessLayer
             noAutoEnableMenuItems();
         }
 
-        public void updateMenuCheckMarksToReflectState(State state)
+        public void updateMenuCheckMarksToReflectPrefs()
         {
-            appDelegate.updateMenuCheckMarks(state.Prefs);
+            appDelegate.updateMenuCheckMarks(appHandler.Prefs);
         }
 
         public void DisableAllItems()
@@ -117,7 +117,7 @@ namespace AstroWall.BusinessLayer
                         () => setEndBrowsingStateWithDelay(),
                         () =>
                         {
-                            appHandler.State.Prefs.currentAstroWallpaper = iw;
+                            appHandler.Prefs.currentAstroWallpaper = iw;
                             appHandler.Wallpaper.SetWallpaperAllScreens(iw);
                         }
 
@@ -127,16 +127,36 @@ namespace AstroWall.BusinessLayer
             }
         }
 
-        public void runAtLoginChangedInMenu(bool val)
+        public void changedInMenuRunAtLogin(bool newState)
         {
-            appHandler.State.Prefs.runAtLogin = val;
+            appHandler.Prefs.runAtLogin = newState;
             appHandler.State.SetLaunchAgentToReflectPrefs();
-            appDelegate.SetRunAtLoginMenuItemState(val);
+            appDelegate.updateMenuCheckMarks(appHandler.Prefs);
         }
 
-        public void changeLoginMenuItemState(bool val)
+        public void changedInMenuAutoInstallUpdates(bool newState)
         {
-            appDelegate.SetRunAtLoginMenuItemState(val);
+            appHandler.Prefs.autoInstallUpdates = newState;
+            appDelegate.updateMenuCheckMarks(appHandler.Prefs);
+        }
+
+        public void changedInMenuCheckUpdatesAtLogin(bool newState)
+        {
+            appHandler.Prefs.checkUpdatesOnLogin = newState;
+            appHandler.Updates.unregisterWakeHandler();
+            appDelegate.updateMenuCheckMarks(appHandler.Prefs);
+
+        }
+
+        public void changedInMenuInstallUpdatesSilently(bool newState)
+        {
+            appHandler.Prefs.autoInstallSilent = newState;
+            appDelegate.updateMenuCheckMarks(appHandler.Prefs);
+        }
+
+        public async void clickedInMenuManualCheckUpdates()
+        {
+           await appHandler.Updates.CheckForUpdates(true);
         }
 
         private void renewCancellationSource()

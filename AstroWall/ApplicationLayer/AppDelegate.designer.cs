@@ -21,6 +21,9 @@ namespace AstroWall.ApplicationLayer
 		AppKit.NSMenuItem MenuOutletCheckUpdatesAtLogin { get; set; }
 
 		[Outlet]
+		AppKit.NSMenuItem MenuOutletCheckUpdatesManual { get; set; }
+
+		[Outlet]
 		AppKit.NSMenuItem MenuOutletInstallUpdatesSilently { get; set; }
 
 		[Outlet]
@@ -100,9 +103,19 @@ namespace AstroWall.ApplicationLayer
 				MenuOutletQuit = null;
 			}
 
+			if (MenuOutletRunAtLogin != null) {
+				MenuOutletRunAtLogin.Dispose ();
+				MenuOutletRunAtLogin = null;
+			}
+
 			if (MenuOutletState != null) {
 				MenuOutletState.Dispose ();
 				MenuOutletState = null;
+			}
+
+			if (MenuOutletCheckUpdatesManual != null) {
+				MenuOutletCheckUpdatesManual.Dispose ();
+				MenuOutletCheckUpdatesManual = null;
 			}
 
 			if (MenuTitle != null) {
@@ -113,11 +126,6 @@ namespace AstroWall.ApplicationLayer
 			if (StatusMenu != null) {
 				StatusMenu.Dispose ();
 				StatusMenu = null;
-			}
-
-			if (MenuOutletRunAtLogin != null) {
-				MenuOutletRunAtLogin.Dispose ();
-				MenuOutletRunAtLogin = null;
 			}
 		}
 	}

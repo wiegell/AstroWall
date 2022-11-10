@@ -16,8 +16,9 @@ namespace AstroWall.ApplicationLayer
             // Create a Status Bar Menu
             statusBar = NSStatusBar.SystemStatusBar;
             statusBarItem = statusBar.CreateStatusItem(NSStatusItemLength.Variable);
-            MacOShelpers.InitIcon(statusBarItem, this.StatusMenu);
+            GeneralHelpers.InitIcon(statusBarItem, this.StatusMenu);
             MenuTitle.Title = title;
+            EnableAllUpdateSubMenuItems();
         }
 
         public void updateMenuCheckMarks(BusinessLayer.Preferences prefs)
@@ -25,6 +26,7 @@ namespace AstroWall.ApplicationLayer
             this.MenuOutletAutoInstallUpdates.State = prefs.autoInstallUpdates ? NSCellStateValue.On : NSCellStateValue.Off;
             this.MenuOutletCheckUpdatesAtLogin.State = prefs.checkUpdatesOnLogin ? NSCellStateValue.On : NSCellStateValue.Off;
             this.MenuOutletInstallUpdatesSilently.State = prefs.autoInstallSilent ? NSCellStateValue.On : NSCellStateValue.Off;
+            this.MenuOutletRunAtLogin.State = prefs.runAtLogin ? NSCellStateValue.On : NSCellStateValue.Off;
         }
 
         public void noAutoEnableMenuItems()
@@ -79,7 +81,7 @@ namespace AstroWall.ApplicationLayer
             // Needed since it sometimes
             // is called from another thread via
             // a task
-            MacOShelpers.RunOnUIThread(ac);
+            GeneralHelpers.RunOnUIThread(ac);
         }
 
         public void removeAllPictureItemsInSubmenu()
@@ -139,15 +141,45 @@ namespace AstroWall.ApplicationLayer
 
         partial void MenuActionRunAtLogin(NSObject sender)
         {
-            var item = (NSMenuItem)sender;
-            bool curState = item.State == NSCellStateValue.On;
-            bool newState = !curState;
-            menuHandler.runAtLoginChangedInMenu(newState);
+            bool newState = !getCheckmarkBoolFromSender(sender);
+            menuHandler.changedInMenuRunAtLogin(newState);
         }
 
-        public void SetRunAtLoginMenuItemState(bool val)
+        public void EnableAllUpdateSubMenuItems()
         {
-            MenuOutletRunAtLogin.State = val ? NSCellStateValue.On : NSCellStateValue.Off;
+            this.MenuOutletAutoInstallUpdates.Enabled = true;
+            this.MenuOutletCheckUpdatesAtLogin.Enabled = true;
+            this.MenuOutletInstallUpdatesSilently.Enabled = true;
+            this.MenuOutletCheckUpdatesManual.Enabled = true;
+        }
+
+        partial void MenuActionAutoInstallUpdates(NSObject sender)
+        {
+            bool newState = !getCheckmarkBoolFromSender(sender);
+            menuHandler.changedInMenuAutoInstallUpdates(newState);
+        }
+
+        partial void MenuActionCheckUpdatesAtLogin(NSObject sender)
+        {
+            bool newState = !getCheckmarkBoolFromSender(sender);
+            menuHandler.changedInMenuCheckUpdatesAtLogin(newState);
+        }
+
+
+        partial void MenuActionInstallUpdatesSilently(NSObject sender)
+        {
+            bool newState = !getCheckmarkBoolFromSender(sender);
+            menuHandler.changedInMenuCheckUpdatesAtLogin(newState);
+        }
+
+        partial void MenuActionManualCheckUpdates(NSObject sender)
+        {
+            menuHandler.clickedInMenuManualCheckUpdates();
+        }
+
+        private bool getCheckmarkBoolFromSender(NSObject sender)
+        {
+            return ((NSMenuItem)sender).State == NSCellStateValue.On;
         }
     }
 }

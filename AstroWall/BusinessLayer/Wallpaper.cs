@@ -15,23 +15,23 @@ namespace AstroWall.BusinessLayer
 
         public void SetWallpaperAllScreens(string url)
         {
-            MacOShelpers.SetWallpaper(url, true);
+            GeneralHelpers.SetWallpaper(url, true);
         }
         public void SetWallpaperAllScreens(ImgWrap iw)
         {
             if (iw.FullResIsLoaded())
-                MacOShelpers.SetWallpaper(iw.ImgLocalUrl, true);
+                GeneralHelpers.SetWallpaper(iw.ImgLocalUrl, true);
         }
 
         public void SetWallpaperMainScreen(string url)
         {
-            MacOShelpers.SetWallpaper(url, false);
+            GeneralHelpers.SetWallpaper(url, false);
         }
 
         public void SetPreviewWallpaper(ImgWrap iw)
         {
             if (iw.PreviewIsLoaded())
-                MacOShelpers.SetWallpaper(iw.ImgLocalPreviewUrl, false);
+                GeneralHelpers.SetWallpaper(iw.ImgLocalPreviewUrl, false);
         }
 
         public void ResetWallpaper()

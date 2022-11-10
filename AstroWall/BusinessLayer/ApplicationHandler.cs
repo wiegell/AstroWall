@@ -13,15 +13,20 @@ namespace AstroWall.BusinessLayer
         public MenuHandler MenuHandler { get; private set; }
         public Wallpaper Wallpaper { get; private set; }
         public State State { get; private set; }
+        public Updates Updates { private set; get; }
+        private Database db;
+        public Preferences Prefs { get; private set; }
 
         // Misc
-        private string currentVersionString;
+        public Version CurrentVersion { private set; get; }
+        private string currentVersionString = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
 
 
         public ApplicationHandler(AppDelegate del)
         {
             AppDelegate = del;
             MenuHandler = new MenuHandler(AppDelegate, this);
+            Updates = new Updates(this, currentVersionString);
         }
 
         public async Task Init()
@@ -40,59 +45,72 @@ namespace AstroWall.BusinessLayer
         public void Terminate()
         {
             Console.WriteLine("Terminate called");
-            State.saveDBToDisk();
-            State.savePrefsToDisk();
+            db.SaveToDisk();
+            Prefs.SaveToDisk();
         }
 
         private bool primaryInitAndCheckIfPrefsAreAvail()
         {
             // Create status bar icon / menu
-            currentVersionString = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
             MenuHandler.createStatusBar("Astrowall v" + currentVersionString);
 
             // Init state
-            State = new State(MenuHandler, currentVersionString);
+            State = new State(this, currentVersionString);
 
             // Load prefs. If non-present halt further actions until
             // preft are confirmed by user
-            bool prefsAreLoadedSuccessfully = State.LoadPrefsFromSave();
+            Prefs = Preferences.fromSave();
+            bool prefsAreLoadedSuccessfully = Prefs != null;
             return prefsAreLoadedSuccessfully;
         }
 
-        private async Task secondaryInit(Preferences prefs)
+        private async Task secondaryInit(Preferences prefsFromPostInstallPrompt)
         {
             // Set prefs from post-install welcome screen,
             // if calls comes from there.
             // If prefs == null it means they are not created
             // but instead already loaded to state from json.
-            if (prefs != null)
+            if (prefsFromPostInstallPrompt != null)
             {
-                State.setPrefs(prefs);
+                Prefs = prefsFromPostInstallPrompt;
             };
-            Wallpaper = new Wallpaper(State.Prefs);
-            MenuHandler.updateMenuCheckMarksToReflectState(State);
+            Wallpaper = new Wallpaper(Prefs);
+            MenuHandler.updateMenuCheckMarksToReflectPrefs();
 
-            // Set run at login
+            // Set run at login agent
             State.SetLaunchAgentToReflectPrefs();
-            MenuHandler.changeLoginMenuItemState(State.Prefs.runAtLogin);
 
             // Init state and db
             State.SetStateInitializing();
-            State.LoadOrCreateDB();
+            db = new Database();
 
-            // Check online site
-            await State.UpdateStateFromOnline();
+            // Update db from online site
+            await UpdateDBFromOnline();
 
             // Populate submenu
-            MenuHandler.PopulateSubmenuLatestPictures(State.getPresentableImages(), State);
+            MenuHandler.PopulateSubmenuLatestPictures(db.getPresentableImages(), State);
 
             // Give back control to the user
             State.SetStateIdle();
 
             // Check for updates
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            State.FireUpdateHandler();
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            Updates.ConsiderCheckingForUpdates();
+            if (Prefs.checkUpdatesOnLogin)
+                Updates.registerWakeHandler();
+
+        }
+
+        public async Task UpdateDBFromOnline()
+        {
+            Console.WriteLine("load data");
+            await db.LoadDataButNoImgFromOnlineStartingAtDate(10, DateTime.Now);
+            Console.WriteLine("load img");
+            await db.LoadImgs();
+            Console.WriteLine("wraplist: " + db.ImgWrapList.Count);
+            foreach (ImgWrap pic in db.ImgWrapList)
+            {
+                Console.WriteLine("preview url: " + pic.ImgLocalPreviewUrl);
+            }
         }
 
     }
