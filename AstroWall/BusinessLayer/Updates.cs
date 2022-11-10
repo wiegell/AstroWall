@@ -101,8 +101,9 @@ namespace AstroWall.BusinessLayer
             nstask.Arguments = new string[]
             {
                 "-c",
-            "installer -pkg "+pendingUpdatePKGpath+" -target CurrentUserHomeDirectory"
+            "installer -pkg "+pendingUpdatePKGpath
             };
+            //+" -target CurrentUserHomeDirectory"
             nstask.Launch();
             nstask.WaitUntilExit();
         }
