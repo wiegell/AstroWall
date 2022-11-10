@@ -13,7 +13,7 @@ namespace AstroWall.BusinessLayer
         [JsonProperty]
         public string currentPathToNonAstroWallpaper;
         [JsonProperty]
-        public Version userChosenToSkipUpdatesBeforeVersion;
+        public string userChosenToSkipUpdatesBeforeVersion;
         public bool checkUpdatesOnLogin;
         public bool autoInstallUpdates;
         public bool runAtLogin;

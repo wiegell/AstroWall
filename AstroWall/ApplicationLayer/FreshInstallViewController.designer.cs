@@ -13,32 +13,19 @@ namespace AstroWall
 	partial class FreshInstallViewController
 	{
 		[Outlet]
-		AppKit.NSButton autoinstall { get; set; }
-
-		[Outlet]
 		AppKit.NSButton checkupdatesatlogin { get; set; }
 
 		[Outlet]
-		AppKit.NSButton runatlogin { get; set; }
+		AppKit.NSButton OutletAutoinstall { get; set; }
 
 		[Outlet]
-		AppKit.NSButton silentinstall { get; set; }
+		AppKit.NSButton runatlogin { get; set; }
 
 		[Action ("saveAction:")]
 		partial void saveAction (Foundation.NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (silentinstall != null) {
-				silentinstall.Dispose ();
-				silentinstall = null;
-			}
-
-			if (autoinstall != null) {
-				autoinstall.Dispose ();
-				autoinstall = null;
-			}
-
 			if (checkupdatesatlogin != null) {
 				checkupdatesatlogin.Dispose ();
 				checkupdatesatlogin = null;
@@ -47,6 +34,11 @@ namespace AstroWall
 			if (runatlogin != null) {
 				runatlogin.Dispose ();
 				runatlogin = null;
+			}
+
+			if (OutletAutoinstall != null) {
+				OutletAutoinstall.Dispose ();
+				OutletAutoinstall = null;
 			}
 		}
 	}

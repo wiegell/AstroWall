@@ -35,6 +35,7 @@ namespace AstroWall
                 acceptOrSkipUpdate = true,
             };
             choiceCallback(callRet);
+            this.Window.Close();
         }
 
         partial void ActionSkip(NSObject sender)
@@ -45,6 +46,7 @@ namespace AstroWall
                 skippedVersion = ver
             };
             choiceCallback(callRet);
+            this.Window.Close();
         }
     }
 }

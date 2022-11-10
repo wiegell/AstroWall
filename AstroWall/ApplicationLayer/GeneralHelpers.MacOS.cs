@@ -127,6 +127,19 @@ namespace AstroWall
             File.WriteAllText(ap, agentXmlContent);
         }
 
+        public static void Relaunch(int delay = 2)
+        {
+            NSTask nstask = new NSTask();
+            nstask.LaunchPath = "/bin/bash";
+            nstask.Arguments = new string[]
+            {
+                "-c",
+            $"sleep {delay}; open /Applications/Astro\\ Wall.app"
+            };
+            nstask.Launch();
+
+        }
+
         public static void RemoveLaunchAgent()
         {
             string ap = agentPath();

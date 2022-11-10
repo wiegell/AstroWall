@@ -100,20 +100,6 @@ namespace AstroWall.BusinessLayer
             return pathToPkg;
         }
 
-        public void RunPKGUpdate()
-        {
-            NSTask nstask = new NSTask();
-            nstask.LaunchPath = "/bin/bash";
-            nstask.Arguments = new string[]
-            {
-                "-c",
-            "installer -pkg "+pendingUpdatePKGpath+" -target CurrentUserHomeDirectory"
-            };
-            //+" "
-            nstask.Launch();
-            nstask.WaitUntilExit();
-        }
-
         public async Task<Boolean> GetUpdateManifestAndCheckIfUpdatePending()
         {
             await GetManifest();
@@ -167,7 +153,7 @@ namespace AstroWall.BusinessLayer
             }
             else
             {
-                applicationHandler.Prefs.userChosenToSkipUpdatesBeforeVersion = VersionFromString(resp.skippedVersion);
+                applicationHandler.Prefs.userChosenToSkipUpdatesBeforeVersion = (resp.skippedVersion);
             }
         }
 
@@ -175,7 +161,9 @@ namespace AstroWall.BusinessLayer
         {
             pendingUpdatePKGpath = await DownloadPendingUpdate();
             Console.WriteLine("Running PKG update");
-            RunPKGUpdate();
+            updateHelpers.RunPKGUpdate(pendingUpdatePKGpath);
+            GeneralHelpers.Relaunch();
+            System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
     }
 }

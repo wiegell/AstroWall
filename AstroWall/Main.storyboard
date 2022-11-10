@@ -627,7 +627,7 @@
                                             <imageReference key="image" image="laptopcomputer.and.arrow.down" catalog="system" symbolScale="large"/>
                                         </imageCell>
                                     </imageView>
-                                    <button identifier="silentinstall" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XRf-bg-bLo">
+                                    <button identifier="autoinstall" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XRf-bg-bLo">
                                         <rect key="frame" x="263" y="82" width="126" height="18"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                         <buttonCell key="cell" type="check" title="Silent autoinstall" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="XjS-Us-tiJ">
@@ -695,6 +695,7 @@
                             </button>
                         </subviews>
                         <connections>
+                            <outlet property="OutletAutoinstall" destination="XRf-bg-bLo" id="DqC-nl-dIW"/>
                             <outlet property="checkupdatesatlogin" destination="4qq-lO-ZeG" id="WzI-SI-YYc"/>
                             <outlet property="runatlogin" destination="wuU-IJ-uth" id="WZI-uf-jFg"/>
                             <outlet property="save" destination="olE-WM-Gbt" id="tdz-p1-4fG"/>

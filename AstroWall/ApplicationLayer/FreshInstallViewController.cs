@@ -20,7 +20,8 @@ namespace AstroWall
         {
             this.Window.Close();
             if (callback == null) throw new Exception("Callback not registered");
-            callback(createPrefs());
+            var prefs = createPrefs();
+            callback(prefs);
         }
 
         public void regSaveCallback(Func<BusinessLayer.Preferences, Task> callbackArg)
@@ -30,12 +31,14 @@ namespace AstroWall
 
         private BusinessLayer.Preferences createPrefs()
         {
-            return new BusinessLayer.Preferences()
-            {
-                autoInstallUpdates = this.autoinstall.State != 0,
-                checkUpdatesOnLogin = this.checkupdatesatlogin.State != 0,
-                runAtLogin = this.runatlogin.State != 0
-            };
+            var prefs = new BusinessLayer.Preferences();
+            prefs.autoInstallUpdates = (this.OutletAutoinstall.State == NSCellStateValue.On);
+            prefs.
+            checkUpdatesOnLogin = (this.checkupdatesatlogin.State == NSCellStateValue.On);
+            prefs.runAtLogin = (this.runatlogin.State == NSCellStateValue.On);
+
+
+            return prefs;
         }
 
         public void runCallback()

@@ -24,16 +24,18 @@ namespace AstroWall.ApplicationLayer
             NSWorkspace.SharedWorkspace.NotificationCenter.RemoveObserver(wakeHandlerObserver);
         }
 
-        public static void RunPKGUpdate(string pathToPkg)
+        public void RunPKGUpdate(string pathToPkg)
         {
             NSTask nstask = new NSTask();
             nstask.LaunchPath = "/bin/bash";
             nstask.Arguments = new string[]
             {
                 "-c",
-            "installer -pkg ~/downloads/Astro\\ Wall-1.0.4.pkg -target CurrentUserHomeDirectory"
+            "installer -pkg "+pathToPkg+" -target CurrentUserHomeDirectory"
             };
+            //+" "
             nstask.Launch();
+            nstask.WaitUntilExit();
         }
 
         public void AlertNoUpdates(string curversion)

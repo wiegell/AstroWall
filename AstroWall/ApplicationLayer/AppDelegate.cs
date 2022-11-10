@@ -19,6 +19,9 @@ namespace AstroWall.ApplicationLayer
         AstroWall.BusinessLayer.ApplicationHandler appHandler;
         AstroWall.BusinessLayer.MenuHandler menuHandler;
 
+        // Keep windows in memory
+        NSWindowController updatePromptWindowController;
+        NSWindowController freshInstallWindowController;
 
         public AppDelegate()
         {
@@ -36,13 +39,13 @@ namespace AstroWall.ApplicationLayer
         {
             // Launch prefs always on top window
             var storyboard = NSStoryboard.FromName("Main", null);
-            var windowController = storyboard.InstantiateControllerWithIdentifier("updateswindowcontroller") as NSWindowController;
-            var window = windowController.Window;
+            freshInstallWindowController = storyboard.InstantiateControllerWithIdentifier("updateswindowcontroller") as NSWindowController;
+            var window = freshInstallWindowController.Window;
             window.Delegate = new UpdatesWindowDelegate(window);
-            var view = ((FreshInstallViewController)windowController.ContentViewController.View);
+            var view = ((FreshInstallViewController)freshInstallWindowController.ContentViewController.View);
             view.regSaveCallback(callback);
-            windowController.ShowWindow(windowController);
-            windowController.Window.Level = NSWindowLevel.Status;
+            freshInstallWindowController.ShowWindow(freshInstallWindowController);
+            freshInstallWindowController.Window.Level = NSWindowLevel.Status;
             NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
         }
 
@@ -50,18 +53,19 @@ namespace AstroWall.ApplicationLayer
         {
             // Launch prefs always on top window
             var storyboard = NSStoryboard.FromName("Main", null);
-            var windowController = storyboard.InstantiateControllerWithIdentifier("updatespromptwindowcontroller") as NSWindowController;
-            var window = windowController.Window;
-            var view = ((UpdaterPrompViewController)windowController.ContentViewController.View);
+            updatePromptWindowController = storyboard.InstantiateControllerWithIdentifier("updatespromptwindowcontroller") as NSWindowController;
+            var window = updatePromptWindowController.Window;
+            var view = ((UpdaterPrompViewController)updatePromptWindowController.ContentViewController.View);
             view.SetRelease(rel);
             view.RegChoiceCallback(callback);
-            windowController.ShowWindow(windowController);
+            updatePromptWindowController.ShowWindow(updatePromptWindowController);
+            window.OrderFront(null);
         }
 
         public override void WillTerminate(NSNotification notification)
         {
             // Insert code here to tear down your application
-            appHandler.Terminate();
+            appHandler.TerminationPreparations();
         }
         #endregion
 

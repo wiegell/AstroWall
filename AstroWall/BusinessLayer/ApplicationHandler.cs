@@ -42,7 +42,7 @@ namespace AstroWall.BusinessLayer
             }
         }
 
-        public void Terminate()
+        public void TerminationPreparations()
         {
             Console.WriteLine("Terminate called");
             db.SaveToDisk();
