@@ -8,9 +8,9 @@ using Foundation;
 namespace AstroWall
 {
 
-    public class GeneralHelpers
+    public class General
     {
-        public GeneralHelpers()
+        public General()
         {
         }
 
@@ -43,7 +43,6 @@ namespace AstroWall
         }
         public static string getPrefsPath()
         {
-
             return getDBDirectory() + "prefs.json";
         }
 
@@ -66,7 +65,7 @@ namespace AstroWall
                     {
                         ret = workspace.SetDesktopImageUrl(NSUrl.FromFilename(path), screen, new NSDictionary(), new NSError());
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         Console.WriteLine("desk not set");
                     }
@@ -78,7 +77,6 @@ namespace AstroWall
         {
             NSWorkspace workspace = NSWorkspace.SharedWorkspace;
             NSScreen mainScreen = NSScreen.MainScreen;
-
             return workspace.DesktopImageUrl(mainScreen).Path;
         }
 
@@ -86,7 +84,7 @@ namespace AstroWall
         {
             Action ac = () =>
             {
-                var image = NSImage.ImageNamed("staat");
+                var image = NSImage.ImageNamed("MainIcon_rot_0");
                 image.Template = true;
                 item.Button.Image = image;
                 item.HighlightMode = true;
@@ -105,27 +103,6 @@ namespace AstroWall
             else ac();
         }
 
-        public static void SetAsLaunchAgent()
-        {
-            string ap = agentPath();
-            string agentXmlContent = @"<?xml version=""1.0"" encoding=""UTF-8""?>
-<!DOCTYPE plist PUBLIC ""-//Apple//DTD PLIST 1.0//EN"" ""http://www.apple.com/DTDs/PropertyList-1.0.dtd"">
-<plist version=""1.0"">
-<dict>
-    <key>Label</key>
-    <string>com.astro.wall.Astro-Wall</string>
-    <key>LimitLoadToSessionType</key>
-    <string>Aqua</string>
-    <key>Program</key>
-    <string>/Applications/Astro Wall.app/Contents/MacOS/Astro Wall</string>
-    <key>RunAtLoad</key>
-    <true/>
-</dict>
-</plist>
-";
-            Console.WriteLine("Writing agent to: " + ap);
-            File.WriteAllText(ap, agentXmlContent);
-        }
 
         public static void Relaunch(int delay = 2)
         {
@@ -137,23 +114,8 @@ namespace AstroWall
             $"sleep {delay}; open /Applications/Astro\\ Wall.app"
             };
             nstask.Launch();
-
         }
 
-        public static void RemoveLaunchAgent()
-        {
-            string ap = agentPath();
-            if (File.Exists(ap))
-            {
-                Console.WriteLine("Deleting agent at: " + ap);
-                File.Delete(ap);
-            };
-        }
-
-        private static string agentPath()
-        {
-            return NSFileManager.HomeDirectory + "/Library/LaunchAgents/com.astro.wall.Astro-Wall.plist";
-        }
     }
 }
 

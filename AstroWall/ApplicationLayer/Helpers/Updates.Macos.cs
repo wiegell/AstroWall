@@ -4,24 +4,31 @@ using Foundation;
 
 namespace AstroWall.ApplicationLayer
 {
-    public class UpdateHelpers
+    public class Updates
     {
 
-        NSObject wakeHandlerObserver;
-
-        public UpdateHelpers()
+        //Singleton
+        private static volatile Updates instance;
+        private static object syncRoot = new object();
+        public static Updates Instance
         {
+            get
+            {
+                if (instance == null)
+                {
+                    lock (syncRoot)
+                    {
+                        if (instance == null)
+                            instance = new Updates();
+                    }
+                }
+
+                return instance;
+            }
         }
 
-        public void RegisterWakeHandler(Action<NSNotification> ac)
+        private Updates()
         {
-            wakeHandlerObserver =
-            NSWorkspace.SharedWorkspace.NotificationCenter.AddObserver(NSWorkspace.DidWakeNotification, ac);
-        }
-
-        public void UnRegisterWakeHandler()
-        {
-            NSWorkspace.SharedWorkspace.NotificationCenter.RemoveObserver(wakeHandlerObserver);
         }
 
         public void RunPKGUpdate(string pathToPkg)

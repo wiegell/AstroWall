@@ -94,28 +94,29 @@
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-256.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\AppIcon-256%402x.png" />
     <ImageAsset Include="Assets.xcassets\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\staat.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\staat.imageset\astro.png" />
     <ImageAsset Include="Assets.xcassets\download1.imageset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\download1.imageset\dl1.png" />
     <ImageAsset Include="Assets.xcassets\download3.imageset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\download3.imageset\dl3.png" />
     <ImageAsset Include="Assets.xcassets\download2.imageset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\download2.imageset\dl2.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-1.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-9.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-8.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-10.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-3.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-2.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-6.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-7.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-5.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-4.png" />
+    <ImageAsset Include="Assets.xcassets\AppIconImage.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\AppIconImage.imageset\LargeIcon.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_60.imageset\MainIcon_rot_60.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_60.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_45.imageset\MainIcon_rot_45.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_45.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_15.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_15.imageset\MainIcon_rot_15.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_0.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_0.imageset\astro.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_75.imageset\MainIcon_rot_75.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_75.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_30.imageset\MainIcon_rot_30.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_30.imageset\Contents.json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
@@ -123,6 +124,8 @@
     <Folder Include="DataLayer\" />
     <Folder Include="BusinessLayer\" />
     <Folder Include="ServiceLayer\" />
+    <Folder Include="ApplicationLayer\Helpers\" />
+    <Folder Include="ApplicationLayer\View\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -131,14 +134,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
-    <Compile Include="ApplicationLayer\SubMenuItemHover.cs" />
-    <Compile Include="ApplicationLayer\SubMenuItemHover.designer.cs">
-      <DependentUpon>SubMenuItemHover.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ApplicationLayer\FreshInstallViewController.cs" />
-    <Compile Include="ApplicationLayer\FreshInstallViewController.designer.cs">
-      <DependentUpon>FreshInstallViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="BusinessLayer\DateTimeHelpers.cs" />
     <Compile Include="DataLayer\FileHelpers.cs" />
     <Compile Include="ServiceLayer\HTMLHelpers.cs" />
@@ -146,25 +141,42 @@
     <Compile Include="BusinessLayer\Preferences.cs" />
     <Compile Include="BusinessLayer\State.cs" />
     <Compile Include="BusinessLayer\Updates.cs" />
-    <Compile Include="ApplicationLayer\UpdatesWindowDelegate.cs" />
-    <Compile Include="ApplicationLayer\AppDelegate.cs" />
-    <Compile Include="ApplicationLayer\AppDelegate.designer.cs">
-      <DependentUpon>AppDelegate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ApplicationLayer\GeneralHelpers.MacOS.cs" />
-    <Compile Include="ApplicationLayer\AppDelegate.Menu.cs" />
     <Compile Include="BusinessLayer\ApplicationHandler.cs" />
     <Compile Include="BusinessLayer\MenuHandler.cs" />
     <Compile Include="BusinessLayer\Wallpaper.cs" />
-    <Compile Include="ApplicationLayer\UpdateHelpers.MacOS.cs" />
-    <Compile Include="ApplicationLayer\UpdaterPrompViewController.cs" />
-    <Compile Include="ApplicationLayer\UpdaterPrompViewController.designer.cs">
+    <Compile Include="BusinessLayer\ImgWrap.cs" />
+    <Compile Include="ApplicationLayer\View\AppDelegate.cs" />
+    <Compile Include="ApplicationLayer\View\AppDelegate.designer.cs">
+      <DependentUpon>AppDelegate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationLayer\View\AppDelegate.Menu.cs" />
+    <Compile Include="ApplicationLayer\View\FreshInstallViewController.cs" />
+    <Compile Include="ApplicationLayer\View\FreshInstallViewController.designer.cs">
+      <DependentUpon>FreshInstallViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationLayer\View\SubMenuItemHover.cs" />
+    <Compile Include="ApplicationLayer\View\SubMenuItemHover.designer.cs">
+      <DependentUpon>SubMenuItemHover.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationLayer\Helpers\SystemEvents.Macos.cs" />
+    <Compile Include="ApplicationLayer\Helpers\General.Macos.cs" />
+    <Compile Include="ApplicationLayer\View\UpdaterPrompViewController.cs" />
+    <Compile Include="ApplicationLayer\View\UpdaterPrompViewController.designer.cs">
       <DependentUpon>UpdaterPrompViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationLayer\Helpers\Updates.Macos.cs" />
+    <Compile Include="ApplicationLayer\View\UpdatesWindowDelegate.cs" />
+    <Compile Include="ApplicationLayer\View\PostProcessContentViewController.cs" />
+    <Compile Include="ApplicationLayer\View\PostProcessContentViewController.designer.cs">
+      <DependentUpon>PostProcessContentViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationLayer\View\PostProcessSidebarViewController.cs" />
+    <Compile Include="ApplicationLayer\View\PostProcessSidebarViewController.designer.cs">
+      <DependentUpon>PostProcessSidebarViewController.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />
-    <InterfaceDefinition Include="ApplicationLayer\SubMenuItemHover.xib" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\UpdateLibrary\UpdateLibrary.csproj">

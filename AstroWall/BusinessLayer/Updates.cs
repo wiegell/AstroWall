@@ -17,9 +17,6 @@ namespace AstroWall.BusinessLayer
         // Refs
         private ApplicationHandler applicationHandler;
 
-        // Platform specific helpers
-        private ApplicationLayer.UpdateHelpers updateHelpers = new ApplicationLayer.UpdateHelpers();
-
         // Misc
         public UpdateLibrary.Release pendingUpdate { private set; get; }
         private Version currentVersion;
@@ -37,12 +34,12 @@ namespace AstroWall.BusinessLayer
 
         public void registerWakeHandler()
         {
-            updateHelpers.RegisterWakeHandler(this.wakeHandler);
+            ApplicationLayer.SystemEvents.Instance.RegisterWakeHandler(this.wakeHandler);
         }
 
         public void unregisterWakeHandler()
         {
-            updateHelpers.UnRegisterWakeHandler();
+            ApplicationLayer.SystemEvents.Instance.UnRegisterWakeHandler();
         }
 
         public void wakeHandler(NSNotification not)
@@ -117,7 +114,7 @@ namespace AstroWall.BusinessLayer
             {
                 Console.WriteLine("Has pending update: {0}", pendingUpdate.version);
 
-                if (applicationHandler.Prefs.autoInstallUpdates)
+                if (applicationHandler.Prefs.AutoInstallUpdates)
                 {
                     await downloadAndUpdate();
                 }
@@ -132,13 +129,13 @@ namespace AstroWall.BusinessLayer
             {
                 Console.WriteLine("No pending updates, is up to date");
                 if (manualCheck)
-                    updateHelpers.AlertNoUpdates(currentVersion.ToString());
+                    ApplicationLayer.Updates.Instance.AlertNoUpdates(currentVersion.ToString());
             }
         }
 
         public async void ConsiderCheckingForUpdates()
         {
-            if (applicationHandler.Prefs.checkUpdatesOnLogin)
+            if (applicationHandler.Prefs.CheckUpdatesOnStartup)
             {
                 await CheckForUpdates();
             }
@@ -153,7 +150,7 @@ namespace AstroWall.BusinessLayer
             }
             else
             {
-                applicationHandler.Prefs.userChosenToSkipUpdatesBeforeVersion = (resp.skippedVersion);
+                applicationHandler.Prefs.UserChosenToSkipUpdatesBeforeVersion = (resp.skippedVersion);
             }
         }
 
@@ -161,8 +158,8 @@ namespace AstroWall.BusinessLayer
         {
             pendingUpdatePKGpath = await DownloadPendingUpdate();
             Console.WriteLine("Running PKG update");
-            updateHelpers.RunPKGUpdate(pendingUpdatePKGpath);
-            GeneralHelpers.Relaunch();
+            ApplicationLayer.Updates.Instance.RunPKGUpdate(pendingUpdatePKGpath);
+            General.Relaunch();
             System.Diagnostics.Process.GetCurrentProcess().Kill();
         }
     }

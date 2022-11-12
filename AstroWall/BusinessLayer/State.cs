@@ -12,9 +12,7 @@ namespace AstroWall.BusinessLayer
     {
         Initializing,
         Idle,
-        ResolvingUrl,
-        UpdatingDatabase,
-        DownloadingNewest,
+        Downloading,
         PostProcessing,
         SettingWallpaper,
         BrowsingWallpapers
@@ -34,11 +32,6 @@ namespace AstroWall.BusinessLayer
             this.applicationHandler = applicationHandlerArg;
         }
 
-        //public void setPrefs(Preferences prefsArg)
-        //{
-        //    this.Prefs = prefsArg;
-        //}
-
         public void SetStateInitializing()
         {
             Console.WriteLine("State: Initializing");
@@ -46,6 +39,16 @@ namespace AstroWall.BusinessLayer
             applicationHandler.MenuHandler.EnableStatusIcon();
             applicationHandler.MenuHandler.DisableAllItems();
             applicationHandler.MenuHandler.SetTitleInitialising();
+            applicationHandler.MenuHandler.RunSpinnerIconAnimation();
+        }
+
+        public void SetStateDownloading(string downloadingWhat)
+        {
+            Console.WriteLine("State: Downloading");
+            state = stateEnum.Downloading;
+            applicationHandler.MenuHandler.EnableStatusIcon();
+            applicationHandler.MenuHandler.DisableAllItems();
+            applicationHandler.MenuHandler.SetTitleDownloading(downloadingWhat);
             applicationHandler.MenuHandler.RunDownloadIconAnimation();
         }
 
@@ -59,11 +62,10 @@ namespace AstroWall.BusinessLayer
         public void SetStateIdle()
         {
             Console.WriteLine("Setting state to idle:");
+            state = stateEnum.Idle;
             applicationHandler.MenuHandler.EnableStatusIcon();
             applicationHandler.MenuHandler.SetIconToDefault();
-            state = stateEnum.Idle;
             applicationHandler.MenuHandler.HideState();
-
         }
 
         public void setStateBrowsing()
@@ -75,8 +77,8 @@ namespace AstroWall.BusinessLayer
         public void SetLaunchAgentToReflectPrefs()
         {
             if (applicationHandler
-                .Prefs.runAtLogin) GeneralHelpers.SetAsLaunchAgent();
-            else GeneralHelpers.RemoveLaunchAgent();
+                .Prefs.RunAtStartup) ApplicationLayer.SystemEvents.SetAsLaunchAgent();
+            else ApplicationLayer.SystemEvents.RemoveLaunchAgent();
         }
 
     }

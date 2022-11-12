@@ -6,6 +6,7 @@ using System.Timers;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Threading;
+using System.Reflection;
 
 namespace AstroWall.BusinessLayer
 {
@@ -19,8 +20,9 @@ namespace AstroWall.BusinessLayer
         ApplicationHandler appHandler;
 
         // Icon related
-        private static System.Timers.Timer iconUpdateTimer;
+        private static System.Threading.Timer iconUpdateTimer;
         private int flipCounter = 0;
+        private AutoResetEvent autoEvent;
 
         // Browsing state
         private Task restoreToIdleWithDelayTask;
@@ -42,6 +44,7 @@ namespace AstroWall.BusinessLayer
 
         public void updateMenuCheckMarksToReflectPrefs()
         {
+            appDelegate.EnableAllUpdateSubMenuItems(appHandler.Prefs.CheckUpdatesOnStartup);
             appDelegate.updateMenuCheckMarks(appHandler.Prefs);
         }
 
@@ -69,25 +72,47 @@ namespace AstroWall.BusinessLayer
         {
             appDelegate.setSubTitle("Initializing...");
         }
+        public void SetTitleDownloading(string msg)
+        {
+            appDelegate.setSubTitle(msg);
+        }
 
         public void RunDownloadIconAnimation()
         {
+            if (iconUpdateTimer != null) iconUpdateTimer.Dispose();
+            autoEvent = new AutoResetEvent(false);
+            flipCounter = 0;
             // Create a timer with a two second interval.
-            iconUpdateTimer = new System.Timers.Timer(500);
-            // Hook up the Elapsed event for the timer. 
-            iconUpdateTimer.Elapsed += OnTimedEvent;
-            iconUpdateTimer.AutoReset = true;
-            iconUpdateTimer.Enabled = true;
+            iconUpdateTimer = new System.Threading.Timer(
+      OnTimedEventDownloadAnimation,
+      null,
+      0,
+      500);
+        }
+
+        public void RunSpinnerIconAnimation()
+        {
+            if (iconUpdateTimer != null) iconUpdateTimer.Dispose();
+            autoEvent = new AutoResetEvent(false);
+            flipCounter = 0;
+            // Create a timer with a two second interval.
+            iconUpdateTimer = new System.Threading.Timer(
+                OnTimedEventSpinnerAnimation,
+                null,
+                0,
+                250);
+
         }
 
         public void SetIconToDefault()
         {
-            iconUpdateTimer.Stop();
-            Task.Run(() =>
-            {
-                Task.Delay(500);
-                appDelegate.changeIconTo("staat");
-            });
+            iconUpdateTimer.Dispose();
+            //Task.Run(() =>
+            //{
+            //    Task.Delay(500);
+            appDelegate.changeIconTo("MainIcon_rot_0");
+            flipCounter = 0;
+            //});
         }
 
         public void HideState()
@@ -105,7 +130,7 @@ namespace AstroWall.BusinessLayer
             {
                 string title = iw.Title;
 
-                if (iw.OnlineDataExceptPicIsLoaded() && iw.integrity)
+                if (iw.OnlineDataAndPicIsLoaded() && iw.integrity)
                 {
                     appDelegate.addPictureSubmenuItemAndRegEventHandlers(
                         title,
@@ -117,7 +142,7 @@ namespace AstroWall.BusinessLayer
                         () => setEndBrowsingStateWithDelay(),
                         () =>
                         {
-                            appHandler.Prefs.currentAstroWallpaper = iw;
+                            appHandler.Prefs.CurrentAstroWallpaper = iw;
                             appHandler.Wallpaper.SetWallpaperAllScreens(iw);
                         }
 
@@ -129,20 +154,20 @@ namespace AstroWall.BusinessLayer
 
         public void changedInMenuRunAtLogin(bool newState)
         {
-            appHandler.Prefs.runAtLogin = newState;
+            appHandler.Prefs.RunAtStartup = newState;
             appHandler.State.SetLaunchAgentToReflectPrefs();
             appDelegate.updateMenuCheckMarks(appHandler.Prefs);
         }
 
         public void changedInMenuAutoInstallUpdates(bool newState)
         {
-            appHandler.Prefs.autoInstallUpdates = newState;
+            appHandler.Prefs.AutoInstallUpdates = newState;
             appDelegate.updateMenuCheckMarks(appHandler.Prefs);
         }
 
-        public void changedInMenuCheckUpdatesAtLogin(bool newState)
+        public void changedInMenuCheckUpdatesAtStartup(bool newState)
         {
-            appHandler.Prefs.checkUpdatesOnLogin = newState;
+            appHandler.Prefs.CheckUpdatesOnStartup = newState;
             appHandler.Updates.unregisterWakeHandler();
             appDelegate.updateMenuCheckMarks(appHandler.Prefs);
         }
@@ -158,17 +183,23 @@ namespace AstroWall.BusinessLayer
             this.cancellationToken = taskCancellationSource.Token;
         }
 
-        private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        private void OnTimedEventDownloadAnimation(Object stateInfo)
         {
+
             int flipCounter1based = flipCounter + 1;
             string iconName = "download" + flipCounter1based;
-            ChangeIconToDL(flipCounter1based);
+            appDelegate.changeIconTo("download" + flipCounter1based, true, stateEnum.Downloading);
             flipCounter = (flipCounter + 1) % 3;
+
         }
 
-        private void ChangeIconToDL(int counter)
+        private void OnTimedEventSpinnerAnimation(Object stateInfo)
         {
-            appDelegate.changeIconTo("download" + counter);
+            int iconRotationDeg = (flipCounter * 15);
+            string iconName = "MainIcon_rot_" + iconRotationDeg;
+            Console.WriteLine("iconname: " + iconName);
+            appDelegate.changeIconTo(iconName, true, BusinessLayer.stateEnum.Initializing);
+            flipCounter = (flipCounter + 1) % 6;
         }
 
         private async Task setEndBrowsingStateWithDelay()

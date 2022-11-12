@@ -16,21 +16,21 @@ namespace AstroWall.ApplicationLayer
             // Create a Status Bar Menu
             statusBar = NSStatusBar.SystemStatusBar;
             statusBarItem = statusBar.CreateStatusItem(NSStatusItemLength.Variable);
-            GeneralHelpers.InitIcon(statusBarItem, this.StatusMenu);
+            General.InitIcon(statusBarItem, this.StatusMenu);
             MenuTitle.Title = title;
-            EnableAllUpdateSubMenuItems();
         }
 
         public void updateMenuCheckMarks(BusinessLayer.Preferences prefs)
         {
-            this.MenuOutletAutoInstallUpdates.State = prefs.autoInstallUpdates ? NSCellStateValue.On : NSCellStateValue.Off;
-            this.MenuOutletCheckUpdatesAtLogin.State = prefs.checkUpdatesOnLogin ? NSCellStateValue.On : NSCellStateValue.Off;
-            this.MenuOutletRunAtLogin.State = prefs.runAtLogin ? NSCellStateValue.On : NSCellStateValue.Off;
+            this.MenuOutletAutoInstallUpdates.State = prefs.AutoInstallUpdates ? NSCellStateValue.On : NSCellStateValue.Off;
+            this.MenuOutletCheckUpdatesOnStartup.State = prefs.CheckUpdatesOnStartup ? NSCellStateValue.On : NSCellStateValue.Off;
+            this.MenuOutletRunAtLogin.State = prefs.RunAtStartup ? NSCellStateValue.On : NSCellStateValue.Off;
         }
 
         public void noAutoEnableMenuItems()
         {
             StatusMenu.AutoEnablesItems = false;
+            SubmenuUpdates.Submenu.AutoEnablesItems = false;
         }
 
         public void disableAllItemsExceptQuit()
@@ -68,10 +68,11 @@ namespace AstroWall.ApplicationLayer
             MenuOutletState.Hidden = true;
         }
 
-        public void changeIconTo(string iconName)
+        public void changeIconTo(string iconName, bool doubleCheckState = false, BusinessLayer.stateEnum doubleCheckStateShouldHaveThisValue = BusinessLayer.stateEnum.BrowsingWallpapers)
         {
             Action ac = () =>
             {
+                if (doubleCheckState && appHandler.State.state != doubleCheckStateShouldHaveThisValue) return;
                 var image = NSImage.ImageNamed(iconName);
                 image.Template = true;
                 statusBarItem.Button.Image = image;
@@ -80,7 +81,7 @@ namespace AstroWall.ApplicationLayer
             // Needed since it sometimes
             // is called from another thread via
             // a task
-            GeneralHelpers.RunOnUIThread(ac);
+            General.RunOnUIThread(ac);
         }
 
         public void removeAllPictureItemsInSubmenu()
@@ -144,10 +145,16 @@ namespace AstroWall.ApplicationLayer
             menuHandler.changedInMenuRunAtLogin(newState);
         }
 
-        public void EnableAllUpdateSubMenuItems()
+        /// <summary>
+        /// the argument is meant to disable autoinstall
+        /// if checkupdatesonstartup == false
+        /// </summary>
+        /// <param name="enableAutoInstall"></param>
+        public void EnableAllUpdateSubMenuItems(bool enableAutoInstall = true)
         {
-            this.MenuOutletAutoInstallUpdates.Enabled = true;
-            this.MenuOutletCheckUpdatesAtLogin.Enabled = true;
+            Console.WriteLine("enable all update subitems");
+            this.MenuOutletAutoInstallUpdates.Enabled = enableAutoInstall;
+            this.MenuOutletCheckUpdatesOnStartup.Enabled = true;
             this.MenuOutletCheckUpdatesManual.Enabled = true;
         }
 
@@ -157,15 +164,35 @@ namespace AstroWall.ApplicationLayer
             menuHandler.changedInMenuAutoInstallUpdates(newState);
         }
 
-        partial void MenuActionCheckUpdatesAtLogin(NSObject sender)
+        partial void MenuActionCheckUpdatesOnStartup(NSObject sender)
         {
             bool newState = !getCheckmarkBoolFromSender(sender);
-            menuHandler.changedInMenuCheckUpdatesAtLogin(newState);
+            menuHandler.changedInMenuCheckUpdatesAtStartup(newState);
+
+            if (newState == false)
+            {
+                // Cannot autoinstall updates if they are not checked
+                menuHandler.changedInMenuAutoInstallUpdates(newState);
+                MenuOutletAutoInstallUpdates.State = NSCellStateValue.Off;
+
+                MenuOutletAutoInstallUpdates.Enabled = false;
+                Console.WriteLine("disable auto");
+            }
+            else
+            {
+                MenuOutletAutoInstallUpdates.Enabled = true;
+
+            }
         }
 
         partial void MenuActionManualCheckUpdates(NSObject sender)
         {
             menuHandler.clickedInMenuManualCheckUpdates();
+        }
+
+        partial void MenuActionPostProcess(NSObject sender)
+        {
+            appHandler.Wallpaper.launchPostProcessWindow();
         }
 
         private bool getCheckmarkBoolFromSender(NSObject sender)

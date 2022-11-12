@@ -9,23 +9,26 @@ namespace AstroWall.BusinessLayer
     public class Preferences
     {
         [JsonProperty]
-        public ImgWrap currentAstroWallpaper;
+        public ImgWrap CurrentAstroWallpaper;
         [JsonProperty]
-        public string currentPathToNonAstroWallpaper;
+        public string CurrentPathToNonAstroWallpaper;
         [JsonProperty]
-        public string userChosenToSkipUpdatesBeforeVersion;
-        public bool checkUpdatesOnLogin;
-        public bool autoInstallUpdates;
-        public bool runAtLogin;
+        public string UserChosenToSkipUpdatesBeforeVersion;
+        [JsonProperty]
+        public bool CheckUpdatesOnStartup;
+        [JsonProperty]
+        public bool AutoInstallUpdates;
+        [JsonProperty]
+        public bool RunAtStartup;
 
         public Preferences()
         {
-            currentPathToNonAstroWallpaper = GeneralHelpers.getCurrentWallpaperPath();
+            CurrentPathToNonAstroWallpaper = General.getCurrentWallpaperPath();
         }
 
         public void SaveToDisk()
         {
-            FileHelpers.SerializeNow(this, GeneralHelpers.getPrefsPath());
+            FileHelpers.SerializeNow(this, General.getPrefsPath());
         }
 
         public static Preferences fromSave()
@@ -33,14 +36,14 @@ namespace AstroWall.BusinessLayer
             if (FileHelpers.PrefsExists())
             {
                 Console.WriteLine("prefs exists, deserialize");
-                return FileHelpers.DeSerializeNow<Preferences>(GeneralHelpers.getPrefsPath());
+                return FileHelpers.DeSerializeNow<Preferences>(General.getPrefsPath());
             }
             else return null;
         }
 
         public bool hasAstroWall()
         {
-            return !(currentAstroWallpaper == null);
+            return !(CurrentAstroWallpaper == null);
         }
     }
 }

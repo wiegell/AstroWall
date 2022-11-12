@@ -6,41 +6,51 @@ namespace AstroWall.BusinessLayer
     public class Wallpaper
     {
         // Refs
-        Preferences prefs;
+        ApplicationHandler applicationHandler;
 
-        public Wallpaper(Preferences prefsRef)
+        public Wallpaper(ApplicationHandler applicationHandler)
         {
-            prefs = prefsRef;
+            this.applicationHandler = applicationHandler;
         }
 
         public void SetWallpaperAllScreens(string url)
         {
-            GeneralHelpers.SetWallpaper(url, true);
+            General.SetWallpaper(url, true);
         }
         public void SetWallpaperAllScreens(ImgWrap iw)
         {
             if (iw.FullResIsLoaded())
-                GeneralHelpers.SetWallpaper(iw.ImgLocalUrl, true);
+                General.SetWallpaper(iw.ImgLocalUrl, true);
         }
 
         public void SetWallpaperMainScreen(string url)
         {
-            GeneralHelpers.SetWallpaper(url, false);
+            General.SetWallpaper(url, false);
         }
 
         public void SetPreviewWallpaper(ImgWrap iw)
         {
             if (iw.PreviewIsLoaded())
-                GeneralHelpers.SetWallpaper(iw.ImgLocalPreviewUrl, false);
+                General.SetWallpaper(iw.ImgLocalPreviewUrl, false);
         }
 
         public void ResetWallpaper()
         {
             SetWallpaperAllScreens(
-            prefs.hasAstroWall() ?
-            prefs.currentAstroWallpaper.ImgLocalUrl :
-            prefs.currentPathToNonAstroWallpaper
+          applicationHandler.Prefs.hasAstroWall() ?
+            applicationHandler.Prefs.CurrentAstroWallpaper.ImgLocalUrl :
+            applicationHandler.Prefs.CurrentPathToNonAstroWallpaper
             );
+        }
+
+        public void launchPostProcessWindow()
+        {
+            applicationHandler.AppDelegate.launchPostProcessPrompt(applicationHandler.Prefs, callbackWithNewPostProcessSettings);
+        }
+
+        public void callbackWithNewPostProcessSettings(Preferences newPrefs)
+        {
+
         }
     }
 }

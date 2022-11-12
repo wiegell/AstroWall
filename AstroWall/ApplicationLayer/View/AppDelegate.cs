@@ -21,6 +21,7 @@ namespace AstroWall.ApplicationLayer
 
         // Keep windows in memory
         NSWindowController updatePromptWindowController;
+        NSWindowController postProcessPromptWindowController;
         NSWindowController freshInstallWindowController;
 
         public AppDelegate()
@@ -60,6 +61,21 @@ namespace AstroWall.ApplicationLayer
             view.RegChoiceCallback(callback);
             updatePromptWindowController.ShowWindow(updatePromptWindowController);
             window.OrderFront(null);
+            NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
+        }
+
+        public void launchPostProcessPrompt(Preferences oldPrefs, Action<Preferences> callbackWithNewPrefs)
+        {
+            // Launch prefs always on top window
+            var storyboard = NSStoryboard.FromName("Main", null);
+            postProcessPromptWindowController = storyboard.InstantiateControllerWithIdentifier("postprocesswindowcontroller") as NSWindowController;
+            var window = postProcessPromptWindowController.Window;
+            var splitViewController = ((NSSplitViewController)postProcessPromptWindowController.ContentViewController);
+            //view.SetRelease(rel);
+            //view.RegChoiceCallback(callback);
+            postProcessPromptWindowController.ShowWindow(postProcessPromptWindowController);
+            window.OrderFront(null);
+            NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
         }
 
         public override void WillTerminate(NSNotification notification)

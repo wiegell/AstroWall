@@ -32,10 +32,10 @@ namespace AstroWall
         private BusinessLayer.Preferences createPrefs()
         {
             var prefs = new BusinessLayer.Preferences();
-            prefs.autoInstallUpdates = (this.OutletAutoinstall.State == NSCellStateValue.On);
+            prefs.AutoInstallUpdates = (this.OutletAutoinstall.State == NSCellStateValue.On);
             prefs.
-            checkUpdatesOnLogin = (this.checkupdatesatlogin.State == NSCellStateValue.On);
-            prefs.runAtLogin = (this.runatlogin.State == NSCellStateValue.On);
+            CheckUpdatesOnStartup = (this.OutletCheckUpdatesAtStartup.State == NSCellStateValue.On);
+            prefs.RunAtStartup = (this.OutletRunAtStartup.State == NSCellStateValue.On);
 
 
             return prefs;
@@ -45,6 +45,20 @@ namespace AstroWall
         {
             if (callback == null) throw new Exception("Callback not registered");
             callback(createPrefs());
+        }
+
+        partial void ActionCheckUpdatesAtStartup(NSObject sender)
+        {
+            if (OutletCheckUpdatesAtStartup.State == NSCellStateValue.Off)
+            {
+                OutletAutoinstall.State = NSCellStateValue.Off;
+                OutletAutoinstall.Enabled = false;
+            }
+            else
+            {
+                OutletAutoinstall.State = NSCellStateValue.On;
+                OutletAutoinstall.Enabled = true;
+            }
         }
     }
 }

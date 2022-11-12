@@ -18,10 +18,10 @@ namespace AstroWall.ApplicationLayer
 		AppKit.NSMenuItem MenuOutletBrowseLatest { get; set; }
 
 		[Outlet]
-		AppKit.NSMenuItem MenuOutletCheckUpdatesAtLogin { get; set; }
+		AppKit.NSMenuItem MenuOutletCheckUpdatesManual { get; set; }
 
 		[Outlet]
-		AppKit.NSMenuItem MenuOutletCheckUpdatesManual { get; set; }
+		AppKit.NSMenuItem MenuOutletCheckUpdatesOnStartup { get; set; }
 
 		[Outlet]
 		AppKit.NSMenuItem MenuOutletPostProcess { get; set; }
@@ -41,6 +41,12 @@ namespace AstroWall.ApplicationLayer
 		[Outlet]
 		AppKit.NSMenu StatusMenu { get; set; }
 
+		[Outlet]
+		AppKit.NSMenuItem SubmenuUpdates { get; set; }
+
+		[Action ("ActionCheckUpdatesAtStartup:")]
+		partial void ActionCheckUpdatesAtStartup (Foundation.NSObject sender);
+
 		[Action ("ManualCheckForNewPic:")]
 		partial void ManualCheckForNewPic (Foundation.NSObject sender);
 
@@ -50,11 +56,14 @@ namespace AstroWall.ApplicationLayer
 		[Action ("MenuActionCheckPicOnLogin:")]
 		partial void MenuActionCheckPicOnLogin (Foundation.NSObject sender);
 
-		[Action ("MenuActionCheckUpdatesAtLogin:")]
-		partial void MenuActionCheckUpdatesAtLogin (Foundation.NSObject sender);
+		[Action ("MenuActionCheckUpdatesOnStartup:")]
+		partial void MenuActionCheckUpdatesOnStartup (Foundation.NSObject sender);
 
 		[Action ("MenuActionManualCheckUpdates:")]
 		partial void MenuActionManualCheckUpdates (Foundation.NSObject sender);
+
+		[Action ("MenuActionPostProcess:")]
+		partial void MenuActionPostProcess (Foundation.NSObject sender);
 
 		[Action ("MenuActionRunAtLogin:")]
 		partial void MenuActionRunAtLogin (Foundation.NSObject sender);
@@ -75,11 +84,6 @@ namespace AstroWall.ApplicationLayer
 			if (MenuOutletBrowseLatest != null) {
 				MenuOutletBrowseLatest.Dispose ();
 				MenuOutletBrowseLatest = null;
-			}
-
-			if (MenuOutletCheckUpdatesAtLogin != null) {
-				MenuOutletCheckUpdatesAtLogin.Dispose ();
-				MenuOutletCheckUpdatesAtLogin = null;
 			}
 
 			if (MenuOutletCheckUpdatesManual != null) {
@@ -107,6 +111,11 @@ namespace AstroWall.ApplicationLayer
 				MenuOutletState = null;
 			}
 
+			if (MenuOutletCheckUpdatesOnStartup != null) {
+				MenuOutletCheckUpdatesOnStartup.Dispose ();
+				MenuOutletCheckUpdatesOnStartup = null;
+			}
+
 			if (MenuTitle != null) {
 				MenuTitle.Dispose ();
 				MenuTitle = null;
@@ -115,6 +124,11 @@ namespace AstroWall.ApplicationLayer
 			if (StatusMenu != null) {
 				StatusMenu.Dispose ();
 				StatusMenu = null;
+			}
+
+			if (SubmenuUpdates != null) {
+				SubmenuUpdates.Dispose ();
+				SubmenuUpdates = null;
 			}
 		}
 	}

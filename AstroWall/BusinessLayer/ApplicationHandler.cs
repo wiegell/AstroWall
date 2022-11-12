@@ -74,7 +74,7 @@ namespace AstroWall.BusinessLayer
             {
                 Prefs = prefsFromPostInstallPrompt;
             };
-            Wallpaper = new Wallpaper(Prefs);
+            Wallpaper = new Wallpaper(this);
             MenuHandler.updateMenuCheckMarksToReflectPrefs();
 
             // Set run at login agent
@@ -84,33 +84,34 @@ namespace AstroWall.BusinessLayer
             State.SetStateInitializing();
             db = new Database();
 
-            // Update db from online site
-            await UpdateDBFromOnline();
-
             // Populate submenu
             MenuHandler.PopulateSubmenuLatestPictures(db.getPresentableImages(), State);
 
-            // Give back control to the user
+            // Check for new pics
+            await checkForNewPics();
+
             State.SetStateIdle();
 
             // Check for updates
             Updates.ConsiderCheckingForUpdates();
-            if (Prefs.checkUpdatesOnLogin)
+            if (Prefs.CheckUpdatesOnStartup)
                 Updates.registerWakeHandler();
 
         }
 
-        public async Task UpdateDBFromOnline()
+        private async Task checkForNewPics()
         {
-            Console.WriteLine("load data");
+
+            // Set state downloading
+            State.SetStateDownloading("Checking for new pics");
+            // Update db from online site
             await db.LoadDataButNoImgFromOnlineStartingAtDate(10, DateTime.Now);
-            Console.WriteLine("load img");
+            db.Sort();
+            State.SetStateDownloading("Downloading pictures");
             await db.LoadImgs();
-            Console.WriteLine("wraplist: " + db.ImgWrapList.Count);
-            foreach (ImgWrap pic in db.ImgWrapList)
-            {
-                Console.WriteLine("preview url: " + pic.ImgLocalPreviewUrl);
-            }
+
+            // Update submenu
+            MenuHandler.PopulateSubmenuLatestPictures(db.getPresentableImages(), State);
         }
 
     }
