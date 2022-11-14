@@ -26,9 +26,11 @@ namespace AstroWall.BusinessLayer
         [JsonProperty]
         public string Description { get; private set; }
         [JsonProperty]
-        public bool integrity = true;
+        public bool Integrity = true;
         [JsonProperty]
-        public bool imgIsGettable = true;
+        public bool ImgIsGettable = true;
+        [JsonProperty]
+        public bool NotFound = false;
 
         public override bool Equals(object o)
         {
@@ -63,15 +65,29 @@ namespace AstroWall.BusinessLayer
             try
             {
                 Console.WriteLine("loadonline url: " + PageUrl);
-                this.ImgOnlineUrl = await HTMLHelpers.getImgOnlineUrl(PageUrl);
-                string[] splitUrl = ImgOnlineUrl.Split(".");
-                FileType = splitUrl[splitUrl.Length - 1];
+                urlResponseWrap wrap = await HTMLHelpers.getImgOnlineUrl(PageUrl);
+                if (wrap.status == System.Net.HttpStatusCode.NotFound)
+                {
+                    NotFound = true;
+                }
+                else
+                {
+                    this.ImgOnlineUrl = wrap.url;
+                    string[] splitUrl = ImgOnlineUrl.Split(".");
+                    FileType = splitUrl[splitUrl.Length - 1];
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("could not get pic url, integrity fail of: " + PageUrl);
-                integrity = false;
-                imgIsGettable = false;
+                Console.WriteLine("could not get pic url, integrity fail of: " + PageUrl + " Ex type: " + ex.GetType() + " Ex message: " + ex.Message);
+
+                Integrity = false;
+                ImgIsGettable = false;
+                if (ex.Message.Contains("No such host is known"))
+                {
+                    // Throw up http exception, gets caught up the chain
+                    throw ex;
+                }
             }
 
 
@@ -86,10 +102,10 @@ namespace AstroWall.BusinessLayer
             catch (Exception ex)
             {
                 Console.WriteLine("could not get descr. or title of:" + PageUrl);
-                integrity = false;
+                Integrity = false;
             }
 
-            integrity = true;
+            Integrity = true;
         }
 
         public async Task LoadImg()
@@ -98,7 +114,7 @@ namespace AstroWall.BusinessLayer
             {
                 throw new Exception("already loaded");
             }
-            else if (!imgIsGettable)
+            else if (!ImgIsGettable)
             {
                 throw new Exception("img not gettable");
             }
@@ -173,7 +189,17 @@ namespace AstroWall.BusinessLayer
                 FileType != null &&
                 Title != null &&
                 Description != null &&
-                integrity);
+                Integrity);
+        }
+
+        public bool OnlineDataIsLoadedOrUngettable()
+        {
+            return
+                (ImgOnlineUrl != null &&
+                FileType != null &&
+                Title != null &&
+                Description != null &&
+                Integrity) || !ImgIsGettable;
         }
 
         public bool OnlineUrlIsValidImg()
@@ -203,7 +229,7 @@ namespace AstroWall.BusinessLayer
 
         public bool ImgsAreLoadedOrUngettable()
         {
-            return (PreviewIsLoaded() && FullResIsLoaded()) || !imgIsGettable;
+            return (PreviewIsLoaded() && FullResIsLoaded()) || !ImgIsGettable;
         }
 
         public int CompareTo(Object o)

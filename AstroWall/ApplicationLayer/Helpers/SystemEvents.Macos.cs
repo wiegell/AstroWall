@@ -27,21 +27,36 @@ namespace AstroWall.ApplicationLayer
             }
         }
 
-        NSObject wakeHandlerObserver;
+        NSObject updateWakeHandlerObserver;
+        NSObject wallpaperLoginHandlerObserver;
 
         private SystemEvents()
         {
         }
 
-        public void UnRegisterWakeHandler()
+        public void UnRegisterUpdateWakeHandler()
         {
-            NSWorkspace.SharedWorkspace.NotificationCenter.RemoveObserver(wakeHandlerObserver);
+            NSWorkspace.SharedWorkspace.NotificationCenter.RemoveObserver(updateWakeHandlerObserver);
         }
 
-        public void RegisterWakeHandler(Action<NSNotification> ac)
+        public void RegisterUpdateWakeHandler(Action<NSNotification> ac)
         {
-            wakeHandlerObserver =
+            updateWakeHandlerObserver =
             NSWorkspace.SharedWorkspace.NotificationCenter.AddObserver(NSWorkspace.DidWakeNotification, ac);
+        }
+
+        public void UnRegisterWallpaperLoginHandler()
+        {
+            NSWorkspace.SharedWorkspace.NotificationCenter.RemoveObserver(wallpaperLoginHandlerObserver);
+        }
+
+        public void RegisterWallpaperWakeHandler(Action<NSNotification> ac)
+        {
+            wallpaperLoginHandlerObserver =
+            NSWorkspace.
+            SharedWorkspace
+            .NotificationCenter.AddObserver(NSWorkspace.DidWakeNotification, ac);
+
         }
 
 

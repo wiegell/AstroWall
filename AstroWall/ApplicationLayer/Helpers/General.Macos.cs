@@ -46,31 +46,44 @@ namespace AstroWall
             return getDBDirectory() + "prefs.json";
         }
 
-        public static void SetWallpaper(String path, bool onAllScreens = false)
+        /// <summary>
+        /// The return object is a boxed bool
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="onAllScreens"></param>
+        /// <returns></returns>
+        public static async Task<object> SetWallpaper(String path, bool onAllScreens = false)
         {
-            Console.WriteLine("setting wallpaper: " + path);
-            NSWorkspace workspace = NSWorkspace.SharedWorkspace;
-            NSScreen[] screens = NSScreen.Screens;
-            NSScreen mainScreen = NSScreen.MainScreen;
+            return await RunOnUIThread<object>(async
+                   () =>
+               {
+                   Console.WriteLine("setting wallpaper: " + path);
+                   NSWorkspace workspace = NSWorkspace.SharedWorkspace;
+                   NSScreen[] screens = NSScreen.Screens;
+                   NSScreen mainScreen = NSScreen.MainScreen;
+                   Console.WriteLine("screen count: " + screens.Length);
 
-            if (!onAllScreens)
-            {
-                workspace.SetDesktopImageUrl(NSUrl.FromFilename(path), mainScreen, new NSDictionary(), new NSError());
-            }
-            else
-                foreach (var screen in screens)
-                {
-                    bool ret;
-                    try
-                    {
-                        ret = workspace.SetDesktopImageUrl(NSUrl.FromFilename(path), screen, new NSDictionary(), new NSError());
-                    }
-                    catch (Exception)
-                    {
-                        Console.WriteLine("desk not set");
-                    }
-                    Console.WriteLine("");
-                }
+                   bool ret = false;
+                   object boxedBool = (object)ret;
+                   if (!onAllScreens)
+                   {
+                       boxedBool = workspace.SetDesktopImageUrl(NSUrl.FromFilename(path), mainScreen, new NSDictionary(), new NSError());
+                   }
+                   else
+                       foreach (var screen in screens)
+                       {
+                           try
+                           {
+                               boxedBool = workspace.SetDesktopImageUrl(NSUrl.FromFilename(path), screen, new NSDictionary(), new NSError());
+                           }
+                           catch (Exception)
+                           {
+                               Console.WriteLine("desk not set, returning false");
+                               boxedBool = false;
+                           }
+                       }
+                   return boxedBool;
+               });
         }
 
         public static string getCurrentWallpaperPath()
@@ -80,9 +93,9 @@ namespace AstroWall
             return workspace.DesktopImageUrl(mainScreen).Path;
         }
 
-        public static void InitIcon(NSStatusItem item, AppKit.NSMenu menu)
+        public static async void InitIcon(NSStatusItem item, AppKit.NSMenu menu)
         {
-            Action ac = () =>
+            Func<Task<object>> ac = async () =>
             {
                 var image = NSImage.ImageNamed("MainIcon_rot_0");
                 image.Template = true;
@@ -90,15 +103,26 @@ namespace AstroWall
                 item.HighlightMode = true;
                 item.Menu = menu;
                 item.Length = 20;
+                return null;
             };
-            RunOnUIThread(ac);
+            await RunOnUIThread<object>(ac);
         }
 
+        public static async Task<T2> RunOnUIThread<T2>(Func<Task<T2>> ac) where T2 : class
+        {
+            T2 returnVal = null;
+            if (Thread.CurrentThread.ManagedThreadId != 1)
+            {
+                CoreFoundation.DispatchQueue.MainQueue.DispatchSync(async () => { returnVal = await ac(); });
+            }
+            else returnVal = await ac();
+            return returnVal;
+        }
         public static void RunOnUIThread(Action ac)
         {
             if (Thread.CurrentThread.ManagedThreadId != 1)
             {
-                CoreFoundation.DispatchQueue.MainQueue.DispatchSync(() => ac());
+                CoreFoundation.DispatchQueue.MainQueue.DispatchAsync(() => ac());
             }
             else ac();
         }

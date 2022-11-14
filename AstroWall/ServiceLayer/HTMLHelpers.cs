@@ -11,6 +11,12 @@ using System.Threading.Tasks;
 
 namespace AstroWall
 {
+    public class urlResponseWrap
+    {
+        public string url = "";
+        public HttpStatusCode status;
+    }
+
     public class HTMLHelpers
     {
         public HTMLHelpers()
@@ -21,15 +27,16 @@ namespace AstroWall
 
         public static string NASADateFormat = "yyMMdd";
 
-        public static async Task<string> getImgOnlineUrl(string pageUrl)
+        public static async Task<urlResponseWrap> getImgOnlineUrl(string pageUrl)
         {
-            HtmlWeb webparser = new HtmlAgilityPack.HtmlWeb();
-            HtmlDocument doc = await webparser.LoadFromWebAsync(pageUrl);
+            HtmlWeb parser = new HtmlAgilityPack.HtmlWeb();
+            HtmlDocument doc = await parser.LoadFromWebAsync(pageUrl);
+            if (parser.StatusCode == HttpStatusCode.NotFound) return new urlResponseWrap() { status = parser.StatusCode };
             HtmlNode node = new List<HtmlNode>(doc.DocumentNode.Descendants("img")).First().ParentNode;
             HtmlAttribute attrib = node.Attributes.Where((HtmlAttribute attr) => attr.Name == "href").First();
             Console.WriteLine(attrib.Value);
             //string task = await Task.Run(() => ();
-            return "https://apod.nasa.gov/apod/" + attrib.Value;
+            return new urlResponseWrap() { url = "https://apod.nasa.gov/apod/" + attrib.Value };
         }
 
         public static string genPublishDateUrl(DateTime date)

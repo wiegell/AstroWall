@@ -130,7 +130,7 @@ namespace AstroWall.BusinessLayer
             {
                 string title = iw.Title;
 
-                if (iw.OnlineDataAndPicIsLoaded() && iw.integrity)
+                if (iw.OnlineDataAndPicIsLoaded() && iw.Integrity)
                 {
                     appDelegate.addPictureSubmenuItemAndRegEventHandlers(
                         title,
@@ -168,7 +168,21 @@ namespace AstroWall.BusinessLayer
         public void changedInMenuCheckUpdatesAtStartup(bool newState)
         {
             appHandler.Prefs.CheckUpdatesOnStartup = newState;
-            appHandler.Updates.unregisterWakeHandler();
+            if (newState)
+            {
+                appHandler.Updates.registerWakeHandler();
+            }
+            else
+            {
+                appHandler.Updates.unregisterWakeHandler();
+            }
+            appDelegate.updateMenuCheckMarks(appHandler.Prefs);
+        }
+        public void changedInMenuDailyCheckNewest(bool newState)
+        {
+            Console.WriteLine("Daily check changed to newest: " + newState);
+            appHandler.Prefs.DailyCheck = newState ? DailyCheckEnum.Newest : DailyCheckEnum.None;
+            appHandler.Wallpaper.SetDailyCheckToNewest(newState);
             appDelegate.updateMenuCheckMarks(appHandler.Prefs);
         }
 

@@ -68,7 +68,7 @@ namespace AstroWall.ApplicationLayer
         {
             // Launch prefs always on top window
             var storyboard = NSStoryboard.FromName("Main", null);
-            postProcessPromptWindowController = storyboard.InstantiateControllerWithIdentifier("postprocesswindowcontroller") as NSWindowController;
+            postProcessPromptWindowController = storyboard.InstantiateControllerWithIdentifier("postprocesswindowcontroller2") as NSWindowController;
             var window = postProcessPromptWindowController.Window;
             var splitViewController = ((NSSplitViewController)postProcessPromptWindowController.ContentViewController);
             //view.SetRelease(rel);
@@ -85,17 +85,7 @@ namespace AstroWall.ApplicationLayer
         }
         #endregion
 
-        partial void MenuManualCheckPic(Foundation.NSObject sender)
-        {
-            //state.setStateIdle();
-            //MacOShelpers.InitIcon2(statusBarItem, this.StatusMenu);
-            //string imgurl = HTMLHelpers.getImgUrl();
-            //Task<string> tmpFilePath = FileHelpers.DownloadUrlToTmpPath(imgurl);
-            ////MacOShelpers.SetWallpaper(tmpFilePath);
-            //Console.WriteLine("file dl");
-            //MacOShelpers.RunPKGUpdate();
-        }
-
+        
 
 
 

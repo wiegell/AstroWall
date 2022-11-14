@@ -14,7 +14,7 @@ namespace AstroWall.BusinessLayer
         public Wallpaper Wallpaper { get; private set; }
         public State State { get; private set; }
         public Updates Updates { private set; get; }
-        private Database db;
+        public Database db;
         public Preferences Prefs { get; private set; }
 
         // Misc
@@ -88,7 +88,11 @@ namespace AstroWall.BusinessLayer
             MenuHandler.PopulateSubmenuLatestPictures(db.getPresentableImages(), State);
 
             // Check for new pics
-            await checkForNewPics();
+            if (Prefs.DailyCheck == DailyCheckEnum.Newest)
+            {
+                await checkForNewPics();
+                Wallpaper.SetWallpaperAllScreens(db.ImgWrapList[0].ImgLocalUrl);
+            }
 
             State.SetStateIdle();
 
@@ -97,21 +101,44 @@ namespace AstroWall.BusinessLayer
             if (Prefs.CheckUpdatesOnStartup)
                 Updates.registerWakeHandler();
 
+            // Check if wallpaper wakehandler and noon check
+            // should be set
+            switch (Prefs.DailyCheck)
+            {
+                case DailyCheckEnum.Newest:
+                    {
+                        Wallpaper.registerWakeHandler();
+                        Wallpaper.createNoonCheck();
+                        break;
+                    }
+                case DailyCheckEnum.None:
+                    {
+                        break;
+                    }
+            }
+
         }
 
-        private async Task checkForNewPics()
+        public async Task checkForNewPics()
         {
 
             // Set state downloading
             State.SetStateDownloading("Checking for new pics");
             // Update db from online site
-            await db.LoadDataButNoImgFromOnlineStartingAtDate(10, DateTime.Now);
-            db.Sort();
-            State.SetStateDownloading("Downloading pictures");
-            await db.LoadImgs();
+            bool successfullOnlinCheck = await db.LoadDataButNoImgFromOnlineStartingAtDate(10, DateTime.Now);
+            if (successfullOnlinCheck)
+            {
 
-            // Update submenu
-            MenuHandler.PopulateSubmenuLatestPictures(db.getPresentableImages(), State);
+                // Register successfull check in prefs
+                Prefs.LastOnlineCheck = DateTime.Now;
+
+                db.Sort();
+                State.SetStateDownloading("Downloading pictures");
+                await db.LoadImgs();
+
+                // Update submenu
+                MenuHandler.PopulateSubmenuLatestPictures(db.getPresentableImages(), State);
+            }
         }
 
     }

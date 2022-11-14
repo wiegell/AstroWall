@@ -13,13 +13,21 @@ namespace AstroWall
 	partial class PostProcessSidebarViewController
 	{
 		[Outlet]
-		AppKit.NSTableHeaderView OutletTableHeader { get; set; }
+		AppKit.NSTableColumn OutletColumn { get; set; }
+
+		[Outlet]
+		AppKit.NSOutlineView OutletViewNoHeader { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (OutletTableHeader != null) {
-				OutletTableHeader.Dispose ();
-				OutletTableHeader = null;
+			if (OutletViewNoHeader != null) {
+				OutletViewNoHeader.Dispose ();
+				OutletViewNoHeader = null;
+			}
+
+			if (OutletColumn != null) {
+				OutletColumn.Dispose ();
+				OutletColumn = null;
 			}
 		}
 	}

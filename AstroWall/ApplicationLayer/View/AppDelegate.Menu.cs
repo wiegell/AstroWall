@@ -22,50 +22,75 @@ namespace AstroWall.ApplicationLayer
 
         public void updateMenuCheckMarks(BusinessLayer.Preferences prefs)
         {
-            this.MenuOutletAutoInstallUpdates.State = prefs.AutoInstallUpdates ? NSCellStateValue.On : NSCellStateValue.Off;
-            this.MenuOutletCheckUpdatesOnStartup.State = prefs.CheckUpdatesOnStartup ? NSCellStateValue.On : NSCellStateValue.Off;
-            this.MenuOutletRunAtLogin.State = prefs.RunAtStartup ? NSCellStateValue.On : NSCellStateValue.Off;
+            General.RunOnUIThread(() =>
+            {
+                this.MenuOutletAutoInstallUpdates.State = prefs.AutoInstallUpdates ? NSCellStateValue.On : NSCellStateValue.Off;
+                this.MenuOutletCheckUpdatesOnStartup.State = prefs.CheckUpdatesOnStartup ? NSCellStateValue.On : NSCellStateValue.Off;
+                this.MenuOutletRunAtLogin.State = prefs.RunAtStartup ? NSCellStateValue.On : NSCellStateValue.Off;
+                this.MenuOutletDailyCheckNewest.State = prefs.DailyCheck == BusinessLayer.DailyCheckEnum.Newest ? NSCellStateValue.On : NSCellStateValue.Off;
+            });
         }
 
         public void noAutoEnableMenuItems()
         {
-            StatusMenu.AutoEnablesItems = false;
-            SubmenuUpdates.Submenu.AutoEnablesItems = false;
+            General.RunOnUIThread(() =>
+            {
+                StatusMenu.AutoEnablesItems = false;
+                SubmenuUpdates.Submenu.AutoEnablesItems = false;
+            });
         }
 
         public void disableAllItemsExceptQuit()
         {
-            foreach (NSMenuItem item in StatusMenu.Items)
+            General.RunOnUIThread(() =>
             {
-                item.Enabled = true;
-            }
-            MenuOutletQuit.Enabled = true;
+                foreach (NSMenuItem item in StatusMenu.Items)
+                {
+                    item.Enabled = true;
+                }
+                MenuOutletQuit.Enabled = true;
+            });
         }
 
         public void enableStatusIcon()
         {
-            statusBarItem.Enabled = true;
+            General.RunOnUIThread(() =>
+            {
+                statusBarItem.Enabled = true;
+            });
         }
 
         public void disableStatusIcon()
         {
-            statusBarItem.Enabled = false;
+            General.RunOnUIThread(() =>
+            {
+                statusBarItem.Enabled = false;
+            });
         }
 
         public void setTitle(string title)
         {
-            MenuTitle.Title = title;
+            General.RunOnUIThread(() =>
+            {
+                MenuTitle.Title = title;
+            });
         }
 
         public void setSubTitle(string str)
         {
-            MenuOutletState.Hidden = true;
-            MenuOutletState.Title = str;
+            General.RunOnUIThread(() =>
+            {
+                MenuOutletState.Hidden = true;
+                MenuOutletState.Title = str;
+            });
         }
 
         public void hideSubTitle()
         {
-            MenuOutletState.Hidden = true;
+            General.RunOnUIThread(() =>
+            {
+                MenuOutletState.Hidden = true;
+            });
         }
 
         public void changeIconTo(string iconName, bool doubleCheckState = false, BusinessLayer.stateEnum doubleCheckStateShouldHaveThisValue = BusinessLayer.stateEnum.BrowsingWallpapers)
@@ -100,43 +125,48 @@ namespace AstroWall.ApplicationLayer
             Action onclickCallBack
             )
         {
-            NSMenuItem item = new NSMenuItem(title);
-            SubMenuItemHover hoverView = SubMenuItemHover.StdSize(title);
 
-            hoverView.OnDragChange += (sender, e) =>
+            General.RunOnUIThread(() =>
             {
-                if (e.Description == "Mouse Entered" && previewIsLoaded)
-                {
-                    if (stateRef.state != BusinessLayer.stateEnum.BrowsingWallpapers)
-                    {
-                        stateRef.setStateBrowsing();
-                    }
-                    cancelEndBrowsingStateWithDelayCallback();
-                    setPreviewWallpaperCallback();
-                }
-                if (e.Description == "Mouse Exited")
-                {
-                    Console.WriteLine("Mouse exit");
-                    try
-                    {
-                        setEndBrowsingStateWithDelayCallback();
-                    }
-                    catch (OperationCanceledException ex)
-                    {
-                        Console.WriteLine("End browsing cancel");
-                    }
+                NSMenuItem item = new NSMenuItem(title);
+                SubMenuItemHover hoverView = SubMenuItemHover.StdSize(title);
 
-                }
-                if (e.Description == "Mouse Down" && previewIsLoaded)
+                hoverView.OnDragChange += (sender, e) =>
                 {
-                    onclickCallBack();
-                    hoverView.DisableBGSelectionColor();
-                    setFullWallpaperCallback();
-                    StatusMenu.CancelTracking();
-                }
-            };
-            item.View = hoverView;
-            MenuOutletBrowseLatest.Submenu.AddItem(item);
+                    if (e.Description == "Mouse Entered" && previewIsLoaded)
+                    {
+                        if (stateRef.state != BusinessLayer.stateEnum.BrowsingWallpapers)
+                        {
+                            stateRef.setStateBrowsing();
+                        }
+                        cancelEndBrowsingStateWithDelayCallback();
+                        setPreviewWallpaperCallback();
+                    }
+                    if (e.Description == "Mouse Exited")
+                    {
+                        Console.WriteLine("Mouse exit");
+                        try
+                        {
+                            setEndBrowsingStateWithDelayCallback();
+                        }
+                        catch (OperationCanceledException ex)
+                        {
+                            Console.WriteLine("End browsing cancel");
+                        }
+
+                    }
+                    if (e.Description == "Mouse Down" && previewIsLoaded)
+                    {
+                        onclickCallBack();
+                        hoverView.DisableBGSelectionColor();
+                        setFullWallpaperCallback();
+                        StatusMenu.CancelTracking();
+                    }
+                };
+                item.View = hoverView;
+                MenuOutletBrowseLatest.Submenu.AddItem(item);
+            });
+
         }
 
         partial void MenuActionRunAtLogin(NSObject sender)
@@ -183,6 +213,24 @@ namespace AstroWall.ApplicationLayer
                 MenuOutletAutoInstallUpdates.Enabled = true;
 
             }
+        }
+
+
+        partial void MenuManualCheckPic(Foundation.NSObject sender)
+        {
+            //state.setStateIdle();
+            //MacOShelpers.InitIcon2(statusBarItem, this.StatusMenu);
+            //string imgurl = HTMLHelpers.getImgUrl();
+            //Task<string> tmpFilePath = FileHelpers.DownloadUrlToTmpPath(imgurl);
+            ////MacOShelpers.SetWallpaper(tmpFilePath);
+            //Console.WriteLine("file dl");
+            //MacOShelpers.RunPKGUpdate();
+        }
+
+        partial void MenuActionDailyCheckNewest(NSObject sender)
+        {
+            bool newState = !getCheckmarkBoolFromSender(sender);
+            appHandler.MenuHandler.changedInMenuDailyCheckNewest(newState);
         }
 
         partial void MenuActionManualCheckUpdates(NSObject sender)

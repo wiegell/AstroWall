@@ -27,19 +27,20 @@ namespace AstroWall.BusinessLayer
             this.applicationHandler = applicationHandlerArg;
             this.currentVersion = VersionFromString(currentVersionString);
             Console.WriteLine("currentVersion: " + VersionFromString(currentVersionString));
-            registerWakeHandler();
         }
 
         private UpdateLibrary.UpdateManifest manifest;
 
         public void registerWakeHandler()
         {
-            ApplicationLayer.SystemEvents.Instance.RegisterWakeHandler(this.wakeHandler);
+            Console.WriteLine("Registering update wakehandler");
+            ApplicationLayer.SystemEvents.Instance.RegisterUpdateWakeHandler(this.wakeHandler);
         }
 
         public void unregisterWakeHandler()
         {
-            ApplicationLayer.SystemEvents.Instance.UnRegisterWakeHandler();
+            Console.WriteLine("Unregistering update wakehandler");
+            ApplicationLayer.SystemEvents.Instance.UnRegisterUpdateWakeHandler();
         }
 
         public void wakeHandler(NSNotification not)

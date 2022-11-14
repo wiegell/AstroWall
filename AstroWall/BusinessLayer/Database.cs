@@ -75,32 +75,71 @@ namespace AstroWall.BusinessLayer
             return datesLoaded().Contains(date.ToString(HTMLHelpers.NASADateFormat));
         }
 
-
-        public async Task LoadDataButNoImgFromOnlineStartingAtDate(int n, DateTime date, bool forceReload = false)
+        /// <summary>
+        /// Returns true on successfull onlinecheck, e.g. false if connection offline
+        /// </summary>
+        /// <param name="n"></param>
+        /// <param name="date"></param>
+        /// <param name="forceReload"></param>
+        /// <returns></returns>
+        public async Task<bool> LoadDataButNoImgFromOnlineStartingAtDate(int n, DateTime date, bool forceReload = false)
         {
-            bool allOfDBHasDataLoaded = ImgWrapList.All(iw => iw.OnlineDataExceptPicIsLoaded());
+            bool allOfDBHasDataLoaded = ImgWrapList.All(iw => iw.OnlineDataIsLoadedOrUngettable());
             bool datesAreInDB = hasDates(n, date);
+            bool isOffline = false;
+            List<ImgWrap> tmpImgWrapList = new List<ImgWrap>();
             Console.WriteLine("DB has all wanted days registered: " + datesAreInDB);
             Console.WriteLine("All of DB has data loaded: " + allOfDBHasDataLoaded);
 
-            // Everything is loaded, no need to download
-            if (datesAreInDB && allOfDBHasDataLoaded && !forceReload) return;
+            // Everything is loaded, no need to download, may
+            if (datesAreInDB && allOfDBHasDataLoaded && !forceReload)
+            {
+                Console.WriteLine("Everything is loaded, no onlinecheck, unnecessary check?");
+                return true;
+
+            };
 
             // Download n latest days, if not duplicates
             DataLoadList = new List<Task>();
-            for (int i = 0; i < n; i++)
+            try
             {
-                DateTime potentialDownload = date.AddDays(-i);
-                if (!this.hasDate(potentialDownload))
+
+                for (int i = 0; i < n; i++)
                 {
-                    Console.WriteLine("adding day: " + date.AddDays(-i));
-                    ImgWrap tmppw = new ImgWrap(date.AddDays(-i));
-                    Task t = tmppw.LoadOnlineDataButNotImg();
-                    DataLoadList.Add(t);
-                    ImgWrapList.Add(tmppw);
+                    DateTime potentialDownload = date.AddDays(-i);
+                    if (!this.hasDate(potentialDownload))
+                    {
+                        Console.WriteLine("adding day: " + date.AddDays(-i));
+                        ImgWrap tmppw = new ImgWrap(date.AddDays(-i));
+                        Task t = tmppw.LoadOnlineDataButNotImg();
+                        tmpImgWrapList.Add(tmppw);
+                        DataLoadList.Add(t);
+                    }
                 }
+                await Task.WhenAll(DataLoadList);
             }
-            await Task.WhenAll(DataLoadList);
+            catch (Exception ex)
+            {
+                // Catch offline exception
+                if (ex.Message.Contains("No such host is known"))
+                {
+                    isOffline = true;
+                }
+                else throw ex;
+            }
+
+            if (!isOffline)
+            {
+                // Filter out not found results, so that they can be fetched again in the future;
+                ImgWrapList.AddRange(tmpImgWrapList.Where(iw => !iw.NotFound));
+                return true;
+            }
+            else
+            {
+                Console.WriteLine("No host: probably offline, nothing is added to ImgWrapList");
+                return false;
+            }
+
         }
 
         public async Task LoadImgs(bool forceReload = false)
@@ -115,7 +154,7 @@ namespace AstroWall.BusinessLayer
                 ImgLoadList = new List<Task>();
                 foreach (ImgWrap pw in ImgWrapList)
                 {
-                    if (pw.OnlineDataExceptPicIsLoaded() && pw.integrity && pw.imgIsGettable)
+                    if (pw.OnlineDataExceptPicIsLoaded() && pw.Integrity && pw.ImgIsGettable)
                         ImgLoadList.Add(Task.Run(() => pw.LoadImg()));
                 }
                 await Task.WhenAll(ImgLoadList);
@@ -129,7 +168,7 @@ namespace AstroWall.BusinessLayer
 
         public List<ImgWrap> getPresentableImages()
         {
-            return ImgWrapList.Where((iw) => iw.imgIsGettable).ToList<ImgWrap>();
+            return ImgWrapList.Where((iw) => iw.ImgIsGettable).ToList<ImgWrap>();
         }
 
         private bool loadDBFromDisk()

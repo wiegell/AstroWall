@@ -115,8 +115,8 @@
         <!--Window Controller-->
         <scene sceneID="9wD-PX-wWl">
             <objects>
-                <windowController storyboardIdentifier="postprocesswindowcontroller" id="9w8-8a-c7V" sceneMemberID="viewController">
-                    <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="ijs-ck-x6C">
+                <windowController storyboardIdentifier="postprocesswindowcontroller2" id="9w8-8a-c7V" sceneMemberID="viewController">
+                    <window key="window" title="Post Process" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="ijs-ck-x6C">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" fullSizeContentView="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
                         <rect key="contentRect" x="294" y="313" width="480" height="270"/>
@@ -133,12 +133,7 @@
                                 <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="IHl-QP-tjy"/>
                                 <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="Mah-WS-jp6"/>
                             </allowedToolbarItems>
-                            <defaultToolbarItems>
-                                <toolbarItem reference="Uou-rT-dd8"/>
-                                <toolbarItem reference="kly-Is-VXd"/>
-                                <toolbarItem reference="Mah-WS-jp6"/>
-                                <toolbarItem reference="jb0-ly-bih"/>
-                            </defaultToolbarItems>
+                            <defaultToolbarItems/>
                         </toolbar>
                         <connections>
                             <outlet property="delegate" destination="9w8-8a-c7V" id="Sys-h7-q8x"/>
@@ -178,25 +173,15 @@
             <objects>
                 <viewController id="afD-O5-7Oy" sceneMemberID="viewController">
                     <view key="view" id="ocn-6K-p0W" customClass="PostProcessSidebarViewController">
-                        <rect key="frame" x="0.0" y="0.0" width="149" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="191" height="300"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <subviews>
-                            <button fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="E69-PK-zdH">
-                                <rect key="frame" x="20" y="163" width="109" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <buttonCell key="cell" type="square" title=" Add text" bezelStyle="shadowlessSquare" image="text.viewfinder" catalog="system" imagePosition="left" alignment="left" borderStyle="border" inset="2" id="o6o-WE-I7I">
-                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                    <font key="font" metaFont="system"/>
-                                </buttonCell>
-                            </button>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="OG2-ti-EVe"/>
                         <viewLayoutGuide key="layoutMargins" id="Xd7-mf-VHs"/>
                     </view>
                 </viewController>
                 <customObject id="ej2-dV-Bdb" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2027.5" y="-620"/>
+            <point key="canvasLocation" x="-2006.5" y="-620"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="CC6-eE-uD3">
@@ -548,7 +533,7 @@
                             <attributedString key="attributedTitle"/>
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <action selector="MenuOutletCheckPicOnLogin:" target="9tX-R6-oug" id="mbx-Dc-iwy"/>
+                                <action selector="MenuActionDailyCheckNewest:" target="9tX-R6-oug" id="Ium-AZ-Mbb"/>
                             </connections>
                         </menuItem>
                         <menuItem title="Filter criteria" id="h5H-H3-PAi">
@@ -620,6 +605,7 @@
                         <outlet property="MenuOutletBrowseLatest" destination="vCu-ml-Eap" id="cU3-fB-0eU"/>
                         <outlet property="MenuOutletCheckUpdatesManual" destination="Bh6-Ah-sYx" id="L3n-1Q-boD"/>
                         <outlet property="MenuOutletCheckUpdatesOnStartup" destination="92v-Ux-wT5" id="2P6-6V-LdD"/>
+                        <outlet property="MenuOutletDailyCheckNewest" destination="Jd6-If-7cB" id="hnG-Pj-zRT"/>
                         <outlet property="MenuOutletPostProcess" destination="KTK-6s-SRb" id="fVo-7c-nL0"/>
                         <outlet property="MenuOutletQuit" destination="2p1-pg-8rT" id="TUC-7C-8nK"/>
                         <outlet property="MenuOutletRunAtLogin" destination="l8k-1x-W3X" id="ocM-JM-g5L"/>
@@ -828,6 +814,5 @@
         <image name="MainIcon_rot_0" width="24" height="24"/>
         <image name="arrow.up.right" catalog="system" width="13" height="12"/>
         <image name="laptopcomputer.and.arrow.down" catalog="system" width="28" height="19"/>
-        <image name="text.viewfinder" catalog="system" width="16" height="15"/>
     </resources>
 </document>

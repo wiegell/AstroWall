@@ -5,6 +5,14 @@ using Newtonsoft.Json;
 
 namespace AstroWall.BusinessLayer
 {
+    public enum DailyCheckEnum
+    {
+        Newest,
+        RandomAllTime,
+        RandomPostXX,
+        None
+    }
+
     [JsonObject]
     public class Preferences
     {
@@ -20,6 +28,12 @@ namespace AstroWall.BusinessLayer
         public bool AutoInstallUpdates;
         [JsonProperty]
         public bool RunAtStartup;
+        [JsonProperty]
+        public DailyCheckEnum DailyCheck;
+        [JsonProperty]
+        public DateTime LastOnlineCheck;
+        [JsonProperty]
+        public DateTime NextScheduledCheck;
 
         public Preferences()
         {
