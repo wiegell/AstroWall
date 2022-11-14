@@ -85,8 +85,8 @@ namespace cli5
                 Console.WriteLine("Upload res:\n" + uploadres);
 
                 // Push manifest
-                runCommand("git push origin master");
-                Console.WriteLine("Success");
+                string gitPushReturn = runCommand("git push origin master");
+                Console.WriteLine("Success: " + gitPushReturn);
             }
             else
             {
