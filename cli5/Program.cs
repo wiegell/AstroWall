@@ -84,9 +84,9 @@ namespace cli5
                 string uploadres = runCommand($"gh release create -p --generate-notes {newTagShort} ./AstroWall/bin/Package/Astro.pkg");
                 Console.WriteLine("Upload res:\n" + uploadres);
 
-                // Push manifest
-                string gitPushReturn = runCommand("git push origin master");
-                Console.WriteLine("Success: " + gitPushReturn);
+                //// Push manifest
+                //string gitPushReturn = runCommand("git push origin master");
+                //Console.WriteLine("Success: " + gitPushReturn);
             }
             else
             {
