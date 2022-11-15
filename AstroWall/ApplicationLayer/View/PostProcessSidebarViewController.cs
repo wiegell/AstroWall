@@ -5,14 +5,33 @@ using System;
 using Foundation;
 using AppKit;
 
+
 namespace AstroWall
 {
     public partial class PostProcessSidebarViewController : NSView
     {
         public PostProcessSidebarViewController(IntPtr handle) : base(handle)
         {
+            PostProcessMenuItem item = PostProcessMenuItem.StdSize(1, "Add text");
+            item.setSelectedColor();
+            this.AddSubview(item);
+
+            //this.TranslatesAutoresizingMaskIntoConstraints = false;
+            //item.TranslatesAutoresizingMaskIntoConstraints = false;
+            //item.AddConstraints(new NSLayoutConstraint[]
+            //{
+            //item.TopAnchor.ConstraintEqualToAnchor(SafeAreaLayoutGuide.TopAnchor),
+            //item.LeftAnchor.ConstraintEqualToAnchor(SafeAreaLayoutGuide.LeftAnchor),
+            //item.WidthAnchor.ConstraintEqualToAnchor(this.WidthAnchor),
+            //item.HeightAnchor.ConstraintEqualToConstant(22)
+            //});
+
+            //item.RemoveConstraint(item.BottomAnchor);
+
 
         }
+
+
 
 
 

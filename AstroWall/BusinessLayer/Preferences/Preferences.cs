@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using AppKit;
 using Newtonsoft.Json;
 
-namespace AstroWall.BusinessLayer
+namespace AstroWall.BusinessLayer.Preferences
 {
     public enum DailyCheckEnum
     {
@@ -13,7 +13,7 @@ namespace AstroWall.BusinessLayer
         None
     }
 
-    [JsonObject]
+    [JsonObject(MemberSerialization.OptIn)]
     public class Preferences
     {
         [JsonProperty]
@@ -34,15 +34,23 @@ namespace AstroWall.BusinessLayer
         public DateTime LastOnlineCheck;
         [JsonProperty]
         public DateTime NextScheduledCheck;
+        [JsonProperty]
+        public AddText AddTextPostProcess;
+
+        public List<PostProcess> PostProcesses
+        {
+            get
+            {
+                var retList = new List<PostProcess>();
+                retList.Add(AddTextPostProcess);
+                return retList;
+            }
+        }
 
         public Preferences()
         {
             CurrentPathToNonAstroWallpaper = General.getCurrentWallpaperPath();
-        }
-
-        public void SaveToDisk()
-        {
-            FileHelpers.SerializeNow(this, General.getPrefsPath());
+            AddTextPostProcess = new AddText(true);
         }
 
         public static Preferences fromSave()
@@ -55,9 +63,15 @@ namespace AstroWall.BusinessLayer
             else return null;
         }
 
+
         public bool hasAstroWall()
         {
             return !(CurrentAstroWallpaper == null);
+        }
+
+        public void SaveToDisk()
+        {
+            FileHelpers.SerializeNow(this, General.getPrefsPath());
         }
     }
 }

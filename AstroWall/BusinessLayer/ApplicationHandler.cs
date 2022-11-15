@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AstroWall.ApplicationLayer;
 using Foundation;
+using AstroWall.BusinessLayer.Preferences;
 
 namespace AstroWall.BusinessLayer
 {
@@ -11,11 +12,11 @@ namespace AstroWall.BusinessLayer
         // Refs
         public AppDelegate AppDelegate { get; private set; }
         public MenuHandler MenuHandler { get; private set; }
-        public Wallpaper Wallpaper { get; private set; }
+        public Wallpaper.Wallpaper Wallpaper { get; private set; }
         public State State { get; private set; }
         public Updates Updates { private set; get; }
         public Database db;
-        public Preferences Prefs { get; private set; }
+        public Preferences.Preferences Prefs { get; private set; }
 
         // Misc
         public Version CurrentVersion { private set; get; }
@@ -59,12 +60,12 @@ namespace AstroWall.BusinessLayer
 
             // Load prefs. If non-present halt further actions until
             // preft are confirmed by user
-            Prefs = Preferences.fromSave();
+            Prefs = Preferences.Preferences.fromSave();
             bool prefsAreLoadedSuccessfully = Prefs != null;
             return prefsAreLoadedSuccessfully;
         }
 
-        private async Task secondaryInit(Preferences prefsFromPostInstallPrompt)
+        private async Task secondaryInit(Preferences.Preferences prefsFromPostInstallPrompt)
         {
             // Set prefs from post-install welcome screen,
             // if calls comes from there.
@@ -74,7 +75,7 @@ namespace AstroWall.BusinessLayer
             {
                 Prefs = prefsFromPostInstallPrompt;
             };
-            Wallpaper = new Wallpaper(this);
+            Wallpaper = new Wallpaper.Wallpaper(this);
             MenuHandler.updateMenuCheckMarksToReflectPrefs();
 
             // Set run at login agent
@@ -91,7 +92,7 @@ namespace AstroWall.BusinessLayer
             if (Prefs.DailyCheck == DailyCheckEnum.Newest)
             {
                 await checkForNewPics();
-                Wallpaper.SetWallpaperAllScreens(db.ImgWrapList[0].ImgLocalUrl);
+                Wallpaper.RunPostProcessAndSetWallpaperAllScreens(db.ImgWrapList[0]);
             }
 
             State.SetStateIdle();

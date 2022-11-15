@@ -5,12 +5,13 @@ using System;
 using Foundation;
 using AppKit;
 using System.Threading.Tasks;
+using AstroWall.BusinessLayer.Preferences;
 
 namespace AstroWall
 {
     public partial class FreshInstallViewController : NSView
     {
-        private Func<BusinessLayer.Preferences, Task> callback;
+        private Func<Preferences, Task> callback;
 
         public FreshInstallViewController(IntPtr handle) : base(handle)
         {
@@ -24,14 +25,14 @@ namespace AstroWall
             callback(prefs);
         }
 
-        public void regSaveCallback(Func<BusinessLayer.Preferences, Task> callbackArg)
+        public void regSaveCallback(Func<Preferences, Task> callbackArg)
         {
             this.callback = callbackArg;
         }
 
-        private BusinessLayer.Preferences createPrefs()
+        private Preferences createPrefs()
         {
-            var prefs = new BusinessLayer.Preferences();
+            var prefs = new Preferences();
             prefs.AutoInstallUpdates = (this.OutletAutoinstall.State == NSCellStateValue.On);
             prefs.
             CheckUpdatesOnStartup = (this.OutletCheckUpdatesAtStartup.State == NSCellStateValue.On);

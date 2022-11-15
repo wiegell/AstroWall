@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using AppKit;
+using AstroWall.BusinessLayer.Preferences;
 using Foundation;
 
 namespace AstroWall.ApplicationLayer
@@ -20,14 +21,14 @@ namespace AstroWall.ApplicationLayer
             MenuTitle.Title = title;
         }
 
-        public void updateMenuCheckMarks(BusinessLayer.Preferences prefs)
+        public void updateMenuCheckMarks(Preferences prefs)
         {
             General.RunOnUIThread(() =>
             {
                 this.MenuOutletAutoInstallUpdates.State = prefs.AutoInstallUpdates ? NSCellStateValue.On : NSCellStateValue.Off;
                 this.MenuOutletCheckUpdatesOnStartup.State = prefs.CheckUpdatesOnStartup ? NSCellStateValue.On : NSCellStateValue.Off;
                 this.MenuOutletRunAtLogin.State = prefs.RunAtStartup ? NSCellStateValue.On : NSCellStateValue.Off;
-                this.MenuOutletDailyCheckNewest.State = prefs.DailyCheck == BusinessLayer.DailyCheckEnum.Newest ? NSCellStateValue.On : NSCellStateValue.Off;
+                this.MenuOutletDailyCheckNewest.State = prefs.DailyCheck == DailyCheckEnum.Newest ? NSCellStateValue.On : NSCellStateValue.Off;
             });
         }
 

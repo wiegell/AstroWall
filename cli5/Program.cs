@@ -9,6 +9,7 @@ namespace cli5
     class Program
     {
 
+
         static void Main(string[] args)
         {
 
@@ -33,7 +34,7 @@ namespace cli5
             if (cleanTree && isOnMaster)
             {
                 // Update tag
-                string tag = runCommand("git describe");
+                string tag = runCommand("git describe").Replace("\n", "");
                 Console.WriteLine("Git clean on tag: " + tag);
                 string newTagShort = runCommand("git describe --tags --abbrev=0 | awk -F. '{OFS=\\\".\\\"; $NF+=1; print $0}'").Replace("\n", "").Replace("\r", "");
                 newTagShort += "-alpha";
@@ -84,9 +85,9 @@ namespace cli5
                 string uploadres = runCommand($"gh release create -p --generate-notes {newTagShort} ./AstroWall/bin/Package/Astro.pkg");
                 Console.WriteLine("Upload res:\n" + uploadres);
 
-                //// Push manifest
-                //string gitPushReturn = runCommand("git push origin master");
-                //Console.WriteLine("Success: " + gitPushReturn);
+                // Push manifest
+                string gitPushReturn = runCommand("git push origin master");
+                Console.WriteLine("Success: " + gitPushReturn);
             }
             else
             {

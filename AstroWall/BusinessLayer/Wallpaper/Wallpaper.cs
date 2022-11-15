@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
+using AstroWall.ApplicationLayer.Helpers;
+using AstroWall.BusinessLayer.Preferences;
 using Foundation;
 using Newtonsoft.Json;
 
-namespace AstroWall.BusinessLayer
+namespace AstroWall.BusinessLayer.Wallpaper
 {
     public class TaskCancelWrap
     {
@@ -35,39 +39,94 @@ namespace AstroWall.BusinessLayer
             this.applicationHandler = applicationHandler;
         }
 
-        public async Task<bool> SetWallpaperAllScreens(string url)
+        public async Task<bool> RunPostProcessAndSetWallpaperAllScreens(ImgWrap imgWrap)
         {
-            Object retObj = await General.SetWallpaper(url, true);
+            // Get current screens
+            var currentScreensConnectedById = Screen.FromCurrentConnected();
+
+            // Create postprocessed images
+            await imgWrap.createPostProcessedImages(currentScreensConnectedById);
+
+            // Set wallpapers
+            Dictionary<Screen, string> postProcessedImageUrlByScreen = imgWrap.ImgLocalPostProcessedUrlsByScreenId.ToDictionary(
+                // Key is screen id
+                screenKV => currentScreensConnectedById[screenKV.Key],
+                // Value is post processed url
+                screenKV => screenKV.Value
+                );
+            return await SetWallpaperAllScreens(postProcessedImageUrlByScreen);
+        }
+
+        public async Task<bool> SetWallpaperAllScreens(Dictionary<Screen, string> urlsByScreen)
+        {
+            Object retObj = await General.SetWallpaper(urlsByScreen);
             return (bool)retObj;
         }
-        public async Task<bool> SetWallpaperAllScreens(ImgWrap iw)
-        {
-            if (iw.FullResIsLoaded())
-            {
-                Object retObj = await General.SetWallpaper(iw.ImgLocalUrl, true); ;
-                return (bool)retObj;
-            }
-            else return false;
-        }
 
-        public void SetWallpaperMainScreen(string url)
+        /// <summary>
+        /// Should only be used for reset to non-astro wall wallpaper
+        /// </summary>
+        /// <param name="urlsByScreen"></param>
+        /// <returns></returns>
+        public async Task<bool> SetWallpaperAllScreens(string path)
         {
-            General.SetWallpaper(url, false);
-        }
+            // Get current screens
+            var currentScreensConnectedById = Screen.FromCurrentConnected();
 
+            // Set wallpapers
+            Dictionary<Screen, string> postProcessedImageUrlByScreen = currentScreensConnectedById.ToDictionary(
+                // Key is set to Screen (former value)
+                screenKV => screenKV.Value,
+                // Value is set to path from args
+                screenKV => path
+                );
+            return await SetWallpaperAllScreens(postProcessedImageUrlByScreen);
+        }
+        //public async Task<bool> SetWallpaperAllScreens(ImgWrap iw)
+        //{
+        //    if (iw.FullResIsLoaded())
+        //    {
+        //        Object retObj = await General.SetWallpaper(iw.ImgLocalUrl, true); ;
+        //        return (bool)retObj;
+        //    }
+        //    else return false;
+        //}
+
+        //public void SetWallpaperMainScreen(string url)
+        //{
+
+        //    General.SetWallpaper();
+        //}
         public void SetPreviewWallpaper(ImgWrap iw)
         {
             if (iw.PreviewIsLoaded())
-                General.SetWallpaper(iw.ImgLocalPreviewUrl, false);
+                General.SetWallpaper(Screen.Main(), iw.ImgLocalPreviewUrl);
         }
 
         public void ResetWallpaper()
         {
-            SetWallpaperAllScreens(
-          applicationHandler.Prefs.hasAstroWall() ?
-            applicationHandler.Prefs.CurrentAstroWallpaper.ImgLocalUrl :
-            applicationHandler.Prefs.CurrentPathToNonAstroWallpaper
-            );
+            if (applicationHandler.Prefs.hasAstroWall())
+            {
+                // Postprocessed should already be created, reset to those
+                var currentConnectedScreensById = Screen.FromCurrentConnected();
+
+                // Set wallpapers
+                Dictionary<Screen, string> postProcessedImageUrlByScreen =
+                    applicationHandler.Prefs.CurrentAstroWallpaper
+                    .ImgLocalPostProcessedUrlsByScreenId
+                    .ToDictionary(
+                    // Key is screen id
+                    screenKV => currentConnectedScreensById[screenKV.Key],
+                    // Value is post processed url
+                    screenKV => screenKV.Value
+                    );
+
+                SetWallpaperAllScreens(postProcessedImageUrlByScreen);
+            }
+            else
+            {
+                SetWallpaperAllScreens(applicationHandler.Prefs.CurrentPathToNonAstroWallpaper);
+            }
         }
 
         public void launchPostProcessWindow()
@@ -75,9 +134,10 @@ namespace AstroWall.BusinessLayer
             applicationHandler.AppDelegate.launchPostProcessPrompt(applicationHandler.Prefs, callbackWithNewPostProcessSettings);
         }
 
-        public void callbackWithNewPostProcessSettings(Preferences newPrefs)
+        public void callbackWithNewPostProcessSettings(Preferences.AddText newAtFromDialogue)
         {
-
+            Console.WriteLine("setting new add text to: " + newAtFromDialogue.isEnabled);
+            this.applicationHandler.Prefs.AddTextPostProcess = newAtFromDialogue;
         }
 
         public void registerWakeHandler()
@@ -106,7 +166,7 @@ namespace AstroWall.BusinessLayer
                     Console.WriteLine("Last online check was probably during sleep, retrying to set wallpapers in 10 sec");
                     // Delay is to allow the user to sign in after wake
                     await Task.Delay(10000);
-                    this.SetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0].ImgLocalUrl);
+                    this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0]);
                 }
                 else if (applicationHandler.Prefs.NextScheduledCheck < DateTime.Now)
                 {
@@ -114,7 +174,7 @@ namespace AstroWall.BusinessLayer
                     await applicationHandler.checkForNewPics();
                     // Delay is to allow the user to sign in after wake
                     await Task.Delay(10000);
-                    bool successChangeWallpaper = await this.SetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0].ImgLocalUrl);
+                    bool successChangeWallpaper = await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0]);
                     createNoonCheck();
                     applicationHandler.State.SetStateIdle();
                 }
@@ -175,7 +235,7 @@ namespace AstroWall.BusinessLayer
             {
                 Console.WriteLine("Noon callback, checking for new pics");
                 await applicationHandler.checkForNewPics();
-                bool successChangeWallpaper = await this.SetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0].ImgLocalUrl);
+                bool successChangeWallpaper = await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0]);
                 if (!successChangeWallpaper) lastScheduledCheckFailedToSetWallpaper = true;
 
                 // Recreate nooncheck tomorrow

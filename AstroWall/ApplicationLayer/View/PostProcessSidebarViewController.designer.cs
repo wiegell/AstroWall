@@ -17,17 +17,25 @@ namespace AstroWall
 
 		[Outlet]
 		AppKit.NSOutlineView OutletViewNoHeader { get; set; }
+
+		[Outlet]
+		AppKit.NSView positionOfFirstMenuItem { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (OutletColumn != null) {
+				OutletColumn.Dispose ();
+				OutletColumn = null;
+			}
+
 			if (OutletViewNoHeader != null) {
 				OutletViewNoHeader.Dispose ();
 				OutletViewNoHeader = null;
 			}
 
-			if (OutletColumn != null) {
-				OutletColumn.Dispose ();
-				OutletColumn = null;
+			if (positionOfFirstMenuItem != null) {
+				positionOfFirstMenuItem.Dispose ();
+				positionOfFirstMenuItem = null;
 			}
 		}
 	}

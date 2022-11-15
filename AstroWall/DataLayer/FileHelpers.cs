@@ -67,6 +67,7 @@ namespace AstroWall
                     FileStream fs = new FileStream(path, FileMode.Open);
 
                     await fs.CopyToAsync(memStream);
+                    fs.Close();
                     memStream.Seek(0, SeekOrigin.Begin);
 
                     SKImage img = SKImage.FromEncodedData(memStream);

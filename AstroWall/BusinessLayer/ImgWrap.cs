@@ -3,6 +3,10 @@ using Newtonsoft.Json;
 using SkiaSharp;
 using System.IO;
 using System.Threading.Tasks;
+using AstroWall.BusinessLayer.Preferences;
+using System.Collections.Generic;
+using System.Linq;
+using AstroWall.ApplicationLayer.Helpers;
 
 namespace AstroWall.BusinessLayer
 {
@@ -17,6 +21,8 @@ namespace AstroWall.BusinessLayer
         public string ImgLocalUrl { get; private set; }
         [JsonProperty]
         public string ImgLocalPreviewUrl { get; private set; }
+        [JsonProperty]
+        public Dictionary<string, string> ImgLocalPostProcessedUrlsByScreenId;
         [JsonProperty]
         public string FileType { get; private set; }
         [JsonProperty]
@@ -166,6 +172,60 @@ namespace AstroWall.BusinessLayer
                 Console.WriteLine("Error saving preview ({0}): {1}", ImgLocalUrl, ex.Message);
             }
             return;
+        }
+
+        public async Task createPostProcessedImages(Dictionary<string, Screen> screens)
+        {
+            Console.WriteLine("creating postprocessed images");
+            SKBitmap image;
+            try
+            {
+                image = await FileHelpers.LoadImageFromLocalUrl(ImgLocalUrl);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("error loading file ({0}): {1}", ImgLocalUrl, ex.Message);
+                return;
+            }
+
+            // Do the postprocessing
+            Dictionary<string, SKBitmap> postProcessedImagesByScreenId;
+            try
+            {
+                postProcessedImagesByScreenId =
+                    screens.ToDictionary(
+                        screenKV =>
+                            screenKV.Key,
+                        screenKV =>
+                            Wallpaper.PostProcess.AddText(image, Title, Description));
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error postprocessing image ({0}): {1}", ImgLocalUrl, ex.Message);
+                throw ex;
+            }
+
+            // Save files and register file paths
+            try
+            {
+                ImgLocalPostProcessedUrlsByScreenId = postProcessedImagesByScreenId.ToDictionary(
+                    bitmapKV => bitmapKV.Key,
+                    bitmapKV =>
+                    {
+                        string path = $"{ImgLocalUrl}_postprocessed_{bitmapKV.Key}.{FileType}";
+                        FileStream f = File.Create(path);
+                        bitmapKV.Value.Encode(f, (OnlineUrlIsJPG() ? SKEncodedImageFormat.Jpeg : SKEncodedImageFormat.Png), 90);
+                        Console.WriteLine($"postprocess for screen {bitmapKV.Key} saved: {path}");
+                        return path;
+                    }
+                    );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error saving postprocess ({0}): {1}", ImgLocalUrl, ex.Message);
+            }
+
         }
 
         public bool OnlineDataAndPicIsLoaded()

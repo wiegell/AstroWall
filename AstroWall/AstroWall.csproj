@@ -8,9 +8,9 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>AstroWall</RootNamespace>
     <AssemblyName>Astro Wall</AssemblyName>
+    <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
-    <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -126,6 +126,9 @@
     <Folder Include="ServiceLayer\" />
     <Folder Include="ApplicationLayer\Helpers\" />
     <Folder Include="ApplicationLayer\View\" />
+    <Folder Include="BusinessLayer\Preferences\" />
+    <Folder Include="BusinessLayer\Wallpaper\" />
+    <Folder Include="BusinessLayer\Wallpaper\PostProcess\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -138,12 +141,10 @@
     <Compile Include="DataLayer\FileHelpers.cs" />
     <Compile Include="ServiceLayer\HTMLHelpers.cs" />
     <Compile Include="BusinessLayer\Database.cs" />
-    <Compile Include="BusinessLayer\Preferences.cs" />
     <Compile Include="BusinessLayer\State.cs" />
     <Compile Include="BusinessLayer\Updates.cs" />
     <Compile Include="BusinessLayer\ApplicationHandler.cs" />
     <Compile Include="BusinessLayer\MenuHandler.cs" />
-    <Compile Include="BusinessLayer\Wallpaper.cs" />
     <Compile Include="BusinessLayer\ImgWrap.cs" />
     <Compile Include="ApplicationLayer\View\AppDelegate.cs" />
     <Compile Include="ApplicationLayer\View\AppDelegate.designer.cs">
@@ -166,14 +167,25 @@
     </Compile>
     <Compile Include="ApplicationLayer\Helpers\Updates.Macos.cs" />
     <Compile Include="ApplicationLayer\View\UpdatesWindowDelegate.cs" />
-    <Compile Include="ApplicationLayer\View\PostProcessContentViewController.cs" />
-    <Compile Include="ApplicationLayer\View\PostProcessContentViewController.designer.cs">
-      <DependentUpon>PostProcessContentViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="ApplicationLayer\View\PostProcessSidebarViewController.cs" />
     <Compile Include="ApplicationLayer\View\PostProcessSidebarViewController.designer.cs">
       <DependentUpon>PostProcessSidebarViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="ApplicationLayer\View\PostProcessMenuItem.cs" />
+    <Compile Include="ApplicationLayer\View\PostProcessMenuItem.designer.cs">
+      <DependentUpon>PostProcessMenuItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ApplicationLayer\View\PostProcessTextSettings.cs" />
+    <Compile Include="ApplicationLayer\View\PostProcessTextSettings.designer.cs">
+      <DependentUpon>PostProcessTextSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BusinessLayer\Preferences\Preferences.cs" />
+    <Compile Include="BusinessLayer\Preferences\PostProcess.model.cs" />
+    <Compile Include="BusinessLayer\Preferences\AddText.model.cs" />
+    <Compile Include="BusinessLayer\Wallpaper\Wallpaper.cs" />
+    <Compile Include="BusinessLayer\Wallpaper\PostProcess\AddText.cs" />
+    <Compile Include="BusinessLayer\Wallpaper\PostProcess\ScaleAndCrop.cs" />
+    <Compile Include="ApplicationLayer\Helpers\Screen.Model.Macos.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

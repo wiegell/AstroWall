@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Security.Policy;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AppKit;
+using AstroWall.ApplicationLayer.Helpers;
 using Foundation;
 
 namespace AstroWall
@@ -47,44 +51,48 @@ namespace AstroWall
         }
 
         /// <summary>
-        /// The return object is a boxed bool
+        /// The return object is a boxed bool, if the setting of wallpaper was successfull
         /// </summary>
         /// <param name="path"></param>
         /// <param name="onAllScreens"></param>
         /// <returns></returns>
-        public static async Task<object> SetWallpaper(String path, bool onAllScreens = false)
+        public static async Task<object> SetWallpaper(Dictionary<Screen, string> urlToPostProcessedByNSScreen)
+        {
+            bool ret = false;
+            object boxedBool = (object)ret;
+
+            foreach (KeyValuePair<Screen, string> urlNSScreenKV in urlToPostProcessedByNSScreen)
+            {
+                string url = urlNSScreenKV.Value;
+                Screen screen = urlNSScreenKV.Key;
+                boxedBool = await General.SetWallpaper(screen, url);
+            }
+
+            return boxedBool;
+
+        }
+        public static async Task<object> SetWallpaper(Screen screen, string url)
         {
             return await RunOnUIThread<object>(async
-                   () =>
-               {
-                   Console.WriteLine("setting wallpaper: " + path);
-                   NSWorkspace workspace = NSWorkspace.SharedWorkspace;
-                   NSScreen[] screens = NSScreen.Screens;
-                   NSScreen mainScreen = NSScreen.MainScreen;
-                   Console.WriteLine("screen count: " + screens.Length);
-
-                   bool ret = false;
-                   object boxedBool = (object)ret;
-                   if (!onAllScreens)
-                   {
-                       boxedBool = workspace.SetDesktopImageUrl(NSUrl.FromFilename(path), mainScreen, new NSDictionary(), new NSError());
-                   }
-                   else
-                       foreach (var screen in screens)
-                       {
-                           try
-                           {
-                               boxedBool = workspace.SetDesktopImageUrl(NSUrl.FromFilename(path), screen, new NSDictionary(), new NSError());
-                           }
-                           catch (Exception)
-                           {
-                               Console.WriteLine("desk not set, returning false");
-                               boxedBool = false;
-                           }
-                       }
-                   return boxedBool;
-               });
+           () =>
+            {
+                bool ret = false;
+                object boxedBool = (object)ret;
+                Console.Write($"Setting wallpaper {url} to screen {screen.Id}: ");
+                try
+                {
+                    boxedBool = NSWorkspace.SharedWorkspace.SetDesktopImageUrl(NSUrl.FromFilename(url), screen.toNSScreen(), new NSDictionary(), new NSError());
+                    Console.WriteLine("Success");
+                }
+                catch (Exception ex)
+                {
+                    boxedBool = false;
+                    Console.WriteLine("Fail - " + ex.GetType());
+                }
+                return boxedBool;
+            });
         }
+
 
         public static string getCurrentWallpaperPath()
         {

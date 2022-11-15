@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Threading;
 using System.Reflection;
+using AstroWall.BusinessLayer.Preferences;
 
 namespace AstroWall.BusinessLayer
 {
@@ -138,12 +139,14 @@ namespace AstroWall.BusinessLayer
                         iw.PreviewIsLoaded(),
                         cancelEndBrowsingStateWithDelay,
                         () => appHandler.Wallpaper.SetPreviewWallpaper(iw),
-                        () => appHandler.Wallpaper.SetWallpaperAllScreens(iw),
+                        () => {
+                            //appHandler.Wallpaper.SetWallpaperAllScreens(iw);
+                        },
                         () => setEndBrowsingStateWithDelay(),
                         () =>
                         {
                             appHandler.Prefs.CurrentAstroWallpaper = iw;
-                            appHandler.Wallpaper.SetWallpaperAllScreens(iw);
+                            appHandler.Wallpaper.RunPostProcessAndSetWallpaperAllScreens(iw);
                         }
 
 

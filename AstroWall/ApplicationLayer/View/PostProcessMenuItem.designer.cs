@@ -9,8 +9,8 @@ using System.CodeDom.Compiler;
 
 namespace AstroWall
 {
-	[Register ("PostProcessContentViewController")]
-	partial class PostProcessContentViewController
+	[Register ("PostProcessMenuItem")]
+	partial class PostProcessMenuItem
 	{
 		
 		void ReleaseDesignerOutlets ()

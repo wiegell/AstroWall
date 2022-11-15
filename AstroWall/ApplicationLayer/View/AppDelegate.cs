@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppKit;
 using AstroWall.BusinessLayer;
+using AstroWall.BusinessLayer.Preferences;
 using Foundation;
 using GameController;
 
@@ -36,7 +37,7 @@ namespace AstroWall.ApplicationLayer
             await appHandler.Init();
         }
 
-        public void waitForUserToChosePrefs(Func<BusinessLayer.Preferences, Task> callback)
+        public void waitForUserToChosePrefs(Func<Preferences, Task> callback)
         {
             // Launch prefs always on top window
             var storyboard = NSStoryboard.FromName("Main", null);
@@ -64,18 +65,26 @@ namespace AstroWall.ApplicationLayer
             NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
         }
 
-        public void launchPostProcessPrompt(Preferences oldPrefs, Action<Preferences> callbackWithNewPrefs)
+        public void launchPostProcessPrompt(Preferences oldPrefs, Action<AddText> callbackWithNewPostProcess)
         {
-            // Launch prefs always on top window
-            var storyboard = NSStoryboard.FromName("Main", null);
-            postProcessPromptWindowController = storyboard.InstantiateControllerWithIdentifier("postprocesswindowcontroller2") as NSWindowController;
-            var window = postProcessPromptWindowController.Window;
-            var splitViewController = ((NSSplitViewController)postProcessPromptWindowController.ContentViewController);
-            //view.SetRelease(rel);
-            //view.RegChoiceCallback(callback);
-            postProcessPromptWindowController.ShowWindow(postProcessPromptWindowController);
-            window.OrderFront(null);
-            NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
+            // Don't spawn new window if already opened
+            if (!checkIfWindowIsAlreadyOpened(postProcessPromptWindowController))
+            {
+
+                // Launch prefs always on top window
+                var storyboard = NSStoryboard.FromName("Main", null);
+                postProcessPromptWindowController = storyboard.InstantiateControllerWithIdentifier("postprocesswindowcontroller2") as NSWindowController;
+                var window = postProcessPromptWindowController.Window;
+                var splitViewController = ((NSSplitViewController)postProcessPromptWindowController.ContentViewController);
+                var contentView = (PostProcessTextSettings)splitViewController.SplitViewItems[1].ViewController.View;
+                //view.SetRelease(rel);
+                //view.RegChoiceCallback(callback);
+                contentView.setData(oldPrefs.AddTextPostProcess);
+                contentView.regChangePrefsCallback(callbackWithNewPostProcess);
+                postProcessPromptWindowController.ShowWindow(postProcessPromptWindowController);
+                window.OrderFront(null);
+                NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
+            }
         }
 
         public override void WillTerminate(NSNotification notification)
@@ -85,7 +94,20 @@ namespace AstroWall.ApplicationLayer
         }
         #endregion
 
-        
+        private bool checkIfWindowIsAlreadyOpened(NSWindowController windowController)
+        {
+            if (windowController == null) return false;
+            if (!windowController.Window.IsVisible) return false;
+            if (windowController.Window.IsVisible)
+            {
+                windowController.Window.OrderFront(null);
+                NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
+
+                return true;
+            }
+            else throw new Exception("should never be reached");
+        }
+
 
 
 

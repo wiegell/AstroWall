@@ -117,12 +117,12 @@
             <objects>
                 <windowController storyboardIdentifier="postprocesswindowcontroller2" id="9w8-8a-c7V" sceneMemberID="viewController">
                     <window key="window" title="Post Process" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="ijs-ck-x6C">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" fullSizeContentView="YES"/>
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES" fullSizeContentView="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-                        <rect key="contentRect" x="294" y="313" width="480" height="270"/>
+                        <rect key="contentRect" x="294" y="313" width="719" height="455"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
                         <view key="contentView" id="B4w-0s-G7P">
-                            <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                            <rect key="frame" x="0.0" y="0.0" width="719" height="455"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </view>
                         <toolbar key="toolbar" implicitIdentifier="09D11707-F4A3-4FD5-970E-AC5832E91C2B" autosavesConfiguration="NO" displayMode="iconAndLabel" sizeMode="regular" id="Add-js-IVL">
@@ -145,7 +145,7 @@
                 </windowController>
                 <customObject id="Gu4-Lp-fUa" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1408" y="-620"/>
+            <point key="canvasLocation" x="-1691" y="-619"/>
         </scene>
         <!--Split View Controller-->
         <scene sceneID="kQs-XT-4qW">
@@ -166,37 +166,65 @@
                 </splitViewController>
                 <customObject id="bRp-f5-k1l" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1393" y="-1142"/>
+            <point key="canvasLocation" x="-1655" y="-1234"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="g18-gv-mN9">
             <objects>
+                <customObject id="ej2-dV-Bdb" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <viewController id="afD-O5-7Oy" sceneMemberID="viewController">
                     <view key="view" id="ocn-6K-p0W" customClass="PostProcessSidebarViewController">
-                        <rect key="frame" x="0.0" y="0.0" width="191" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="191" height="457"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cfe-2K-wg0">
+                                <rect key="frame" x="27" y="258" width="37" height="0.0"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Label" id="9bn-ew-Aqg">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="OG2-ti-EVe"/>
                         <viewLayoutGuide key="layoutMargins" id="Xd7-mf-VHs"/>
                     </view>
                 </viewController>
-                <customObject id="ej2-dV-Bdb" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2006.5" y="-620"/>
+            <point key="canvasLocation" x="-2162" y="-621"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="CC6-eE-uD3">
             <objects>
                 <viewController id="JZq-EM-XfM" sceneMemberID="viewController">
-                    <view key="view" id="QzX-vE-GyK" customClass="PostProcessContentViewController">
-                        <rect key="frame" x="0.0" y="0.0" width="302" height="300"/>
+                    <view key="view" id="QzX-vE-GyK" customClass="PostProcessTextSettings">
+                        <rect key="frame" x="0.0" y="0.0" width="528" height="455"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="tZv-bP-MrT">
+                                <rect key="frame" x="226" y="219" width="75" height="18"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="check" title="Enabled" bezelStyle="regularSquare" imagePosition="left" state="on" inset="2" id="llA-wm-Xc8">
+                                    <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <connections>
+                                        <action selector="ActionEnabled:" target="QzX-vE-GyK" id="CFQ-wV-cRH"/>
+                                    </connections>
+                                </buttonCell>
+                            </button>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="nNG-J5-LjQ"/>
                         <viewLayoutGuide key="layoutMargins" id="Mu9-KA-3MA"/>
+                        <connections>
+                            <outlet property="ActionEnabled" destination="tZv-bP-MrT" id="6t9-Uf-hhI"/>
+                            <outlet property="OutletEnabled" destination="tZv-bP-MrT" id="DOH-rI-B65"/>
+                        </connections>
                     </view>
                 </viewController>
                 <customObject id="n3E-EG-pkq" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-821" y="-803"/>
+            <point key="canvasLocation" x="-893" y="-556"/>
         </scene>
         <!--Application-->
         <scene sceneID="ePP-oT-nQA">
@@ -690,7 +718,7 @@
                 </windowController>
                 <customObject id="W4h-Sm-Alt" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="685" y="-651"/>
+            <point key="canvasLocation" x="761" y="-510"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="L1U-LD-vGn">
