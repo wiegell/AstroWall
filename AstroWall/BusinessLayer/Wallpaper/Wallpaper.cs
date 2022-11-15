@@ -45,7 +45,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             var currentScreensConnectedById = Screen.FromCurrentConnected();
 
             // Create postprocessed images
-            await imgWrap.createPostProcessedImages(currentScreensConnectedById);
+            await imgWrap.createPostProcessedImages(currentScreensConnectedById, applicationHandler.Prefs.PostProcesses);
 
             // Set wallpapers
             Dictionary<Screen, string> postProcessedImageUrlByScreen = imgWrap.ImgLocalPostProcessedUrlsByScreenId.ToDictionary(

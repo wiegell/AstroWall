@@ -616,7 +616,7 @@
                         <menuItem title="About" enabled="NO" identifier="about" id="cxH-p3-C8I">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <segue destination="YBH-Bd-rg8" kind="show" id="0g7-7w-7bd"/>
+                                <segue destination="YBH-Bd-rg8" kind="show" id="sqK-k6-xIF"/>
                             </connections>
                         </menuItem>
                         <menuItem title="Quit Astro Wall" identifier="quit" id="2p1-pg-8rT">
@@ -650,10 +650,9 @@
         <!--Window Controller-->
         <scene sceneID="q38-OP-K4N">
             <objects>
-                <windowController id="YBH-Bd-rg8" sceneMemberID="viewController">
+                <windowController showSeguePresentationStyle="single" id="YBH-Bd-rg8" sceneMemberID="viewController">
                     <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="VIg-2u-sVF">
-                        <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
-                        <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
                         <rect key="contentRect" x="294" y="313" width="480" height="270"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1055"/>
                         <view key="contentView" id="zlZ-pH-W7U">
@@ -672,25 +671,96 @@
             </objects>
             <point key="canvasLocation" x="-296" y="22"/>
         </scene>
-        <!--View Controller-->
+        <!--About View Controller-->
         <scene sceneID="tNl-v6-Y4y">
             <objects>
-                <viewController id="lby-u3-srl" sceneMemberID="viewController">
+                <viewController id="lby-u3-srl" customClass="AboutViewController" sceneMemberID="viewController">
                     <view key="view" id="adf-Wf-VJ2">
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="HmF-L5-Vk8">
-                                <rect key="frame" x="18" y="222" width="97" height="28"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                <textFieldCell key="cell" controlSize="large" alignment="left" title="About" id="fbr-yb-gEO">
-                                    <font key="font" metaFont="system"/>
-                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
-                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                </textFieldCell>
-                            </textField>
+                            <visualEffectView fixedFrame="YES" blendingMode="behindWindow" material="appearanceBased" state="followsWindowActiveState" translatesAutoresizingMaskIntoConstraints="NO" id="TvC-Ec-bFK">
+                                <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <subviews>
+                                    <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iEC-3N-ray">
+                                        <rect key="frame" x="7" y="7" width="256" height="256"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="AppIconImage" id="bcO-pQ-hOz"/>
+                                    </imageView>
+                                    <button wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="v7Q-E9-JIX">
+                                        <rect key="frame" x="377" y="91" width="90" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="push" title="Web" bezelStyle="rounded" image="arrow.up.forward" catalog="system" imagePosition="right" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="tLp-MD-RaB">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="ActionWeb:" target="lby-u3-srl" id="XzT-jf-20l"/>
+                                        </connections>
+                                    </button>
+                                    <button wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="got-RO-2gF">
+                                        <rect key="frame" x="377" y="59" width="90" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="push" title="Github" bezelStyle="rounded" image="arrow.up.forward" catalog="system" imagePosition="right" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="dZY-oa-Py4">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="ActionGithub:" target="lby-u3-srl" id="NDj-ic-OBb"/>
+                                        </connections>
+                                    </button>
+                                    <button wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bzr-hm-xmL">
+                                        <rect key="frame" x="377" y="27" width="90" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <buttonCell key="cell" type="push" title="Issues" bezelStyle="rounded" image="arrow.up.forward" catalog="system" imagePosition="right" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="7Jh-ab-nED">
+                                            <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                            <font key="font" metaFont="system"/>
+                                        </buttonCell>
+                                        <connections>
+                                            <action selector="ActionIssues:" target="lby-u3-srl" id="Lqa-XG-fmH"/>
+                                        </connections>
+                                    </button>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3Od-P5-UZj">
+                                        <rect key="frame" x="269" y="221" width="66" height="16"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" title="Astro Wall" id="9qb-eI-lR6">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0Pu-9H-Cja">
+                                        <rect key="frame" x="269" y="197" width="143" height="16"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <textFieldCell key="cell" lineBreakMode="clipping" title="{{version placeholder}}" id="ARe-Bc-sDV">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aqo-BG-VZP">
+                                        <rect key="frame" x="269" y="133" width="193" height="56"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                        <textFieldCell key="cell" title="For general feedback or suggestions, please open an issue at the Github repo" id="dMd-4P-mX1">
+                                            <font key="font" metaFont="system"/>
+                                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                        </textFieldCell>
+                                    </textField>
+                                </subviews>
+                            </visualEffectView>
                         </subviews>
+                        <connections>
+                            <outlet property="ActionGithub" destination="got-RO-2gF" id="4zd-qY-vDz"/>
+                            <outlet property="ActionIssues" destination="bzr-hm-xmL" id="WKI-CD-6Ng"/>
+                            <outlet property="OutletVersion" destination="0Pu-9H-Cja" id="43A-Gv-eXB"/>
+                        </connections>
                     </view>
+                    <connections>
+                        <outlet property="OutletVersion" destination="0Pu-9H-Cja" id="Eq7-mT-ilL"/>
+                        <outlet property="OutletVersion2" destination="0Pu-9H-Cja" id="sPT-lR-Y1r"/>
+                    </connections>
                 </viewController>
                 <customObject id="AbV-LN-Fla" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -840,6 +910,7 @@
     <resources>
         <image name="AppIconImage" width="256" height="256"/>
         <image name="MainIcon_rot_0" width="24" height="24"/>
+        <image name="arrow.up.forward" catalog="system" width="13" height="12"/>
         <image name="arrow.up.right" catalog="system" width="13" height="12"/>
         <image name="laptopcomputer.and.arrow.down" catalog="system" width="28" height="19"/>
     </resources>

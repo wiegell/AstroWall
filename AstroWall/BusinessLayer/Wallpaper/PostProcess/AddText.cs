@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using AstroWall.ApplicationLayer.Helpers;
 using SkiaSharp;
 
 namespace AstroWall.BusinessLayer.Wallpaper
@@ -13,45 +14,61 @@ namespace AstroWall.BusinessLayer.Wallpaper
         {
         }
 
-        public static SkiaSharp.SKBitmap AddText(SKBitmap inputBitmap, string title, string description)
+        public static Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> AddTextCurry(Preferences.AddText options, string title, string description)
         {
-            SKBitmap toBitmap;
+            return (Dictionary<Screen, SkiaSharp.SKBitmap> dic) =>
+            {
+                return AddText(dic, options, title, description);
+            };
+        }
+
+        public static Dictionary<Screen, SkiaSharp.SKBitmap> AddText(Dictionary<Screen, SkiaSharp.SKBitmap> dic, Preferences.AddText options, string title, string description)
+        {
+            SKBitmap mainScreenBitmap;
+            Screen mainScreen;
+            try
+            {
+                mainScreen = dic.Where(screen => screen.Key.isMainScreen).ToArray()[0].Key;
+                mainScreenBitmap = dic[mainScreen];
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Could not get main screen from input dict", ex);
+            }
+            if (mainScreenBitmap == null)
+            {
+                throw new Exception("Could not get main screen from input dict");
+            }
+
+            SKBitmap returnBitmap;
             Console.WriteLine("running postprocess");
             try
             {
-            toBitmap = inputBitmap.Copy();
-            } catch (Exception ex)
+                returnBitmap = mainScreenBitmap.Copy();
+            }
+            catch (Exception ex)
             {
                 var exx = ex;
                 Console.WriteLine("Problem copying bitmap");
                 throw ex;
             }
 
-            var canvas = new SKCanvas(toBitmap);
-            // Draw a bitmap rescaled
-            //canvas.SetMatrix(SKMatrix.MakeScale(resizeFactor, resizeFactor));
-            canvas.DrawBitmap(inputBitmap, 0, 0);
+            var canvas = new SKCanvas(returnBitmap);
+            canvas.DrawBitmap(mainScreenBitmap, 0, 0);
             canvas.ResetMatrix();
 
-            //var font = SKTypeface.FromFamilyName("Arial");
-            //var brush = new SKPaint
-            //{
-            //    Typeface = font,
-            //    TextSize = 20f,
-            //    IsAntialias = true,
-            //    Color = new SKColor(255, 255, 255, 255)
-            //};
-            //canvas.DrawText(description, 80, toBitmap.Height - 120, brush);
-
-            PaintToRect(canvas, 1000, 500, 80, toBitmap.Height - 120, description
+            PaintToRect(canvas, 1000, 500, 80, returnBitmap.Height - 120, description
                 );
             canvas.Flush();
-
-
             canvas.Dispose();
-            //brush.Dispose();
-            //font.Dispose();
-            return toBitmap;
+
+            // Create shallow dict copy to return
+            var returnDic = dic.ToDictionary(x => x.Key, x => x.Value);
+
+            // Replace main screen with new bitmap
+            returnDic[mainScreen] = returnBitmap;
+
+            return returnDic;
         }
         private static void PaintToRect(SKCanvas canvas, int width, int height, int x, int y, string text)
         {

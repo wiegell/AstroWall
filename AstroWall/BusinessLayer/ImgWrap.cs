@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using SkiaSharp;
 using System.IO;
 using System.Threading.Tasks;
-using AstroWall.BusinessLayer.Preferences;
+using AstroWall.BusinessLayer;
 using System.Collections.Generic;
 using System.Linq;
 using AstroWall.ApplicationLayer.Helpers;
@@ -174,9 +174,11 @@ namespace AstroWall.BusinessLayer
             return;
         }
 
-        public async Task createPostProcessedImages(Dictionary<string, Screen> screens)
+        public async Task createPostProcessedImages(Dictionary<string, Screen> screens, Dictionary<Preferences.PostProcessType, Preferences.PostProcess> postProcessPrefsDictionary)
         {
             Console.WriteLine("creating postprocessed images");
+
+            // Load full res image
             SKBitmap image;
             try
             {
@@ -188,17 +190,36 @@ namespace AstroWall.BusinessLayer
                 return;
             }
 
+            // Prep Dictionary vars for postprocess
+            Dictionary<Screen, SKBitmap> unProcessedImagesByScreenId =
+                screens.ToDictionary(
+                    // Set Screen instance as key
+                    screenKV => screenKV.Value,
+                    // Value as unprocessed full res image loaded above
+                    screenKV => image
+                    );
+            Dictionary<Screen, SKBitmap> postProcessedImagesByScreenId;
+
+            // Prep postprocess chain
+            Func<Dictionary<Screen, SKBitmap>> postProcessChain =
+                Wallpaper.PostProcess.ComposePostProcess(
+                    () => unProcessedImagesByScreenId,
+                    //Wallpaper.PostProcess.AddTextCurry(
+                    //    (Preferences.AddText)postProcessPrefsDictionary[Preferences.PostProcessType.AddText],
+                    //    Title,
+                    //    Description
+                    //    ),
+                   Wallpaper.PostProcess.AddTextCurry(
+                        (Preferences.AddText)postProcessPrefsDictionary[Preferences.PostProcessType.AddText],
+                        Title,
+                        "TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST "
+                        )
+                    );
+
             // Do the postprocessing
-            Dictionary<string, SKBitmap> postProcessedImagesByScreenId;
             try
             {
-                postProcessedImagesByScreenId =
-                    screens.ToDictionary(
-                        screenKV =>
-                            screenKV.Key,
-                        screenKV =>
-                            Wallpaper.PostProcess.AddText(image, Title, Description));
-
+                postProcessedImagesByScreenId = postProcessChain();
             }
             catch (Exception ex)
             {
@@ -209,11 +230,12 @@ namespace AstroWall.BusinessLayer
             // Save files and register file paths
             try
             {
+                // This is the format saved in prefs
                 ImgLocalPostProcessedUrlsByScreenId = postProcessedImagesByScreenId.ToDictionary(
-                    bitmapKV => bitmapKV.Key,
+                    bitmapKV => bitmapKV.Key.Id,
                     bitmapKV =>
                     {
-                        string path = $"{ImgLocalUrl}_postprocessed_{bitmapKV.Key}.{FileType}";
+                        string path = $"{ImgLocalUrl}_postprocessed_{bitmapKV.Key.Id}.{FileType}";
                         FileStream f = File.Create(path);
                         bitmapKV.Value.Encode(f, (OnlineUrlIsJPG() ? SKEncodedImageFormat.Jpeg : SKEncodedImageFormat.Png), 90);
                         Console.WriteLine($"postprocess for screen {bitmapKV.Key} saved: {path}");

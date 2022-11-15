@@ -186,6 +186,11 @@
     <Compile Include="BusinessLayer\Wallpaper\PostProcess\AddText.cs" />
     <Compile Include="BusinessLayer\Wallpaper\PostProcess\ScaleAndCrop.cs" />
     <Compile Include="ApplicationLayer\Helpers\Screen.Model.Macos.cs" />
+    <Compile Include="ApplicationLayer\View\AboutViewController.cs" />
+    <Compile Include="ApplicationLayer\View\AboutViewController.designer.cs">
+      <DependentUpon>AboutViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BusinessLayer\Wallpaper\PostProcess\Compose.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

@@ -17,6 +17,10 @@ namespace AstroWall
         public General()
         {
         }
+        public static string currentVersion()
+        {
+            return NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
+        }
 
         public static string getAstroDirectory()
         {

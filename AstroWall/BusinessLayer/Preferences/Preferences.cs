@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AppKit;
 using Newtonsoft.Json;
 
@@ -37,13 +38,13 @@ namespace AstroWall.BusinessLayer.Preferences
         [JsonProperty]
         public AddText AddTextPostProcess;
 
-        public List<PostProcess> PostProcesses
+        public Dictionary<PostProcessType, PostProcess> PostProcesses
         {
             get
             {
-                var retList = new List<PostProcess>();
-                retList.Add(AddTextPostProcess);
-                return retList;
+                var retDict = new Dictionary<PostProcessType, PostProcess>();
+                retDict.Add(PostProcessType.AddText, AddTextPostProcess);
+                return retDict;
             }
         }
 

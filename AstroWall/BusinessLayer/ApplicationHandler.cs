@@ -20,7 +20,7 @@ namespace AstroWall.BusinessLayer
 
         // Misc
         public Version CurrentVersion { private set; get; }
-        private string currentVersionString = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
+        private string currentVersionString = General.currentVersion();
 
 
         public ApplicationHandler(AppDelegate del)

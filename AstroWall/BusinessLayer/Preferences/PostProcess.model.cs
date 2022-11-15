@@ -3,6 +3,11 @@ using Newtonsoft.Json;
 
 namespace AstroWall.BusinessLayer.Preferences
 {
+    public enum PostProcessType
+    {
+        AddText,
+        ScaleAndCrop
+    }
 
     [JsonObject]
     public abstract class PostProcess
@@ -10,14 +15,14 @@ namespace AstroWall.BusinessLayer.Preferences
         [JsonProperty]
         public readonly bool isEnabled;
         [JsonProperty]
-        public readonly string name;
+        public readonly PostProcessType name;
 
-        public PostProcess(string name, bool isEnabled)
+        public PostProcess(PostProcessType name, bool isEnabled)
         {
             this.name = name;
             this.isEnabled = isEnabled;
         }
-        public PostProcess(PostProcess otherObj, string name)
+        public PostProcess(PostProcess otherObj, PostProcessType name)
         {
             this.name = name;
             this.isEnabled = otherObj.isEnabled;
