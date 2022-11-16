@@ -10,7 +10,7 @@ using AstroWall.ApplicationLayer.Helpers;
 
 namespace AstroWall.BusinessLayer
 {
-    [JsonObject(MemberSerialization.OptOut)]
+    [JsonObject(MemberSerialization.OptIn)]
     public class ImgWrap : IComparable
     {
         [JsonProperty]
@@ -59,6 +59,8 @@ namespace AstroWall.BusinessLayer
         {
 
         }
+
+        public string ImgLocalUrlNoExtension { get => System.IO.Path.ChangeExtension(ImgLocalUrl, null); }
 
         public async Task LoadOnlineDataButNotImg()
         {
@@ -191,7 +193,7 @@ namespace AstroWall.BusinessLayer
             }
 
             // Prep Dictionary vars for postprocess
-            Dictionary<Screen, SKBitmap> unProcessedImagesByScreenId =
+            Dictionary<Screen, SKBitmap> unProcessedImagesByScreen =
                 screens.ToDictionary(
                     // Set Screen instance as key
                     screenKV => screenKV.Value,
@@ -203,17 +205,14 @@ namespace AstroWall.BusinessLayer
             // Prep postprocess chain
             Func<Dictionary<Screen, SKBitmap>> postProcessChain =
                 Wallpaper.PostProcess.ComposePostProcess(
-                    () => unProcessedImagesByScreenId,
-                    //Wallpaper.PostProcess.AddTextCurry(
-                    //    (Preferences.AddText)postProcessPrefsDictionary[Preferences.PostProcessType.AddText],
-                    //    Title,
-                    //    Description
-                    //    ),
-                   Wallpaper.PostProcess.AddTextCurry(
+                    () => unProcessedImagesByScreen,
+                    Wallpaper.PostProcess.ScaleAndCrop,
+                    Wallpaper.PostProcess.AddTextCurry(
                         (Preferences.AddText)postProcessPrefsDictionary[Preferences.PostProcessType.AddText],
                         Title,
-                        "TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST TEEEEEEEEEST "
+                        Description
                         )
+
                     );
 
             // Do the postprocessing
@@ -235,10 +234,14 @@ namespace AstroWall.BusinessLayer
                     bitmapKV => bitmapKV.Key.Id,
                     bitmapKV =>
                     {
-                        string path = $"{ImgLocalUrl}_postprocessed_{bitmapKV.Key.Id}.{FileType}";
+                        string path = $"{ImgLocalUrlNoExtension}_postprocessed_{bitmapKV.Key.Id}.{FileType}";
+
+                        //Console.WriteLine($"Commencing save of postprocess of screen {bitmapKV.Key.Id} to path {path}");
+
                         FileStream f = File.Create(path);
                         bitmapKV.Value.Encode(f, (OnlineUrlIsJPG() ? SKEncodedImageFormat.Jpeg : SKEncodedImageFormat.Png), 90);
-                        Console.WriteLine($"postprocess for screen {bitmapKV.Key} saved: {path}");
+                        //Console.WriteLine($"Postprocess for screen {bitmapKV.Key} saved to path {path}");
+                        f.Close();
                         return path;
                     }
                     );

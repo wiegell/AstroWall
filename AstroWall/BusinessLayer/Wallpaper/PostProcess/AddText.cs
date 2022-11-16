@@ -57,7 +57,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             canvas.DrawBitmap(mainScreenBitmap, 0, 0);
             canvas.ResetMatrix();
 
-            PaintToRect(canvas, 1000, 500, 80, returnBitmap.Height - 120, description
+            PaintToRect(canvas, 1000, 500, 80, returnBitmap.Height - 120, description.Replace("\n","")
                 );
             canvas.Flush();
             canvas.Dispose();

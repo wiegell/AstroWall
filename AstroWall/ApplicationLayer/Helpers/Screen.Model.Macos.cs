@@ -3,6 +3,8 @@ using AppKit;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Collections.Generic;
+using Foundation;
+using GameController;
 
 namespace AstroWall.ApplicationLayer.Helpers
 {
@@ -21,8 +23,8 @@ namespace AstroWall.ApplicationLayer.Helpers
         private Screen(NSScreen nSscreen)
         {
             Id = nSscreen.LocalizedName;
-            xRes = (int)nSscreen.Frame.Size.Width;
-            yRes = (int)nSscreen.Frame.Size.Height;
+            xRes =  (int)nSscreen.Frame.Size.Width * 2;
+            yRes = (int)nSscreen.Frame.Size.Height * 2;
             isMainScreen = NSScreen.MainScreen == nSscreen;
         }
 
@@ -55,6 +57,10 @@ namespace AstroWall.ApplicationLayer.Helpers
         public bool isVertical()
         {
             return yRes > xRes;
+        }
+        public double calcRatio()
+        {
+            return (double)xRes / (double)yRes;
         }
     }
 

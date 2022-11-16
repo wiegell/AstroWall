@@ -7,7 +7,7 @@ using AppKit;
 using AstroWall.BusinessLayer;
 using AstroWall.BusinessLayer.Preferences;
 using Foundation;
-using GameController;
+
 
 
 namespace AstroWall.ApplicationLayer
