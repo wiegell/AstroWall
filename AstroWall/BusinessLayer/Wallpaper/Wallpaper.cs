@@ -41,6 +41,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
         public async Task<bool> RunPostProcessAndSetWallpaperAllScreens(ImgWrap imgWrap)
         {
+            applicationHandler.State.SetStatePostProcessing();
             // Get current screens
             var currentScreensConnectedById = Screen.FromCurrentConnected();
 
@@ -54,7 +55,9 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 // Value is post processed url
                 screenKV => screenKV.Value
                 );
-            return await SetWallpaperAllScreens(postProcessedImageUrlByScreen);
+            bool retVar = await SetWallpaperAllScreens(postProcessedImageUrlByScreen);
+            applicationHandler.State.UnsetStatePostProcessing();
+            return retVar;
         }
 
         public async Task<bool> SetWallpaperAllScreens(Dictionary<Screen, string> urlsByScreen)
@@ -166,17 +169,21 @@ namespace AstroWall.BusinessLayer.Wallpaper
                     Console.WriteLine("Last online check was probably during sleep, retrying to set wallpapers in 10 sec");
                     // Delay is to allow the user to sign in after wake
                     await Task.Delay(10000);
-                    this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0]);
+                    Task.Run(async () =>
+                    {
+                        await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0]);
+                    });
                 }
                 else if (applicationHandler.Prefs.NextScheduledCheck < DateTime.Now)
                 {
                     Console.WriteLine("Scheduled check has passed, performing check now, delaying set wall by 10 sec");
+                    applicationHandler.State.SetStateDownloading("Checking for new pics...");
                     await applicationHandler.checkForNewPics();
                     // Delay is to allow the user to sign in after wake
                     await Task.Delay(10000);
                     bool successChangeWallpaper = await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0]);
                     createNoonCheck();
-                    applicationHandler.State.SetStateIdle();
+                    applicationHandler.State.UnsetStateDownloading();
                 }
                 else
                 {
@@ -234,6 +241,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             if (applicationHandler.Prefs.DailyCheck == DailyCheckEnum.Newest)
             {
                 Console.WriteLine("Noon callback, checking for new pics");
+                applicationHandler.State.SetStateDownloading("Checking for new pics...");
                 await applicationHandler.checkForNewPics();
                 bool successChangeWallpaper = await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0]);
                 if (!successChangeWallpaper) lastScheduledCheckFailedToSetWallpaper = true;
@@ -242,7 +250,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 createNoonCheck();
 
                 // Back to idle (set to download in earlier subfunction)
-                applicationHandler.State.SetStateIdle();
+                applicationHandler.State.UnsetStateDownloading();
             }
         }
 

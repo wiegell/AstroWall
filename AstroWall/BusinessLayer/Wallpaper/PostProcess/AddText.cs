@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using AstroWall.ApplicationLayer.Helpers;
 using SkiaSharp;
 
@@ -41,7 +42,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             }
 
             SKBitmap returnBitmap;
-            Console.WriteLine("running postprocess");
+            Console.WriteLine("Running AddText");
             try
             {
                 returnBitmap = mainScreenBitmap.Copy();
@@ -53,11 +54,20 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 throw ex;
             }
 
+            // Format description
+            string descriptionFormatted = description.Replace("\n", " ").Replace("Explanation:", "").Replace("   ", " ").Replace("  ", " ").Replace("  ", " ").TrimStart();
+
+            //string desc = "test \n test\n testtesttest";
+            Console.WriteLine("desc: " + descriptionFormatted);
             var canvas = new SKCanvas(returnBitmap);
             canvas.DrawBitmap(mainScreenBitmap, 0, 0);
             canvas.ResetMatrix();
 
-            PaintToRect(canvas, 1000, 500, 80, returnBitmap.Height - 120, description.Replace("\n","")
+            // Paint Title
+            PaintToRect(canvas, 1000, 250, 120, 20, 40, false, title
+                );
+            // Paint description
+            PaintToRect(canvas, 1000, 250, 200, 20, 25, true, descriptionFormatted
                 );
             canvas.Flush();
             canvas.Dispose();
@@ -70,16 +80,30 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
             return returnDic;
         }
-        private static void PaintToRect(SKCanvas canvas, int width, int height, int x, int y, string text)
+        private static void PaintToRect(SKCanvas canvas, int width, int x, int y, int margin, int size, bool italic, string text)
         {
-            using (var paint = new SKPaint() { Color = SKColors.Red, Style = SKPaintStyle.Fill, TextSize = 30, })
-            {
-                var area = SKRect.Create(x, y, width, height);
-                // Background
-                canvas.DrawRect(area, paint);
+            SKTypeface type = SKTypeface.FromFamilyName("Helvetica Neue", SKFontStyleWeight.Light, SKFontStyleWidth.Normal, italic ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright);
 
-                paint.Color = SKColors.White;
-                DrawText(canvas, text, area, paint);
+            using (var paint = new SKPaint()
+            {
+                Color = SKColors.Black.WithAlpha((byte)170),
+                Style = SKPaintStyle.Fill,
+                TextSize = size,
+                IsAntialias = true,
+                TextAlign = SKTextAlign.Left,
+                Typeface = type
+            })
+            {
+                var tmpRect = SKRect.Create(x, y, width, 3000);
+                int height = DrawText(canvas, text, tmpRect, paint, margin, true);
+                Console.WriteLine("Calculated rect height: " + height);
+                var properRect = SKRect.Create(x, y, width, height);
+
+                // Background
+                canvas.DrawRect(properRect, paint);
+
+                paint.Color = SKColors.White.WithAlpha((byte)150);
+                DrawText(canvas, text, properRect, paint, margin);
             }
         }
 
@@ -90,20 +114,37 @@ namespace AstroWall.BusinessLayer.Wallpaper
             public float Width { get; set; }
         }
 
-        private static void DrawText(SKCanvas canvas, string text, SKRect area, SKPaint paint)
+        /// <summary>
+        /// Returns needed rect height
+        /// </summary>
+        /// <param name="canvas"></param>
+        /// <param name="text"></param>
+        /// <param name="rect"></param>
+        /// <param name="paint"></param>
+        /// <returns></returns>
+        private static int DrawText(SKCanvas canvas, string text, SKRect rect, SKPaint paint, int margin, bool dryRun = false)
         {
-            float lineHeight = paint.TextSize * 1.2f;
-            var lines = SplitLines(text, paint, area.Width);
-            var height = lines.Count() * lineHeight;
-
-            var y = area.MidY - height / 2;
-
-            foreach (var line in lines)
+            float spaceWidth = paint.MeasureText(" ");
+            float wordX = rect.Left + margin;
+            float wordY = rect.Top + paint.TextSize + margin;
+            foreach (string word in text.Split(' '))
             {
-                y += lineHeight;
-                var x = area.MidX - line.Width / 2;
-                canvas.DrawText(line.Value, x, y, paint);
+                float wordWidth = paint.MeasureText(word);
+
+                if (wordWidth <= rect.Right - wordX - margin && word != "\n")
+                {
+                    if (!dryRun) canvas.DrawText(word, wordX, wordY, paint);
+                    wordX += wordWidth + spaceWidth;
+                }
+                else
+                {
+                    wordY += paint.FontSpacing;
+                    wordX = rect.Left + margin;
+                    if (!dryRun) canvas.DrawText(word, wordX, wordY, paint);
+                    wordX += wordWidth + spaceWidth;
+                }
             }
+            return (int)(wordY - rect.Top + margin);
         }
 
         private static Line[] SplitLines(string text, SKPaint paint, float maxWidth)

@@ -23,8 +23,9 @@ namespace AstroWall.ApplicationLayer.Helpers
         private Screen(NSScreen nSscreen)
         {
             Id = nSscreen.LocalizedName;
-            xRes =  (int)nSscreen.Frame.Size.Width * 2;
-            yRes = (int)nSscreen.Frame.Size.Height * 2;
+            // Always assume HDPI (x2)
+            xRes =  (int)(nSscreen.Frame.Size.Width * 2);
+            yRes = (int)(nSscreen.Frame.Size.Height * 2);
             isMainScreen = NSScreen.MainScreen == nSscreen;
         }
 

@@ -7,6 +7,7 @@ using AstroWall.BusinessLayer;
 using System.Collections.Generic;
 using System.Linq;
 using AstroWall.ApplicationLayer.Helpers;
+using System.Threading;
 
 namespace AstroWall.BusinessLayer
 {
@@ -178,7 +179,7 @@ namespace AstroWall.BusinessLayer
 
         public async Task createPostProcessedImages(Dictionary<string, Screen> screens, Dictionary<Preferences.PostProcessType, Preferences.PostProcess> postProcessPrefsDictionary)
         {
-            Console.WriteLine("creating postprocessed images");
+            Console.WriteLine("creating postprocessed images on thread: " + Thread.CurrentThread.ManagedThreadId);
 
             // Load full res image
             SKBitmap image;

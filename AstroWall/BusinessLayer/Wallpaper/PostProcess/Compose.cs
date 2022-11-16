@@ -15,8 +15,17 @@ namespace AstroWall.BusinessLayer.Wallpaper
             return () => f3(f2(f1()));
         }
         public static Func<Dictionary<Screen, SkiaSharp.SKBitmap>> ComposePostProcess(
-    Func<Dictionary<Screen, SkiaSharp.SKBitmap>> f1,
-    Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> f2)
+            Func<Dictionary<Screen, SkiaSharp.SKBitmap>> f1,
+            Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> f2,
+            Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> f3,
+            Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> f4)
+        {
+            return () => f4(f3(f2(f1())));
+        }
+
+        public static Func<Dictionary<Screen, SkiaSharp.SKBitmap>> ComposePostProcess(
+            Func<Dictionary<Screen, SkiaSharp.SKBitmap>> f1,
+            Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> f2)
         {
             return () => f2(f1());
         }

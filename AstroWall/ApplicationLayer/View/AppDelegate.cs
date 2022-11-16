@@ -34,6 +34,7 @@ namespace AstroWall.ApplicationLayer
         #region Override Methods
         public async override void DidFinishLaunching(NSNotification notification)
         {
+            Console.WriteLine("UI thread: " + Thread.CurrentThread.ManagedThreadId);
             await appHandler.Init();
         }
 

@@ -94,11 +94,11 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        public void changeIconTo(string iconName, bool doubleCheckState = false, BusinessLayer.stateEnum doubleCheckStateShouldHaveThisValue = BusinessLayer.stateEnum.BrowsingWallpapers)
+        public void changeIconTo(string iconName, bool doubleCheckState = false)
         {
             Action ac = () =>
             {
-                if (doubleCheckState && appHandler.State.state != doubleCheckStateShouldHaveThisValue) return;
+                //if (doubleCheckState && appHandler.State.state != doubleCheckStateShouldHaveThisValue) return;
                 var image = NSImage.ImageNamed(iconName);
                 image.Template = true;
                 statusBarItem.Button.Image = image;
@@ -136,9 +136,9 @@ namespace AstroWall.ApplicationLayer
                 {
                     if (e.Description == "Mouse Entered" && previewIsLoaded)
                     {
-                        if (stateRef.state != BusinessLayer.stateEnum.BrowsingWallpapers)
+                        if (!stateRef.isBrowsingWallpapers)
                         {
-                            stateRef.setStateBrowsing();
+                            stateRef.SetStateBrowsingWallpapers();
                         }
                         cancelEndBrowsingStateWithDelayCallback();
                         setPreviewWallpaperCallback();

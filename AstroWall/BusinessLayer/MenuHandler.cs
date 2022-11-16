@@ -145,8 +145,13 @@ namespace AstroWall.BusinessLayer
                         () => setEndBrowsingStateWithDelay(),
                         () =>
                         {
-                            appHandler.Prefs.CurrentAstroWallpaper = iw;
-                            appHandler.Wallpaper.RunPostProcessAndSetWallpaperAllScreens(iw);
+                            // Task wrap to run un non-UI thread
+                            Task.Run(async () =>
+                            {
+                                appHandler.State.UnsetStateBrowsingWallpapers();
+                                appHandler.Prefs.CurrentAstroWallpaper = iw;
+                               await appHandler.Wallpaper.RunPostProcessAndSetWallpaperAllScreens(iw);
+                            });
                         }
 
 
@@ -181,6 +186,7 @@ namespace AstroWall.BusinessLayer
             }
             appDelegate.updateMenuCheckMarks(appHandler.Prefs);
         }
+
         public void changedInMenuDailyCheckNewest(bool newState)
         {
             Console.WriteLine("Daily check changed to newest: " + newState);
@@ -202,12 +208,10 @@ namespace AstroWall.BusinessLayer
 
         private void OnTimedEventDownloadAnimation(Object stateInfo)
         {
-
             int flipCounter1based = flipCounter + 1;
             string iconName = "download" + flipCounter1based;
-            appDelegate.changeIconTo("download" + flipCounter1based, true, stateEnum.Downloading);
+            appDelegate.changeIconTo("download" + flipCounter1based, true);
             flipCounter = (flipCounter + 1) % 3;
-
         }
 
         private void OnTimedEventSpinnerAnimation(Object stateInfo)
@@ -215,7 +219,7 @@ namespace AstroWall.BusinessLayer
             int iconRotationDeg = (flipCounter * 15);
             string iconName = "MainIcon_rot_" + iconRotationDeg;
             Console.WriteLine("iconname: " + iconName);
-            appDelegate.changeIconTo(iconName, true, BusinessLayer.stateEnum.Initializing);
+            appDelegate.changeIconTo(iconName, true);
             flipCounter = (flipCounter + 1) % 6;
         }
 
@@ -223,7 +227,7 @@ namespace AstroWall.BusinessLayer
         {
             await Task.Delay(100, this.cancellationToken);
             appHandler.Wallpaper.ResetWallpaper();
-            appHandler.State.SetStateIdle();
+            appHandler.State.UnsetStateBrowsingWallpapers();
         }
 
         private void cancelEndBrowsingStateWithDelay()

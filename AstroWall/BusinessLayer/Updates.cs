@@ -138,7 +138,9 @@ namespace AstroWall.BusinessLayer
         {
             if (applicationHandler.Prefs.CheckUpdatesOnStartup)
             {
+                applicationHandler.State.SetStateDownloading("Checking updates");
                 await CheckForUpdates();
+                applicationHandler.State.UnsetStateDownloading();
             }
         }
 
