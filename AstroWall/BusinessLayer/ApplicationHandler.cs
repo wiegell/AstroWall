@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AstroWall.ApplicationLayer;
 using Foundation;
 using AstroWall.BusinessLayer.Preferences;
+using System.Threading;
 
 namespace AstroWall.BusinessLayer
 {
@@ -90,12 +91,10 @@ namespace AstroWall.BusinessLayer
 
             // Check for new pics, don't wait up
             if (Prefs.DailyCheck == DailyCheckEnum.Newest)
-                Task.Run(async () =>
-                {
-                    await checkForNewPics();
-                    await Wallpaper.RunPostProcessAndSetWallpaperAllScreens(db.ImgWrapList[0]);
-                });
-
+            {
+                await checkForNewPics();
+                Wallpaper.RunPostProcessAndSetWallpaperAllScreensUnobserved(db.ImgWrapList[0]);
+            }
 
             // Check for updates
             Updates.ConsiderCheckingForUpdates();
@@ -118,6 +117,7 @@ namespace AstroWall.BusinessLayer
                     }
             }
             State.UnsetStateInitializing();
+
         }
 
         public async Task checkForNewPics()

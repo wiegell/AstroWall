@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using AppKit;
 using AstroWall.BusinessLayer;
 using AstroWall.BusinessLayer.Preferences;
+using CoreFoundation;
+using Darwin;
 using Foundation;
 
 
@@ -34,7 +37,8 @@ namespace AstroWall.ApplicationLayer
         #region Override Methods
         public async override void DidFinishLaunching(NSNotification notification)
         {
-            Console.WriteLine("UI thread: " + Thread.CurrentThread.ManagedThreadId);
+            var test = CoreFoundation.OSLog.Default;
+            Console.WriteLine("UI thread:" + Thread.CurrentThread.ManagedThreadId);
             await appHandler.Init();
         }
 

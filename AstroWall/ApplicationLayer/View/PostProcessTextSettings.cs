@@ -34,7 +34,7 @@ namespace AstroWall
             changePrefsCallback = ac;
         }
 
-        partial void ActionEnabled(NSObject sender)
+        partial void ActionSave(NSObject sender)
         {
             if (changePrefsCallback == null)
                 throw new Exception("callback not defined");
@@ -42,16 +42,16 @@ namespace AstroWall
                 throw new Exception("old AddText not defined");
             else
             {
-                bool newStateOfEnabled = getCheckmarkBoolFromSender(sender);
+                bool newStateOfEnabled = getCheckmarkBoolFromOutlet(this.OutletEnabled);
                 Console.WriteLine("Registering new state from view: " + newStateOfEnabled);
                 changePrefsCallback(new AddText(addText, newStateOfEnabled));
-                //OutletEnabled.State = newStateOfEnabled ? NSCellStateValue.On : NSCellStateValue.Off;
+                this.Window.Close();
             }
         }
 
-        private bool getCheckmarkBoolFromSender(NSObject sender)
+        private bool getCheckmarkBoolFromOutlet(NSButton sender)
         {
-            return ((NSButton)sender).State == NSCellStateValue.On;
+            return sender.State == NSCellStateValue.On;
         }
     }
 }

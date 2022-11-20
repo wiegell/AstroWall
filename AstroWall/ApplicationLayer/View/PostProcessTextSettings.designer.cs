@@ -15,11 +15,8 @@ namespace AstroWall
 		[Outlet]
 		AppKit.NSButton OutletEnabled { get; set; }
 
-		[Action ("ActionAddTextCheckbox:")]
-		partial void ActionAddTextCheckbox (Foundation.NSObject sender);
-
-		[Action ("ActionEnabled:")]
-		partial void ActionEnabled (Foundation.NSObject sender);
+		[Action ("ActionSave:")]
+		partial void ActionSave (Foundation.NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{

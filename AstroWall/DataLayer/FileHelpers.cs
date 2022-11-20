@@ -57,19 +57,18 @@ namespace AstroWall
 
         public async static Task<SKBitmap> LoadImageFromLocalUrl(string path)
         {
-
             SKBitmap bitmap;
             try
             {
 
                 using (MemoryStream memStream = new MemoryStream())
                 {
-                    Console.WriteLine("Opening file: "+path);
+                    Console.WriteLine("Opening file: " + path);
                     FileStream fs = new FileStream(path, FileMode.Open);
 
                     await fs.CopyToAsync(memStream);
                     fs.Close();
-                    Console.WriteLine("Closed file: "+path);
+                    Console.WriteLine("Closed file: " + path);
                     memStream.Seek(0, SeekOrigin.Begin);
 
                     SKImage img = SKImage.FromEncodedData(memStream);
@@ -86,7 +85,6 @@ namespace AstroWall
                 throw ex;
             }
             return bitmap;
-
         }
 
         public static void SerializeNow(Object c, string path)
@@ -106,13 +104,28 @@ namespace AstroWall
 
         public static bool DBExists()
         {
-            Console.WriteLine("Checking, if db present at: "+ General.getDBPath());
+            Console.WriteLine("Checking, if db present at: " + General.getDBPath());
             return File.Exists(General.getDBPath());
         }
 
         public static bool PrefsExists()
         {
             return File.Exists(General.getPrefsPath());
+        }
+
+        public static void DeleteFile(string path)
+        {
+            File.Delete(path);
+            Console.WriteLine("File deleted at: " + path);
+        }
+
+        public static string GenTmpCopy(string src)
+        {
+            string ext = System.IO.Path.GetExtension(src);
+            string dst = Path.GetTempFileName() + ext;
+            File.Copy(src, dst);
+            Console.WriteLine("File copied from // to: " + src + " // " + dst);
+            return dst;
         }
 
     }

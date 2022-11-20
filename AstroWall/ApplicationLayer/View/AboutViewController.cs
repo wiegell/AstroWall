@@ -28,29 +28,17 @@ namespace AstroWall
 
         partial void ActionGithub(NSObject sender)
         {
-            openWebPage("https://github.com/wiegell/AstroWall/");
+            General.Open("https://github.com/wiegell/AstroWall/");
         }
         partial void ActionWeb(NSObject sender)
         {
-            openWebPage("https://wiegell.github.io/AstroWall/");
+          General.Open("https://wiegell.github.io/AstroWall/");
         }
         partial void ActionIssues(NSObject sender)
         {
-            openWebPage("https://github.com/wiegell/AstroWall/issues");
+            General.Open("https://github.com/wiegell/AstroWall/issues");
         }
 
-        private void openWebPage(string url)
-        {
-            NSTask nstask = new NSTask();
-            nstask.LaunchPath = "/bin/bash";
-            nstask.Arguments = new string[]
-            {
-                "-c",
-            "open "+url
-            };
-            //+" "
-            nstask.Launch();
-            nstask.WaitUntilExit();
-        }
+
     }
 }

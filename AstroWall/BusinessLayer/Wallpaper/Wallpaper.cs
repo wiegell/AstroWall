@@ -41,23 +41,54 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
         public async Task<bool> RunPostProcessAndSetWallpaperAllScreens(ImgWrap imgWrap)
         {
-            applicationHandler.State.SetStatePostProcessing();
-            // Get current screens
-            var currentScreensConnectedById = Screen.FromCurrentConnected();
+            try
+            {
+                // Task wrap to run on non-ui thread
+                return await Task.Run(async () =>
+                {
+                    applicationHandler.State.SetStatePostProcessing();
+                    // Get current screens
+                    var currentScreensConnectedById = Screen.FromCurrentConnected();
 
-            // Create postprocessed images
-            await imgWrap.createPostProcessedImages(currentScreensConnectedById, applicationHandler.Prefs.PostProcesses);
+                    // Create postprocessed images
+                    await imgWrap.createPostProcessedImages(currentScreensConnectedById, applicationHandler.Prefs.PostProcesses);
 
-            // Set wallpapers
-            Dictionary<Screen, string> postProcessedImageUrlByScreen = imgWrap.ImgLocalPostProcessedUrlsByScreenId.ToDictionary(
-                // Key is screen id
-                screenKV => currentScreensConnectedById[screenKV.Key],
-                // Value is post processed url
-                screenKV => screenKV.Value
-                );
-            bool retVar = await SetWallpaperAllScreens(postProcessedImageUrlByScreen);
-            applicationHandler.State.UnsetStatePostProcessing();
-            return retVar;
+                    // Set wallpapers
+                    Dictionary<Screen, string> postProcessedImageUrlByScreen = imgWrap.ImgLocalPostProcessedUrlsByScreenId.ToDictionary(
+                    // Key is screen id
+                    screenKV => currentScreensConnectedById[screenKV.Key],
+                    // Value is post processed url
+                    screenKV => screenKV.Value
+                    );
+                    bool retVar = await SetWallpaperAllScreens(postProcessedImageUrlByScreen);
+                    applicationHandler.Prefs.CurrentAstroWallpaper = imgWrap;
+                    
+                    applicationHandler.State.UnsetStatePostProcessing();
+                    return retVar;
+
+                });
+            }
+            catch (Exception ex)
+            {
+                // Rethrow to UI thread for debugging
+                Exception newEx = new Exception("Exception in postProcess task", ex);
+                General.RunOnUIThread(() =>
+                {
+                    Console.WriteLine("Exception in postProcess task on thread: " + Thread.CurrentThread.ManagedThreadId);
+                    throw newEx;
+                });
+
+                // This will not bubble up
+                throw newEx;
+            }
+        }
+
+        public void RunPostProcessAndSetWallpaperAllScreensUnobserved(ImgWrap imgWrap)
+        {
+            Task touter = Task.Run(async () =>
+            {
+                await RunPostProcessAndSetWallpaperAllScreens(imgWrap);
+            });
         }
 
         public async Task<bool> SetWallpaperAllScreens(Dictionary<Screen, string> urlsByScreen)
@@ -139,8 +170,10 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
         public void callbackWithNewPostProcessSettings(Preferences.AddText newAtFromDialogue)
         {
-            Console.WriteLine("setting new add text to: " + newAtFromDialogue.isEnabled);
+            Console.WriteLine("setting new post processing prefs" + newAtFromDialogue.isEnabled);
             this.applicationHandler.Prefs.AddTextPostProcess = newAtFromDialogue;
+            Console.WriteLine("rerunning postprocess");
+            applicationHandler.Wallpaper.RunPostProcessAndSetWallpaperAllScreensUnobserved(applicationHandler.Prefs.CurrentAstroWallpaper);
         }
 
         public void registerWakeHandler()
@@ -169,10 +202,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
                     Console.WriteLine("Last online check was probably during sleep, retrying to set wallpapers in 10 sec");
                     // Delay is to allow the user to sign in after wake
                     await Task.Delay(10000);
-                    Task.Run(async () =>
-                    {
-                        await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0]);
-                    });
+                    this.RunPostProcessAndSetWallpaperAllScreensUnobserved(applicationHandler.db.ImgWrapList[0]);
                 }
                 else if (applicationHandler.Prefs.NextScheduledCheck < DateTime.Now)
                 {

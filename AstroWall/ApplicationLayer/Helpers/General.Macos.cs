@@ -152,6 +152,20 @@ namespace AstroWall
             nstask.Launch();
         }
 
+        public static void Open(string url)
+        {
+            NSTask nstask = new NSTask();
+            nstask.LaunchPath = "/bin/bash";
+            nstask.Arguments = new string[]
+            {
+                "-c",
+            "open "+url
+            };
+            //+" "
+            nstask.Launch();
+            nstask.WaitUntilExit();
+        }
+
     }
 }
 

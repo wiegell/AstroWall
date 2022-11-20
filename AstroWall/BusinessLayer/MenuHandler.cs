@@ -101,7 +101,7 @@ namespace AstroWall.BusinessLayer
                 OnTimedEventSpinnerAnimation,
                 null,
                 0,
-                250);
+                200);
 
         }
 
@@ -139,19 +139,17 @@ namespace AstroWall.BusinessLayer
                         iw.PreviewIsLoaded(),
                         cancelEndBrowsingStateWithDelay,
                         () => appHandler.Wallpaper.SetPreviewWallpaper(iw),
-                        () => {
+                        () =>
+                        {
                             //appHandler.Wallpaper.SetWallpaperAllScreens(iw);
                         },
                         () => setEndBrowsingStateWithDelay(),
-                        () =>
+                        async () =>
                         {
                             // Task wrap to run un non-UI thread
-                            Task.Run(async () =>
-                            {
-                                appHandler.State.UnsetStateBrowsingWallpapers();
-                                appHandler.Prefs.CurrentAstroWallpaper = iw;
-                               await appHandler.Wallpaper.RunPostProcessAndSetWallpaperAllScreens(iw);
-                            });
+
+                            appHandler.State.UnsetStateBrowsingWallpapers();
+                            appHandler.Wallpaper.RunPostProcessAndSetWallpaperAllScreensUnobserved(iw);
                         }
 
 
@@ -159,6 +157,18 @@ namespace AstroWall.BusinessLayer
                 }
             }
         }
+
+        public void OpenUrlToCurrentPic()
+        {
+            General.Open(appHandler.Prefs.CurrentAstroWallpaper.PageUrl);
+        }
+        public void OpenCurrentPic()
+        {
+            string tmpPth = FileHelpers.GenTmpCopy(appHandler.Prefs.CurrentAstroWallpaper.ImgLocalUrl);
+            General.Open(tmpPth);
+        }
+
+
 
         public void changedInMenuRunAtLogin(bool newState)
         {
@@ -195,9 +205,14 @@ namespace AstroWall.BusinessLayer
             appDelegate.updateMenuCheckMarks(appHandler.Prefs);
         }
 
-        public async void clickedInMenuManualCheckUpdates()
+        public async void ClickedInMenuManualCheckUpdates()
         {
             await appHandler.Updates.CheckForUpdates(true);
+        }
+
+        public async void ClickedInMenuManualCheckForNewPic()
+        {
+            await this.appHandler.checkForNewPics();
         }
 
         private void renewCancellationSource()
@@ -218,7 +233,7 @@ namespace AstroWall.BusinessLayer
         {
             int iconRotationDeg = (flipCounter * 15);
             string iconName = "MainIcon_rot_" + iconRotationDeg;
-            Console.WriteLine("iconname: " + iconName);
+            //Console.WriteLine("iconname: " + iconName);
             appDelegate.changeIconTo(iconName, true);
             flipCounter = (flipCounter + 1) % 6;
         }
@@ -240,6 +255,8 @@ namespace AstroWall.BusinessLayer
         {
             appDelegate.removeAllPictureItemsInSubmenu();
         }
+
+
 
 
     }

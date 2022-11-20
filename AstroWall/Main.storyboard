@@ -213,6 +213,17 @@
                                     </connections>
                                 </buttonCell>
                             </button>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="d5G-vq-FED">
+                                <rect key="frame" x="451" y="13" width="64" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Save" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="2pt-Ba-7C7">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="ActionSave:" target="QzX-vE-GyK" id="b92-97-Zpa"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="nNG-J5-LjQ"/>
                         <viewLayoutGuide key="layoutMargins" id="Mu9-KA-3MA"/>
@@ -546,11 +557,23 @@
                         <menuItem title="{{state placeholder}}" enabled="NO" identifier="state" id="gSP-HT-QMc">
                             <modifierMask key="keyEquivalentModifierMask"/>
                         </menuItem>
+                        <menuItem title="Open current pic" id="R14-WD-8Ae">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="ActionOpenCurrentPic:" target="9tX-R6-oug" id="U2X-zX-kwY"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Open url to current pic" id="zMj-HF-mY0">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="ActionOpenUrlToCurrentPic:" target="9tX-R6-oug" id="aoz-7A-7Bx"/>
+                            </connections>
+                        </menuItem>
                         <menuItem isSeparatorItem="YES" id="EtY-B3-0Ek"/>
                         <menuItem title="Check for new pic" enabled="NO" identifier="manualcheckpic" id="cra-Bd-UqB">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <action selector="MenuManualCheckPic:" target="9tX-R6-oug" id="ZDm-NH-4mV"/>
+                                <action selector="ActionManualCheckForNewPic:" target="9tX-R6-oug" id="P1a-ty-Ui0"/>
                             </connections>
                         </menuItem>
                         <menuItem title="Browse latest" identifier="browse" id="vCu-ml-Eap">
@@ -640,6 +663,8 @@
                         <outlet property="MenuOutletState" destination="gSP-HT-QMc" id="oyU-2i-wog"/>
                         <outlet property="MenuStateOutlet" destination="gSP-HT-QMc" id="5uS-8e-R3d"/>
                         <outlet property="MenuTitle" destination="XzL-bp-nyZ" id="O06-rg-uWS"/>
+                        <outlet property="OutletOpenCurrentPic" destination="R14-WD-8Ae" id="J1a-EW-LsO"/>
+                        <outlet property="OutletOpenUrlToCurrentPic" destination="zMj-HF-mY0" id="Sge-ne-lf3"/>
                         <outlet property="StatusMenu" destination="9mV-Tt-jhF" id="JYk-r7-5Kq"/>
                         <outlet property="SubmenuUpdates" destination="F2x-wE-DFb" id="BBs-yC-SAh"/>
                     </connections>

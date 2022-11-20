@@ -227,7 +227,28 @@ namespace AstroWall.BusinessLayer
                 throw ex;
             }
 
+            //Remove old postprocessed files
+            //(needs to be saved under new name to prevent wrong cache
+            Console.WriteLine("Commencing deleting old postproccesed images");
+            if (ImgLocalPostProcessedUrlsByScreenId != null)
+            {
+
+            foreach (var KV in ImgLocalPostProcessedUrlsByScreenId)
+            {
+                Console.WriteLine($"Trying to delete postprocessed image at {KV.Value}");
+                try
+                {
+                    FileHelpers.DeleteFile(KV.Value);
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Problem deleting file" + ex.Message);
+                }
+            }
+            }
+
             // Save files and register file paths
+            Console.WriteLine("Commencing postprocess save");
             try
             {
                 // This is the format saved in prefs
@@ -235,13 +256,14 @@ namespace AstroWall.BusinessLayer
                     bitmapKV => bitmapKV.Key.Id,
                     bitmapKV =>
                     {
-                        string path = $"{ImgLocalUrlNoExtension}_postprocessed_{bitmapKV.Key.Id}.{FileType}";
+                        Random rnd = new Random();
+                        string path = $"{ImgLocalUrlNoExtension}_postprocessed_{bitmapKV.Key.Id}_{rnd.Next(999)}.{FileType}";
 
-                        //Console.WriteLine($"Commencing save of postprocess of screen {bitmapKV.Key.Id} to path {path}");
+                        Console.WriteLine($"Commencing save of postprocess of screen {bitmapKV.Key.Id} to path {path}");
 
                         FileStream f = File.Create(path);
                         bitmapKV.Value.Encode(f, (OnlineUrlIsJPG() ? SKEncodedImageFormat.Jpeg : SKEncodedImageFormat.Png), 90);
-                        //Console.WriteLine($"Postprocess for screen {bitmapKV.Key} saved to path {path}");
+                        Console.WriteLine($"Postprocess for screen {bitmapKV.Key} saved to path {path}");
                         f.Close();
                         return path;
                     }

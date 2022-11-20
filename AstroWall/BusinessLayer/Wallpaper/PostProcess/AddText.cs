@@ -54,31 +54,37 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 throw ex;
             }
 
-            // Format description
-            string descriptionFormatted = description.Replace("\n", " ").Replace("Explanation:", "").Replace("   ", " ").Replace("  ", " ").Replace("  ", " ").TrimStart();
+            if (options.isEnabled)
+            {
 
-            //string desc = "test \n test\n testtesttest";
-            Console.WriteLine("desc: " + descriptionFormatted);
-            var canvas = new SKCanvas(returnBitmap);
-            canvas.DrawBitmap(mainScreenBitmap, 0, 0);
-            canvas.ResetMatrix();
 
-            // Paint Title
-            PaintToRect(canvas, 1000, 250, 120, 20, 40, false, title
-                );
-            // Paint description
-            PaintToRect(canvas, 1000, 250, 200, 20, 25, true, descriptionFormatted
-                );
-            canvas.Flush();
-            canvas.Dispose();
+                // Format description
+                string descriptionFormatted = description.Replace("\n", " ").Replace("Explanation:", "").Replace("   ", " ").Replace("  ", " ").Replace("  ", " ").TrimStart();
 
-            // Create shallow dict copy to return
-            var returnDic = dic.ToDictionary(x => x.Key, x => x.Value);
+                //string desc = "test \n test\n testtesttest";
+                Console.WriteLine("desc: " + descriptionFormatted);
+                var canvas = new SKCanvas(returnBitmap);
+                canvas.DrawBitmap(mainScreenBitmap, 0, 0);
+                canvas.ResetMatrix();
 
-            // Replace main screen with new bitmap
-            returnDic[mainScreen] = returnBitmap;
+                // Paint Title
+                PaintToRect(canvas, 1000, 250, 120, 20, 40, false, title
+                    );
+                // Paint description
+                PaintToRect(canvas, 1000, 250, 200, 20, 25, true, descriptionFormatted
+                    );
+                canvas.Flush();
+                canvas.Dispose();
 
-            return returnDic;
+                // Create shallow dict copy to return
+                var returnDic = dic.ToDictionary(x => x.Key, x => x.Value);
+
+                // Replace main screen with new bitmap
+                returnDic[mainScreen] = returnBitmap;
+
+                return returnDic;
+            }
+            else return dic;
         }
         private static void PaintToRect(SKCanvas canvas, int width, int x, int y, int margin, int size, bool italic, string text)
         {

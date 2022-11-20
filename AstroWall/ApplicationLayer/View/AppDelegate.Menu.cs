@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using AppKit;
 using AstroWall.BusinessLayer.Preferences;
 using Foundation;
@@ -216,6 +217,11 @@ namespace AstroWall.ApplicationLayer
             }
         }
 
+        partial void ActionManualCheckForNewPic(NSObject sender)
+        {
+            menuHandler.ClickedInMenuManualCheckForNewPic();
+        }
+
 
         partial void MenuManualCheckPic(Foundation.NSObject sender)
         {
@@ -236,7 +242,7 @@ namespace AstroWall.ApplicationLayer
 
         partial void MenuActionManualCheckUpdates(NSObject sender)
         {
-            menuHandler.clickedInMenuManualCheckUpdates();
+            menuHandler.ClickedInMenuManualCheckUpdates();
         }
 
         partial void MenuActionPostProcess(NSObject sender)
@@ -244,6 +250,14 @@ namespace AstroWall.ApplicationLayer
             appHandler.Wallpaper.launchPostProcessWindow();
         }
 
+        partial void ActionOpenUrlToCurrentPic(NSObject sender)
+        {
+            menuHandler.OpenUrlToCurrentPic();
+        }
+        partial void ActionOpenCurrentPic(NSObject sender)
+        {
+            menuHandler.OpenCurrentPic();
+        }
         private bool getCheckmarkBoolFromSender(NSObject sender)
         {
             return ((NSMenuItem)sender).State == NSCellStateValue.On;
