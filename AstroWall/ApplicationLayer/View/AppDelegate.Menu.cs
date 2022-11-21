@@ -252,8 +252,13 @@ namespace AstroWall.ApplicationLayer
         {
             menuHandler.OpenUrlToCurrentCredits();
         }
-        partial void ActionOpenCurrentPic(NSObject sender)
+        partial void ActionClickAbout(NSObject sender)
         {
+            menuHandler.OpenAbout();
+        }
+        partial void ActionClickTitle(NSObject sender)
+        {
+            menuHandler.OpenAbout();
         }
         private bool getCheckmarkBoolFromSender(NSObject sender)
         {

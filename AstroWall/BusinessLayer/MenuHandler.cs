@@ -234,6 +234,11 @@ namespace AstroWall.BusinessLayer
             this.appHandler.AppDelegate.HideSubTitle();
         }
 
+        public void OpenAbout()
+        {
+            this.appHandler.AppDelegate.launchAboutWindow();
+        }
+
         private void renewCancellationSource()
         {
             this.taskCancellationSource = new CancellationTokenSource();

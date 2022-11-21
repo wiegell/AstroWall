@@ -59,6 +59,12 @@ namespace AstroWall.ApplicationLayer
 		[Action ("ActionCheckUpdatesAtStartup:")]
 		partial void ActionCheckUpdatesAtStartup (Foundation.NSObject sender);
 
+		[Action ("ActionClickAbout:")]
+		partial void ActionClickAbout (Foundation.NSObject sender);
+
+		[Action ("ActionClickTitle:")]
+		partial void ActionClickTitle (Foundation.NSObject sender);
+
 		[Action ("ActionManualCheckForNewPic:")]
 		partial void ActionManualCheckForNewPic (Foundation.NSObject sender);
 
@@ -159,6 +165,11 @@ namespace AstroWall.ApplicationLayer
 				MenuTitle = null;
 			}
 
+			if (OutletCurrentDetails != null) {
+				OutletCurrentDetails.Dispose ();
+				OutletCurrentDetails = null;
+			}
+
 			if (OutletOpenCurrentPic != null) {
 				OutletOpenCurrentPic.Dispose ();
 				OutletOpenCurrentPic = null;
@@ -177,11 +188,6 @@ namespace AstroWall.ApplicationLayer
 			if (SubmenuUpdates != null) {
 				SubmenuUpdates.Dispose ();
 				SubmenuUpdates = null;
-			}
-
-			if (OutletCurrentDetails != null) {
-				OutletCurrentDetails.Dispose ();
-				OutletCurrentDetails = null;
 			}
 		}
 	}

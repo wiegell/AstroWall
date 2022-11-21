@@ -26,6 +26,7 @@ namespace AstroWall.ApplicationLayer
         // Keep windows in memory
         NSWindowController updatePromptWindowController;
         NSWindowController postProcessPromptWindowController;
+        NSWindowController aboutWindowController;
         NSWindowController freshInstallWindowController;
 
         public AppDelegate()
@@ -75,18 +76,31 @@ namespace AstroWall.ApplicationLayer
             // Don't spawn new window if already opened
             if (!checkIfWindowIsAlreadyOpened(postProcessPromptWindowController))
             {
-
                 // Launch prefs always on top window
                 var storyboard = NSStoryboard.FromName("Main", null);
                 postProcessPromptWindowController = storyboard.InstantiateControllerWithIdentifier("postprocesswindowcontroller2") as NSWindowController;
                 var window = postProcessPromptWindowController.Window;
                 var splitViewController = ((NSSplitViewController)postProcessPromptWindowController.ContentViewController);
                 var contentView = (PostProcessTextSettings)splitViewController.SplitViewItems[1].ViewController.View;
-                //view.SetRelease(rel);
-                //view.RegChoiceCallback(callback);
                 contentView.setData(oldPrefs.AddTextPostProcess);
                 contentView.regChangePrefsCallback(callbackWithNewPostProcess);
                 postProcessPromptWindowController.ShowWindow(postProcessPromptWindowController);
+                window.OrderFront(null);
+                NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
+            }
+        }
+
+        public void launchAboutWindow()
+        {
+            // Don't spawn new window if already opened
+            if (!checkIfWindowIsAlreadyOpened(aboutWindowController))
+            {
+                // Launch about always on top window
+                var storyboard = NSStoryboard.FromName("Main", null);
+                aboutWindowController = storyboard.InstantiateControllerWithIdentifier("aboutwindowcontroller3") as NSWindowController;
+                var window = aboutWindowController.Window;
+                var view = window.ContentView;
+                aboutWindowController.ShowWindow(aboutWindowController);
                 window.OrderFront(null);
                 NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
             }

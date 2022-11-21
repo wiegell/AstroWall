@@ -554,7 +554,7 @@
                         <menuItem title="{{title placeholder}}" enabled="NO" identifier="header" id="XzL-bp-nyZ">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <segue destination="YBH-Bd-rg8" kind="show" id="CBT-gw-Kos"/>
+                                <action selector="ActionClickTitle:" target="9tX-R6-oug" id="2sD-Xp-hsO"/>
                             </connections>
                         </menuItem>
                         <menuItem title="{{state placeholder}}" enabled="NO" identifier="state" id="gSP-HT-QMc">
@@ -655,7 +655,7 @@
                         <menuItem title="About" enabled="NO" identifier="about" id="cxH-p3-C8I">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <segue destination="YBH-Bd-rg8" kind="show" id="sqK-k6-xIF"/>
+                                <action selector="ActionClickAbout:" target="9tX-R6-oug" id="RW7-2c-rpY"/>
                             </connections>
                         </menuItem>
                         <menuItem title="Quit Astro Wall" identifier="quit" id="2p1-pg-8rT">
@@ -690,7 +690,7 @@
         <!--Window Controller-->
         <scene sceneID="q38-OP-K4N">
             <objects>
-                <windowController showSeguePresentationStyle="single" id="YBH-Bd-rg8" sceneMemberID="viewController">
+                <windowController storyboardIdentifier="aboutwindowcontroller3" id="YBH-Bd-rg8" sceneMemberID="viewController">
                     <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="VIg-2u-sVF">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
                         <rect key="contentRect" x="294" y="313" width="480" height="270"/>
@@ -947,9 +947,6 @@
             <point key="canvasLocation" x="685" y="-1164"/>
         </scene>
     </scenes>
-    <inferredMetricsTieBreakers>
-        <segue reference="sqK-k6-xIF"/>
-    </inferredMetricsTieBreakers>
     <resources>
         <image name="AppIconImage" width="256" height="256"/>
         <image name="MainIcon_rot_400_trans" width="24" height="24"/>
