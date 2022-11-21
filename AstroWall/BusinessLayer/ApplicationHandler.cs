@@ -20,15 +20,15 @@ namespace AstroWall.BusinessLayer
         public Preferences.Preferences Prefs { get; private set; }
 
         // Misc
-        public Version CurrentVersion { private set; get; }
-        private string currentVersionString = General.currentVersion();
+        private string currentVersionStringWithCommit;
 
 
         public ApplicationHandler(AppDelegate del)
         {
             AppDelegate = del;
             MenuHandler = new MenuHandler(AppDelegate, this);
-            Updates = new Updates(this, currentVersionString);
+            currentVersionStringWithCommit = General.currentVersion();
+            Updates = new Updates(this, currentVersionStringWithCommit);
         }
 
         public async Task Init()
@@ -54,10 +54,10 @@ namespace AstroWall.BusinessLayer
         private bool primaryInitAndCheckIfPrefsAreAvail()
         {
             // Create status bar icon / menu
-            MenuHandler.createStatusBar("Astrowall v" + currentVersionString);
+            MenuHandler.createStatusBar("Astrowall v" + Updates.currentVersion);
 
             // Init state
-            State = new State(this, currentVersionString);
+            State = new State(this, currentVersionStringWithCommit);
 
             // Load prefs. If non-present halt further actions until
             // preft are confirmed by user
@@ -127,9 +127,9 @@ namespace AstroWall.BusinessLayer
         {
 
             // Set state downloading
-            State.SetStateDownloading("Checking for new pics");
+            State.SetStateDownloading("Checking for new pics...");
             // Update db from online site
-            bool successfullOnlinCheck = await db.LoadDataButNoImgFromOnlineStartingAtDate(10, DateTime.Now);
+            bool successfullOnlinCheck = await db.LoadDataButNoImgFromOnlineStartingAtDate(20, DateTime.Now);
             if (successfullOnlinCheck)
             {
 
@@ -137,7 +137,7 @@ namespace AstroWall.BusinessLayer
                 Prefs.LastOnlineCheck = DateTime.Now;
 
                 db.Sort();
-                State.SetStateDownloading("Downloading pictures");
+                State.SetStateDownloading("Downloading pictures...");
                 await db.LoadImgs();
 
                 // Update submenu

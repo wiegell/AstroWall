@@ -553,6 +553,9 @@
                     <items>
                         <menuItem title="{{title placeholder}}" enabled="NO" identifier="header" id="XzL-bp-nyZ">
                             <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <segue destination="YBH-Bd-rg8" kind="show" id="CBT-gw-Kos"/>
+                            </connections>
                         </menuItem>
                         <menuItem title="{{state placeholder}}" enabled="NO" identifier="state" id="gSP-HT-QMc">
                             <modifierMask key="keyEquivalentModifierMask"/>
@@ -944,6 +947,9 @@
             <point key="canvasLocation" x="685" y="-1164"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="sqK-k6-xIF"/>
+    </inferredMetricsTieBreakers>
     <resources>
         <image name="AppIconImage" width="256" height="256"/>
         <image name="MainIcon_rot_400_trans" width="24" height="24"/>

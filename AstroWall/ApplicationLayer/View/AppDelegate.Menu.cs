@@ -19,7 +19,7 @@ namespace AstroWall.ApplicationLayer
             statusBar = NSStatusBar.SystemStatusBar;
             statusBarItem = statusBar.CreateStatusItem(NSStatusItemLength.Variable);
             General.InitIcon(statusBarItem, this.StatusMenu);
-            MenuTitle.Title = title;
+            setTitle( title);
         }
 
         public void updateMenuCheckMarks(Preferences prefs)
@@ -82,12 +82,13 @@ namespace AstroWall.ApplicationLayer
         {
             General.RunOnUIThread(() =>
             {
-                MenuOutletState.Hidden = true;
+                MenuOutletState.Hidden = false;
+                MenuOutletState.Enabled = false;
                 MenuOutletState.Title = str;
             });
         }
 
-        public void hideSubTitle()
+        public void HideSubTitle()
         {
             General.RunOnUIThread(() =>
             {

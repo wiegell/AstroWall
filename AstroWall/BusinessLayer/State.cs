@@ -42,7 +42,7 @@ namespace AstroWall.BusinessLayer
                 isInitializing = true;
                 applicationHandler.MenuHandler.EnableStatusIcon();
                 applicationHandler.MenuHandler.DisableAllItems();
-                applicationHandler.MenuHandler.SetTitleInitialising();
+                applicationHandler.MenuHandler.SetSubTitleInitialising();
                 applicationHandler.MenuHandler.RunSpinnerIconAnimation();
             }
         }
@@ -73,7 +73,7 @@ namespace AstroWall.BusinessLayer
                     applicationHandler.MenuHandler.DisableStatusIcon();
                 }
                 applicationHandler.MenuHandler.DisableAllItems();
-                applicationHandler.MenuHandler.SetTitleDownloading(downloadingWhat);
+                applicationHandler.MenuHandler.SetSubTitle(downloadingWhat);
                 applicationHandler.MenuHandler.RunDownloadIconAnimation();
             }
         }
@@ -122,12 +122,12 @@ namespace AstroWall.BusinessLayer
                 // No reason for multiple sets
                 if (!isPostProcessing)
                 {
-
-                Console.WriteLine("State: PostProcessing");
-                isPostProcessing = true;
-                isIdle = false;
-                // Check to see if animation already running
-                if (!isInitializing && !isDownloading) applicationHandler.MenuHandler.RunSpinnerIconAnimation();
+                    applicationHandler.MenuHandler.SetSubTitle("Processing picture...");
+                    Console.WriteLine("State: PostProcessing");
+                    isPostProcessing = true;
+                    isIdle = false;
+                    // Check to see if animation already running
+                    if (!isInitializing && !isDownloading) applicationHandler.MenuHandler.RunSpinnerIconAnimation();
                 }
             }
         }
@@ -189,8 +189,8 @@ namespace AstroWall.BusinessLayer
                     Console.WriteLine("Setting state to idle:");
                     isIdle = true;
                     applicationHandler.MenuHandler.EnableStatusIcon();
-                    Task t =applicationHandler.MenuHandler.SetIconToDefault();
-                    applicationHandler.MenuHandler.HideState();
+                    Task t = applicationHandler.MenuHandler.SetIconToDefault();
+                    applicationHandler.MenuHandler.HideSubtitle();
                 }
             }
         }

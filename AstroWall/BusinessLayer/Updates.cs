@@ -20,7 +20,7 @@ namespace AstroWall.BusinessLayer
 
         // Misc
         public UpdateLibrary.Release pendingUpdate { private set; get; }
-        private Version currentVersion;
+        public Version currentVersion { get; private set; }
         private string pendingUpdatePKGpath;
 
         public Updates(ApplicationHandler applicationHandlerArg, string currentVersionString)

@@ -72,11 +72,11 @@ namespace AstroWall.BusinessLayer
             appDelegate.disableStatusIcon();
         }
 
-        public void SetTitleInitialising()
+        public void SetSubTitleInitialising()
         {
             appDelegate.setSubTitle("Initializing...");
         }
-        public void SetTitleDownloading(string msg)
+        public void SetSubTitle(string msg)
         {
             appDelegate.setSubTitle(msg);
         }
@@ -127,11 +127,6 @@ namespace AstroWall.BusinessLayer
                 appDelegate.changeIconTo("MainIcon_rot_400");
                 flipCounter = 0;
             }
-        }
-
-        public void HideState()
-        {
-
         }
 
         public void PopulateSubmenuLatestPictures(List<ImgWrap> imgWrapList, State stateRef)
@@ -232,6 +227,11 @@ namespace AstroWall.BusinessLayer
         public async void ClickedInMenuManualCheckForNewPic()
         {
             await this.appHandler.checkForNewPics();
+        }
+
+        public void HideSubtitle()
+        {
+            this.appHandler.AppDelegate.HideSubTitle();
         }
 
         private void renewCancellationSource()
