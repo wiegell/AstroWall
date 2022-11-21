@@ -908,7 +908,7 @@
                             <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Qj2-5t-Tfw">
                                 <rect key="frame" x="114" y="312" width="24" height="24"/>
                                 <autoresizingMask key="autoresizingMask"/>
-                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="MainIcon_rot_0" id="RbY-io-uGk"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="MainIcon_rot_400_trans" id="RbY-io-uGk"/>
                                 <color key="contentTintColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                             </imageView>
                             <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hFj-p7-UYe">
@@ -946,7 +946,7 @@
     </scenes>
     <resources>
         <image name="AppIconImage" width="256" height="256"/>
-        <image name="MainIcon_rot_0" width="24" height="24"/>
+        <image name="MainIcon_rot_400_trans" width="24" height="24"/>
         <image name="arrow.up.forward" catalog="system" width="13" height="12"/>
         <image name="arrow.up.right" catalog="system" width="13" height="12"/>
         <image name="laptopcomputer.and.arrow.down" catalog="system" width="28" height="19"/>

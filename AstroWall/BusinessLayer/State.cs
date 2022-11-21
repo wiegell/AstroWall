@@ -73,6 +73,10 @@ namespace AstroWall.BusinessLayer
             {
                 Console.WriteLine("State unset: Downloading");
                 isDownloading = false;
+                if (isPostProcessing)
+                {
+                    applicationHandler.MenuHandler.RunSpinnerIconAnimation();
+                }
                 trySetStateIdle();
             }
         }

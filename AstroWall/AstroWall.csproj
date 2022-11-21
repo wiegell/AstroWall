@@ -95,12 +95,6 @@
   <ItemGroup>
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\download1.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\download1.imageset\dl1.png" />
-    <ImageAsset Include="Assets.xcassets\download3.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\download3.imageset\dl3.png" />
-    <ImageAsset Include="Assets.xcassets\download2.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\download2.imageset\dl2.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-1.png" />
     <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-2.png" />
     <ImageAsset Include="Assets.xcassets\AppIconImage.imageset\Contents.json" />
@@ -221,6 +215,28 @@
     <ImageAsset Include="Assets.xcassets\MainIcon_rot_316.imageset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\MainIcon_rot_171.imageset\MainIcon_rot_171.png" />
     <ImageAsset Include="Assets.xcassets\MainIcon_rot_171.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_9.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_9.imageset\MainIcon_download_9.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_8.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_8.imageset\MainIcon_download_8.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_3.imageset\MainIcon_download_3.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_3.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_2.imageset\MainIcon_download_2.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_2.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_4.imageset\MainIcon_download_4.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_4.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_5.imageset\MainIcon_download_5.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_5.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_0.imageset\MainIcon_download_0.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_0.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_1.imageset\MainIcon_download_1.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_1.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_7.imageset\MainIcon_download_7.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_7.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_6.imageset\MainIcon_download_6.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_download_6.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_400_trans.imageset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_400_trans.imageset\MainIcon_rot_400_trans-1.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />

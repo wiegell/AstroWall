@@ -109,7 +109,7 @@ namespace AstroWall
         {
             Func<Task<object>> ac = async () =>
             {
-                var image = NSImage.ImageNamed("MainIcon_rot_0");
+                var image = NSImage.ImageNamed("MainIcon_rot_400");
                 image.Template = true;
                 item.Button.Image = image;
                 item.HighlightMode = true;

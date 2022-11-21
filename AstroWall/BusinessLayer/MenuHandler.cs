@@ -24,6 +24,7 @@ namespace AstroWall.BusinessLayer
         private static System.Threading.Timer iconUpdateTimer;
         private int flipCounter = 0;
         private int rotDegOffset = 0;
+        // Which way is the counter going
         private bool goingdown = true;
         private AutoResetEvent autoEvent;
 
@@ -85,12 +86,13 @@ namespace AstroWall.BusinessLayer
             if (iconUpdateTimer != null) iconUpdateTimer.Dispose();
             autoEvent = new AutoResetEvent(false);
             flipCounter = 0;
+            goingdown = false;
             // Create a timer with a two second interval.
             iconUpdateTimer = new System.Threading.Timer(
       OnTimedEventDownloadAnimation,
       null,
       0,
-      400);
+      50);
         }
 
         public void RunSpinnerIconAnimation()
@@ -98,6 +100,7 @@ namespace AstroWall.BusinessLayer
             if (iconUpdateTimer != null) iconUpdateTimer.Dispose();
             autoEvent = new AutoResetEvent(false);
             flipCounter = 0;
+            goingdown = false;
             // Create a timer with a two second interval.
             iconUpdateTimer = new System.Threading.Timer(
                 OnTimedEventSpinnerAnimation,
@@ -227,10 +230,11 @@ namespace AstroWall.BusinessLayer
 
         private void OnTimedEventDownloadAnimation(Object stateInfo)
         {
-            int flipCounter1based = flipCounter + 1;
-            string iconName = "download" + flipCounter1based;
-            appDelegate.changeIconTo("download" + flipCounter1based, true);
-            flipCounter = (flipCounter + 1) % 3;
+            string iconName = "MainIcon_download_" + flipCounter;
+            appDelegate.changeIconTo(iconName, true);
+            if (flipCounter == 0) goingdown = false;
+            if (flipCounter == 9) goingdown = true;
+            flipCounter = goingdown ? flipCounter - 1 : flipCounter + 1;
         }
 
         private void OnTimedEventSpinnerAnimation(Object stateInfo)
@@ -244,9 +248,9 @@ namespace AstroWall.BusinessLayer
             Console.WriteLine("icon: " + iconName);
             //Console.WriteLine("iconname: " + iconName);
             appDelegate.changeIconTo(iconName, true);
-            if (iconRotationDeg + rotDegOffset == 0) goingdown = false;
-            if (iconRotationDeg + rotDegOffset == 400) goingdown = true;
-            flipCounter = goingdown ? flipCounter + 1:flipCounter -1;
+            if (iconRotationDeg + rotDegOffset == 0) goingdown = true;
+            if (iconRotationDeg + rotDegOffset == 400) goingdown = false;
+            flipCounter = goingdown ? flipCounter - 1:flipCounter +1;
         }
 
         private async Task setEndBrowsingStateWithDelay()
