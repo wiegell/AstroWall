@@ -118,7 +118,7 @@ namespace AstroWall.BusinessLayer
 
             // Makes sure that one of the timer will not update icon
             // after this function
-            await Task.Delay(400);
+            await Task.Delay(50);
             Console.WriteLine("Setting icon to default");
 
             if (appHandler.State.isIdle)
