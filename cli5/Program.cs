@@ -12,14 +12,6 @@ namespace cli5
 
         static void Main(string[] args)
         {
-
-            //UpdateManifest man = new UpdateManifest()
-            //{
-            //    Releases = new Release[2] { rel, rel }
-            //};
-
-            //JSONhelpers.SerializeNow(man, "./manifest.json");
-
             UpdateManifest manifest = readFromFile();
 
             regPreRelease(manifest);

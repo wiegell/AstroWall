@@ -8,12 +8,15 @@ body {
 }
 
 .credit-box a {
-  position: absolute;
-  bottom: 0;
-  left: 0;
   font-size: 10px;
   color: white;
   text-decoration: none;
+}
+.credit-box {
+  position: fixed;
+  background-color: black;
+  bottom: 0;
+  left: 0;
 }
 
 h1 {
@@ -23,6 +26,7 @@ h1 {
   width: fit-content;
   background-color: black;
   color: white;
+  border: dotted white 2px;
 }
 
 .content {
@@ -33,7 +37,7 @@ h1 {
 }
 
 .links {
-  margin: 80px auto;
+  margin: 80px auto 0 auto;
   width: 622px;
   height: 3em;
   background-color: black;
@@ -58,4 +62,10 @@ h1 {
   color: white;
   background-color: black;
   border-bottom: dotted white 2px;
+}
+
+.title-image {
+  display: inline;
+  height: min(15vw, 15vh);
+  vertical-align: middle;
 }
