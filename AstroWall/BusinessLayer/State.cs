@@ -84,10 +84,9 @@ namespace AstroWall.BusinessLayer
                 nDownloading--;
                 if (nDownloading == 0)
                 {
-
                     Console.WriteLine("State unset: Downloading");
                     isDownloading = false;
-                    if (isPostProcessing)
+                    if (isPostProcessing || isInitializing)
                     {
                         applicationHandler.MenuHandler.RunSpinnerIconAnimation();
                     }
