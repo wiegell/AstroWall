@@ -67,7 +67,7 @@ namespace AstroWall.BusinessLayer
             appDelegate.enableStatusIcon();
         }
 
-        public void disableStatusIcon()
+        public void DisableStatusIcon()
         {
             appDelegate.disableStatusIcon();
         }
@@ -83,6 +83,7 @@ namespace AstroWall.BusinessLayer
 
         public void RunDownloadIconAnimation()
         {
+            Console.WriteLine("Download animation about to start");
             if (iconUpdateTimer != null) iconUpdateTimer.Dispose();
             autoEvent = new AutoResetEvent(false);
             flipCounter = 0;
@@ -97,6 +98,7 @@ namespace AstroWall.BusinessLayer
 
         public void RunSpinnerIconAnimation()
         {
+            Console.WriteLine("Spinner animation about to start");
             if (iconUpdateTimer != null) iconUpdateTimer.Dispose();
             autoEvent = new AutoResetEvent(false);
             flipCounter = 0;
@@ -110,11 +112,21 @@ namespace AstroWall.BusinessLayer
 
         }
 
-        public void SetIconToDefault()
+        public async Task SetIconToDefault()
         {
             iconUpdateTimer.Dispose();
-            appDelegate.changeIconTo("MainIcon_rot_400");
-            flipCounter = 0;
+
+            // Makes sure that one of the timer will not update icon
+            // after this function
+            await Task.Delay(400);
+            Console.WriteLine("Setting icon to default");
+
+            if (appHandler.State.isIdle)
+            {
+                // Double check that new process has not been started
+                appDelegate.changeIconTo("MainIcon_rot_400");
+                flipCounter = 0;
+            }
         }
 
         public void HideState()
@@ -250,7 +262,7 @@ namespace AstroWall.BusinessLayer
             appDelegate.changeIconTo(iconName, true);
             if (iconRotationDeg + rotDegOffset == 0) goingdown = true;
             if (iconRotationDeg + rotDegOffset == 400) goingdown = false;
-            flipCounter = goingdown ? flipCounter - 1:flipCounter +1;
+            flipCounter = goingdown ? flipCounter - 1 : flipCounter + 1;
         }
 
         private async Task setEndBrowsingStateWithDelay()

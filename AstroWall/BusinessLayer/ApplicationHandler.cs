@@ -89,7 +89,7 @@ namespace AstroWall.BusinessLayer
             // Populate submenu
             MenuHandler.PopulateSubmenuLatestPictures(db.getPresentableImages(), State);
 
-            // Check for new pics, don't wait up
+            // Check for new pics
             if (Prefs.DailyCheck == DailyCheckEnum.Newest)
             {
                 await checkForNewPics();
@@ -97,7 +97,11 @@ namespace AstroWall.BusinessLayer
             }
 
             // Check for updates
-            Updates.ConsiderCheckingForUpdates();
+            // Don't wait on result
+            Task updateChecking = Task.Run(async () =>
+            {
+                await Updates.ConsiderCheckingForUpdates();
+            });
             if (Prefs.CheckUpdatesOnStartup)
                 Updates.registerWakeHandler();
 
@@ -117,7 +121,6 @@ namespace AstroWall.BusinessLayer
                     }
             }
             State.UnsetStateInitializing();
-
         }
 
         public async Task checkForNewPics()
@@ -141,6 +144,8 @@ namespace AstroWall.BusinessLayer
                 MenuHandler.PopulateSubmenuLatestPictures(db.getPresentableImages(), State);
                 State.UnsetStateDownloading();
             }
+
+            State.UnsetStateDownloading();
         }
 
     }

@@ -52,7 +52,8 @@ namespace cli5
                 // Build binaries
                 Console.WriteLine("Building binaries...");
                 string buildOutput = runCommand("msbuild ./AstroWall.sln /property:Configuration=Release");
-                Console.WriteLine(buildOutput.Split("\n").Last());
+                var outputLines = buildOutput.Split("\n");
+                Console.WriteLine(outputLines[outputLines.Length - 2]);
                 Console.WriteLine("Binaries built.");
 
                 // Create pkgs

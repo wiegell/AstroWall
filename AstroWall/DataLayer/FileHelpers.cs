@@ -36,7 +36,6 @@ namespace AstroWall
             Task t = client.DownloadFileTaskAsync(uri, localFileName);
             await t;
             Console.WriteLine("Write complete");
-
             return localFileName;
         }
 
@@ -45,7 +44,6 @@ namespace AstroWall
             WebClient client = new WebClient();
             Uri uri = new Uri(downloadUrl);
             string ext = System.IO.Path.GetExtension(downloadUrl);
-
             string localFileName = Path.GetTempFileName() + ext;
             Console.WriteLine("Downloading file: " + downloadUrl);
             Console.WriteLine("Writing to tmp path: " + localFileName);

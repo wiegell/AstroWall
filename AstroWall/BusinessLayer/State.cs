@@ -18,8 +18,10 @@ namespace AstroWall.BusinessLayer
         public bool isPostProcessing;
         public bool isIdle;
         public bool isDownloading;
+        private int nDownloading = 0;
         public bool isSettingWallpaper;
         public bool isBrowsingWallpapers;
+        public bool isUpdating;
         public bool isChoosingPrefs;
 
         // Refs
@@ -54,14 +56,22 @@ namespace AstroWall.BusinessLayer
             }
         }
 
-        public void SetStateDownloading(string downloadingWhat)
+        public void SetStateDownloading(string downloadingWhat, bool disableIcon = false)
         {
             lock (_lock_)
             {
                 Console.WriteLine("State: Downloading");
                 isDownloading = true;
+                nDownloading++;
                 isIdle = false;
-                applicationHandler.MenuHandler.EnableStatusIcon();
+                if (!disableIcon)
+                {
+                    applicationHandler.MenuHandler.EnableStatusIcon();
+                }
+                else
+                {
+                    applicationHandler.MenuHandler.DisableStatusIcon();
+                }
                 applicationHandler.MenuHandler.DisableAllItems();
                 applicationHandler.MenuHandler.SetTitleDownloading(downloadingWhat);
                 applicationHandler.MenuHandler.RunDownloadIconAnimation();
@@ -71,13 +81,18 @@ namespace AstroWall.BusinessLayer
         {
             lock (_lock_)
             {
-                Console.WriteLine("State unset: Downloading");
-                isDownloading = false;
-                if (isPostProcessing)
+                nDownloading--;
+                if (nDownloading == 0)
                 {
-                    applicationHandler.MenuHandler.RunSpinnerIconAnimation();
+
+                    Console.WriteLine("State unset: Downloading");
+                    isDownloading = false;
+                    if (isPostProcessing)
+                    {
+                        applicationHandler.MenuHandler.RunSpinnerIconAnimation();
+                    }
+                    trySetStateIdle();
                 }
-                trySetStateIdle();
             }
         }
 
@@ -88,7 +103,7 @@ namespace AstroWall.BusinessLayer
                 Console.WriteLine("State: Choose prefs");
                 isDownloading = true;
                 isIdle = false;
-                applicationHandler.MenuHandler.disableStatusIcon();
+                applicationHandler.MenuHandler.DisableStatusIcon();
             }
         }
         public void UnsetStateChoosePrefs()
@@ -105,11 +120,16 @@ namespace AstroWall.BusinessLayer
         {
             lock (_lock_)
             {
+                // No reason for multiple sets
+                if (!isPostProcessing)
+                {
+
                 Console.WriteLine("State: PostProcessing");
                 isPostProcessing = true;
                 isIdle = false;
                 // Check to see if animation already running
-                if (!isInitializing) applicationHandler.MenuHandler.RunSpinnerIconAnimation();
+                if (!isInitializing && !isDownloading) applicationHandler.MenuHandler.RunSpinnerIconAnimation();
+                }
             }
         }
         public void UnsetStatePostProcessing()
@@ -140,6 +160,17 @@ namespace AstroWall.BusinessLayer
             }
         }
 
+        public void SetStateUpdating()
+        {
+            lock (_lock_)
+            {
+                Console.WriteLine("State: updating");
+                isUpdating = true;
+                applicationHandler.MenuHandler.DisableStatusIcon();
+            }
+            // No unsetter, will kill app after update
+        }
+
         private void trySetStateIdle()
         {
             lock (_lock_)
@@ -152,13 +183,14 @@ namespace AstroWall.BusinessLayer
                     isDownloading ||
                     isInitializing ||
                     isPostProcessing ||
+                    isUpdating ||
                     isSettingWallpaper
                     ))
                 {
                     Console.WriteLine("Setting state to idle:");
                     isIdle = true;
                     applicationHandler.MenuHandler.EnableStatusIcon();
-                    applicationHandler.MenuHandler.SetIconToDefault();
+                    Task t =applicationHandler.MenuHandler.SetIconToDefault();
                     applicationHandler.MenuHandler.HideState();
                 }
             }

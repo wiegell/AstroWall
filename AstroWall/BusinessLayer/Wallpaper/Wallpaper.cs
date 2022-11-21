@@ -46,6 +46,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 // Task wrap to run on non-ui thread
                 return await Task.Run(async () =>
                 {
+
                     applicationHandler.State.SetStatePostProcessing();
                     // Get current screens
                     var currentScreensConnectedById = Screen.FromCurrentConnected();
@@ -62,7 +63,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
                     );
                     bool retVar = await SetWallpaperAllScreens(postProcessedImageUrlByScreen);
                     applicationHandler.Prefs.CurrentAstroWallpaper = imgWrap;
-                    
+
                     applicationHandler.State.UnsetStatePostProcessing();
                     return retVar;
 
@@ -207,13 +208,11 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 else if (applicationHandler.Prefs.NextScheduledCheck < DateTime.Now)
                 {
                     Console.WriteLine("Scheduled check has passed, performing check now, delaying set wall by 10 sec");
-                    applicationHandler.State.SetStateDownloading("Checking for new pics...");
                     await applicationHandler.checkForNewPics();
                     // Delay is to allow the user to sign in after wake
                     await Task.Delay(10000);
                     bool successChangeWallpaper = await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0]);
                     createNoonCheck();
-                    applicationHandler.State.UnsetStateDownloading();
                 }
                 else
                 {

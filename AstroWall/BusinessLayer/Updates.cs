@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using AppKit;
 using Foundation;
@@ -121,8 +122,6 @@ namespace AstroWall.BusinessLayer
                 }
                 else
                 {
-                    // TODO
-                    // Make interactive updater
                     applicationHandler.AppDelegate.launchUpdatePrompt(pendingUpdate, updatePromptCallBack);
                 }
             }
@@ -134,22 +133,21 @@ namespace AstroWall.BusinessLayer
             }
         }
 
-        public async void ConsiderCheckingForUpdates()
+        public async Task ConsiderCheckingForUpdates()
         {
             if (applicationHandler.Prefs.CheckUpdatesOnStartup)
             {
-                applicationHandler.State.SetStateDownloading("Checking updates");
                 await CheckForUpdates();
-                applicationHandler.State.UnsetStateDownloading();
             }
         }
 
+        // TODO async void remove
         private async void updatePromptCallBack(UpdatePromptResponse resp)
         {
             if (resp.acceptOrSkipUpdate)
             {
                 // Update accepted
-                await downloadAndUpdate();
+                await downloadAndUpdate(true);
             }
             else
             {
@@ -157,13 +155,68 @@ namespace AstroWall.BusinessLayer
             }
         }
 
-        private async Task downloadAndUpdate()
+        private async Task downloadAndUpdate(bool runAtOnce = false)
         {
+            applicationHandler.State.SetStateDownloading("Checking for updates", runAtOnce);
             pendingUpdatePKGpath = await DownloadPendingUpdate();
-            Console.WriteLine("Running PKG update");
-            ApplicationLayer.Updates.Instance.RunPKGUpdate(pendingUpdatePKGpath);
-            General.Relaunch();
-            System.Diagnostics.Process.GetCurrentProcess().Kill();
+            applicationHandler.State.UnsetStateDownloading();
+            if (runAtOnce)
+            {
+                runPendingUpdate();
+            }
+            else
+            {
+                await queueUpdateInstall();
+            }
+        }
+
+        private async Task queueUpdateInstall()
+        {
+            // Should be idle for 10 seconds before update is installed
+            if (applicationHandler.State.isIdle)
+            {
+                Console.WriteLine("Is idle, rechecking if still idle in 10 sec");
+                await Task.Delay(10000);
+                if (applicationHandler.State.isIdle)
+                {
+                    Console.WriteLine("Still idle, running installer");
+                    runPendingUpdate();
+                }
+            }
+            else
+            {
+                Console.WriteLine("Not idle, rechecking in 10 seconds");
+                await Task.Delay(10000);
+                await downloadAndUpdate();
+            }
+        }
+
+        private void runPendingUpdate()
+        {
+            lock (applicationHandler.State._lock_)
+            {
+                // Double check idle
+                if (applicationHandler.State.isIdle)
+                {
+                    applicationHandler.State.SetStateUpdating();
+
+                    Console.WriteLine("Prepping for update, saving prefs and DB");
+                    applicationHandler.TerminationPreparations();
+
+                    Console.WriteLine("Running PKG update");
+                    ApplicationLayer.Updates.Instance.RunPKGUpdate(pendingUpdatePKGpath);
+                    General.Relaunch();
+                    System.Diagnostics.Process.GetCurrentProcess().Kill();
+
+                    // Stay in the lock until terminated
+                    Thread.Sleep(10000);
+                }
+                else
+                {
+                    Console.WriteLine("Not idle for update, state must have been altered by other thread, resetting timer");
+                    queueUpdateInstall();
+                }
+            }
         }
     }
 }
