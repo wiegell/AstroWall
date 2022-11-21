@@ -49,45 +49,45 @@ namespace cli5
                 string prebuildOutput = runCommand("node ./scripts/pre-build", "./AstroWall");
                 Console.WriteLine("Update success");
 
-                //// Build binaries
-                //Console.WriteLine("Building binaries...");
-                //runCommand("msbuild ./AstroWall.sln /property:Configuration=Release");
-                //Console.WriteLine("Binaries built");
+                // Build binaries
+                Console.WriteLine("Building binaries...");
+                runCommand("msbuild ./AstroWall.sln /property:Configuration=Release");
+                Console.WriteLine("Binaries built");
 
-                //// Create pkgs
-                //Console.WriteLine("Creating pkg");
-                //string shret = runCommand("sh ./scripts/pack.sh", "./AstroWall");
-                //Console.WriteLine(shret);
-                //Console.WriteLine("PKGs created");
+                // Create pkgs
+                Console.WriteLine("Creating pkg");
+                string shret = runCommand("sh ./scripts/pack.sh", "./AstroWall");
+                Console.WriteLine(shret);
+                Console.WriteLine("PKGs created");
 
-                //// Update manifest
-                //Release rel = new Release()
-                //{
-                //    version = newTagLong,
-                //    ReleaseDate = DateTime.Now,
-                //    DirectPKGurl = $"https://github.com/wiegell/AstroWall/releases/download/{newTagShort}/Astro.pkg",
-                //    Description = "Lorem Ipsum",
-                //    isPreRelease = true
-                //};
-                //if (manifest.PreReleases == null) manifest.PreReleases = new Release[0];
-                //manifest.PreReleases = (Release[])manifest.PreReleases.Append(rel).ToArray();
-                //writeToFile(manifest);
+                // Update manifest
+                Release rel = new Release()
+                {
+                    version = newTagLong,
+                    ReleaseDate = DateTime.Now,
+                    DirectPKGurl = $"https://github.com/wiegell/AstroWall/releases/download/{newTagShort}/Astro.pkg",
+                    Description = "Lorem Ipsum",
+                    isPreRelease = true
+                };
+                if (manifest.PreReleases == null) manifest.PreReleases = new Release[0];
+                manifest.PreReleases = (Release[])manifest.PreReleases.Append(rel).ToArray();
+                writeToFile(manifest);
 
-                //// Commit manifest
-                //runCommand($"git add . && git commit -m \\\"Updated manifest with release {newTagLong}\\\"");
+                // Commit manifest
+                runCommand($"git add . && git commit -m \\\"Updated manifest with release {newTagLong}\\\"");
 
-                //// Push new tag to gh
-                //Console.WriteLine("Pushing new tag to origin");
-                //runCommand("git push origin --tags");
+                // Push new tag to gh
+                Console.WriteLine("Pushing new tag to origin");
+                runCommand("git push origin --tags");
 
-                //// Upload prerelease
-                //Console.WriteLine("Uploading prerelease to gh");
-                //string uploadres = runCommand($"gh release create -p --generate-notes {newTagShort} ./AstroWall/bin/Package/Astro.pkg");
-                //Console.WriteLine("Upload res:\n" + uploadres);
+                // Upload prerelease
+                Console.WriteLine("Uploading prerelease to gh");
+                string uploadres = runCommand($"gh release create -p --generate-notes {newTagShort} ./AstroWall/bin/Package/Astro.pkg");
+                Console.WriteLine("Upload res:\n" + uploadres);
 
-                //// Push manifest
-                //string gitPushReturn = runCommand("git push origin master");
-                //Console.WriteLine("Success: " + gitPushReturn);
+                // Push manifest
+                string gitPushReturn = runCommand("git push origin master");
+                Console.WriteLine("Success: " + gitPushReturn);
             }
             else
             {
