@@ -8,18 +8,18 @@ From [public page](https://wiegell.github.io/AstroWall/) or to the right under r
 ## Build instructions:
 - Install VS for mac
 - Install Xcode
-- Install script deps: `cd sripts && npm install`
+- Install script deps: `cd scripts && npm install`
 - Install nuget packages
 - Build in VS
 
 ## Current features:
-- Fetch latest pictures and browse them
 - Auto fetch the latest picture each day
+- Fetch latest pictures and browse them
+- Embed description in picture
 
 ## Roadmap:
 - Filter pictures based on resolution
 - Filter pictures based on description
-- Embed description in picture
 - Scaling options
 - Random picture of all time
 

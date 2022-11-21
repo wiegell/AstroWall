@@ -82,9 +82,9 @@ namespace cli5
                 Console.WriteLine("Pushing new tag to origin");
                 runCommand("git push origin --tags");
 
-                // Upload prerelease
-                Console.WriteLine("Uploading prerelease to gh");
-                string uploadres = runCommand($"gh release create -p --generate-notes {newTagShort} ./AstroWall/bin/Package/Astro.pkg");
+                // Upload release
+                Console.WriteLine("Uploading release to gh");
+                string uploadres = runCommand($"gh release create --generate-notes {newTagShort} ./AstroWall/bin/Package/Astro.pkg");
                 Console.WriteLine("Upload res:\n" + uploadres);
 
                 // Push manifest
