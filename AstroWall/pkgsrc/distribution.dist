@@ -13,7 +13,7 @@
             <bundle id="com.astro.wall.Astro-Wall" path="Astro Wall.app" />
         </bundle-version>
     </pkg-ref>
-    <background file="b.jpg" />
+    <background file="b.jpg" mime-type="image/jpeg" />
     <product id="com.astro.wall.Astro-Wall" version="0.0.1" />
     <title>Astro Wall</title>
     <options customize="never" require-scripts="false" hostArchitectures="x86_64" />
