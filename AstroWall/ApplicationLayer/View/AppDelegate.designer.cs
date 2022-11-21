@@ -42,6 +42,9 @@ namespace AstroWall.ApplicationLayer
 		AppKit.NSMenuItem MenuTitle { get; set; }
 
 		[Outlet]
+		AppKit.NSMenuItem OutletCurrentDetails { get; set; }
+
+		[Outlet]
 		AppKit.NSMenuItem OutletOpenCurrentPic { get; set; }
 
 		[Outlet]
@@ -59,8 +62,17 @@ namespace AstroWall.ApplicationLayer
 		[Action ("ActionManualCheckForNewPic:")]
 		partial void ActionManualCheckForNewPic (Foundation.NSObject sender);
 
+		[Action ("ActionOpenCurrent:")]
+		partial void ActionOpenCurrent (Foundation.NSObject sender);
+
+		[Action ("ActionOpenCurrentCredits:")]
+		partial void ActionOpenCurrentCredits (Foundation.NSObject sender);
+
 		[Action ("ActionOpenCurrentPic:")]
 		partial void ActionOpenCurrentPic (Foundation.NSObject sender);
+
+		[Action ("ActionOpenCurrentUrl:")]
+		partial void ActionOpenCurrentUrl (Foundation.NSObject sender);
 
 		[Action ("ActionOpenUrlToCurrentPic:")]
 		partial void ActionOpenUrlToCurrentPic (Foundation.NSObject sender);
@@ -91,6 +103,9 @@ namespace AstroWall.ApplicationLayer
 
 		[Action ("MenuOutletCheckPicOnLogin:")]
 		partial void MenuOutletCheckPicOnLogin (Foundation.NSObject sender);
+
+		[Action ("OutletOpenCurrent:")]
+		partial void OutletOpenCurrent (Foundation.NSObject sender);
 		
 		void ReleaseDesignerOutlets ()
 		{
@@ -162,6 +177,11 @@ namespace AstroWall.ApplicationLayer
 			if (SubmenuUpdates != null) {
 				SubmenuUpdates.Dispose ();
 				SubmenuUpdates = null;
+			}
+
+			if (OutletCurrentDetails != null) {
+				OutletCurrentDetails.Dispose ();
+				OutletCurrentDetails = null;
 			}
 		}
 	}

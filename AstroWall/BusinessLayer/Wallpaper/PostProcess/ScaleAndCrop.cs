@@ -47,8 +47,8 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
                 // Resize
                 SKImageInfo newInfo = new SKImageInfo(
-                    ((int)(inputInfo.Width * resizefactor)),
-                    ((int)(inputInfo.Height * resizefactor))
+                    ((int)Math.Ceiling(inputInfo.Width * resizefactor)),
+                    ((int)Math.Ceiling(inputInfo.Height * resizefactor))
                     );
                 Console.WriteLine($"Resizing postprocess of screen {screen.Id} to size {newInfo.Width}x{newInfo.Height}");
                 SKBitmap newBitmap = inputBitmap.Resize(newInfo, SKFilterQuality.High);

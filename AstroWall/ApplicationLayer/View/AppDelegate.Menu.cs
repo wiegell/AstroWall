@@ -222,18 +222,6 @@ namespace AstroWall.ApplicationLayer
             menuHandler.ClickedInMenuManualCheckForNewPic();
         }
 
-
-        partial void MenuManualCheckPic(Foundation.NSObject sender)
-        {
-            //state.setStateIdle();
-            //MacOShelpers.InitIcon2(statusBarItem, this.StatusMenu);
-            //string imgurl = HTMLHelpers.getImgUrl();
-            //Task<string> tmpFilePath = FileHelpers.DownloadUrlToTmpPath(imgurl);
-            ////MacOShelpers.SetWallpaper(tmpFilePath);
-            //Console.WriteLine("file dl");
-            //MacOShelpers.RunPKGUpdate();
-        }
-
         partial void MenuActionDailyCheckNewest(NSObject sender)
         {
             bool newState = !getCheckmarkBoolFromSender(sender);
@@ -250,13 +238,21 @@ namespace AstroWall.ApplicationLayer
             appHandler.Wallpaper.launchPostProcessWindow();
         }
 
-        partial void ActionOpenUrlToCurrentPic(NSObject sender)
+        partial void ActionOpenCurrent(NSObject sender)
+        {
+            menuHandler.OpenCurrentPic();
+        }
+
+        partial void ActionOpenCurrentUrl(NSObject sender)
         {
             menuHandler.OpenUrlToCurrentPic();
         }
+        partial void ActionOpenCurrentCredits(NSObject sender)
+        {
+            menuHandler.OpenUrlToCurrentCredits();
+        }
         partial void ActionOpenCurrentPic(NSObject sender)
         {
-            menuHandler.OpenCurrentPic();
         }
         private bool getCheckmarkBoolFromSender(NSObject sender)
         {

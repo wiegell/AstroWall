@@ -557,17 +557,30 @@
                         <menuItem title="{{state placeholder}}" enabled="NO" identifier="state" id="gSP-HT-QMc">
                             <modifierMask key="keyEquivalentModifierMask"/>
                         </menuItem>
-                        <menuItem title="Open current pic" id="R14-WD-8Ae">
+                        <menuItem title="Current pic details" id="Evt-X8-tXB">
                             <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="ActionOpenCurrentPic:" target="9tX-R6-oug" id="U2X-zX-kwY"/>
-                            </connections>
-                        </menuItem>
-                        <menuItem title="Open url to current pic" id="zMj-HF-mY0">
-                            <modifierMask key="keyEquivalentModifierMask"/>
-                            <connections>
-                                <action selector="ActionOpenUrlToCurrentPic:" target="9tX-R6-oug" id="aoz-7A-7Bx"/>
-                            </connections>
+                            <menu key="submenu" title="Current pic details" id="fIs-ke-lVI">
+                                <items>
+                                    <menuItem title="Open in preview" id="3yu-Wa-Kb4">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                        <connections>
+                                            <action selector="ActionOpenCurrent:" target="9tX-R6-oug" id="QWT-Hh-SQV"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Open link in browser" id="jyY-gM-Tu5">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                        <connections>
+                                            <action selector="ActionOpenCurrentUrl:" target="9tX-R6-oug" id="str-tf-dfw"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Open link to credits" id="tcq-dj-ali">
+                                        <modifierMask key="keyEquivalentModifierMask"/>
+                                        <connections>
+                                            <action selector="ActionOpenCurrentCredits:" target="9tX-R6-oug" id="3hX-hr-vsF"/>
+                                        </connections>
+                                    </menuItem>
+                                </items>
+                            </menu>
                         </menuItem>
                         <menuItem isSeparatorItem="YES" id="EtY-B3-0Ek"/>
                         <menuItem title="Check for new pic" enabled="NO" identifier="manualcheckpic" id="cra-Bd-UqB">
@@ -663,8 +676,7 @@
                         <outlet property="MenuOutletState" destination="gSP-HT-QMc" id="oyU-2i-wog"/>
                         <outlet property="MenuStateOutlet" destination="gSP-HT-QMc" id="5uS-8e-R3d"/>
                         <outlet property="MenuTitle" destination="XzL-bp-nyZ" id="O06-rg-uWS"/>
-                        <outlet property="OutletOpenCurrentPic" destination="R14-WD-8Ae" id="J1a-EW-LsO"/>
-                        <outlet property="OutletOpenUrlToCurrentPic" destination="zMj-HF-mY0" id="Sge-ne-lf3"/>
+                        <outlet property="OutletCurrentDetails" destination="Evt-X8-tXB" id="PjR-OP-kFH"/>
                         <outlet property="StatusMenu" destination="9mV-Tt-jhF" id="JYk-r7-5Kq"/>
                         <outlet property="SubmenuUpdates" destination="F2x-wE-DFb" id="BBs-yC-SAh"/>
                     </connections>

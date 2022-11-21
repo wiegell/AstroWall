@@ -15,15 +15,15 @@ namespace AstroWall.BusinessLayer.Wallpaper
         {
         }
 
-        public static Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> AddTextCurry(Preferences.AddText options, string title, string description)
+        public static Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> AddTextCurry(Preferences.AddText options, string title, string description, string credit)
         {
             return (Dictionary<Screen, SkiaSharp.SKBitmap> dic) =>
             {
-                return AddText(dic, options, title, description);
+                return AddText(dic, options, title, description, credit);
             };
         }
 
-        public static Dictionary<Screen, SkiaSharp.SKBitmap> AddText(Dictionary<Screen, SkiaSharp.SKBitmap> dic, Preferences.AddText options, string title, string description)
+        public static Dictionary<Screen, SkiaSharp.SKBitmap> AddText(Dictionary<Screen, SkiaSharp.SKBitmap> dic, Preferences.AddText options, string title, string description, string credit)
         {
             SKBitmap mainScreenBitmap;
             Screen mainScreen;
@@ -56,22 +56,26 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
             if (options.isEnabled)
             {
-
-
                 // Format description
                 string descriptionFormatted = description.Replace("\n", " ").Replace("Explanation:", "").Replace("   ", " ").Replace("  ", " ").Replace("  ", " ").TrimStart();
 
-                //string desc = "test \n test\n testtesttest";
+                // Format credit
+                string creditFormatted = "Credit / copyright: " + credit.Replace("\n", "").TrimStart().TrimEnd();
+
+                // string desc = "test \n test\n testtesttest";
                 Console.WriteLine("desc: " + descriptionFormatted);
                 var canvas = new SKCanvas(returnBitmap);
                 canvas.DrawBitmap(mainScreenBitmap, 0, 0);
                 canvas.ResetMatrix();
 
                 // Paint Title
-                PaintToRect(canvas, 1000, 250, 120, 20, 40, false, title
+                PaintToRect(canvas, 1000, 250, 120, 20, 40, false, false, title
                     );
                 // Paint description
-                PaintToRect(canvas, 1000, 250, 200, 20, 25, true, descriptionFormatted
+                int height = PaintToRect(canvas, 1000, 250, 200, 20, 25, true, false, descriptionFormatted
+                    );
+                // Paint credit
+                PaintToRect(canvas, 1000, 250, 200 + height, 20, 25, true, true, creditFormatted
                     );
                 canvas.Flush();
                 canvas.Dispose();
@@ -86,7 +90,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             }
             else return dic;
         }
-        private static void PaintToRect(SKCanvas canvas, int width, int x, int y, int margin, int size, bool italic, string text)
+        private static int PaintToRect(SKCanvas canvas, int width, int x, int y, int margin, int size, bool italic, bool isCredit, string text)
         {
             SKTypeface type = SKTypeface.FromFamilyName("Helvetica Neue", SKFontStyleWeight.Light, SKFontStyleWidth.Normal, italic ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright);
 
@@ -101,7 +105,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             })
             {
                 var tmpRect = SKRect.Create(x, y, width, 3000);
-                int height = DrawText(canvas, text, tmpRect, paint, margin, true);
+                int height = DrawText(canvas, text, tmpRect, paint, margin, false, true);
                 Console.WriteLine("Calculated rect height: " + height);
                 var properRect = SKRect.Create(x, y, width, height);
 
@@ -109,7 +113,8 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 canvas.DrawRect(properRect, paint);
 
                 paint.Color = SKColors.White.WithAlpha((byte)150);
-                DrawText(canvas, text, properRect, paint, margin);
+                DrawText(canvas, text, properRect, paint, margin, isCredit);
+                return height;
             }
         }
 
@@ -128,11 +133,11 @@ namespace AstroWall.BusinessLayer.Wallpaper
         /// <param name="rect"></param>
         /// <param name="paint"></param>
         /// <returns></returns>
-        private static int DrawText(SKCanvas canvas, string text, SKRect rect, SKPaint paint, int margin, bool dryRun = false)
+        private static int DrawText(SKCanvas canvas, string text, SKRect rect, SKPaint paint, int margin, bool isCredit, bool dryRun = false)
         {
             float spaceWidth = paint.MeasureText(" ");
             float wordX = rect.Left + margin;
-            float wordY = rect.Top + paint.TextSize + margin;
+            float wordY = rect.Top + paint.TextSize + (isCredit ? 0 : margin);
             foreach (string word in text.Split(' '))
             {
                 float wordWidth = paint.MeasureText(word);

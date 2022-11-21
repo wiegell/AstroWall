@@ -38,6 +38,10 @@ namespace AstroWall.BusinessLayer
         public bool ImgIsGettable = true;
         [JsonProperty]
         public bool NotFound = false;
+        [JsonProperty]
+        public string Credit { get; private set; }
+        [JsonProperty]
+        public string CreditUrl { get; private set; }
 
         public override bool Equals(object o)
         {
@@ -101,16 +105,18 @@ namespace AstroWall.BusinessLayer
 
 
 
-            string[] tmp = new string[2];
+            string[] tmp = new string[3];
             try
             {
-                tmp = await HTMLHelpers.getDescAndTitleFromOnlineUrl(PageUrl);
+                tmp = await HTMLHelpers.getDescTitleAndCreditFromOnlineUrl(PageUrl);
                 Title = tmp[0];
                 Description = tmp[1];
+                Credit = tmp[2];
+                CreditUrl = tmp[3];
             }
             catch (Exception ex)
             {
-                Console.WriteLine("could not get descr. or title of:" + PageUrl);
+                Console.WriteLine("could not get descr., credit or title of:" + PageUrl);
                 Integrity = false;
             }
 
@@ -211,7 +217,8 @@ namespace AstroWall.BusinessLayer
                     Wallpaper.PostProcess.AddTextCurry(
                         (Preferences.AddText)postProcessPrefsDictionary[Preferences.PostProcessType.AddText],
                         Title,
-                        Description
+                        Description,
+                        Credit
                         )
 
                     );
@@ -224,7 +231,7 @@ namespace AstroWall.BusinessLayer
             catch (Exception ex)
             {
                 Console.WriteLine("Error postprocessing image ({0}): {1}", ImgLocalUrl, ex.Message);
-                throw ex;
+                throw new Exception($"Error postprocessing image ({ImgLocalUrl}): {ex.Message}", ex);
             }
 
             //Remove old postprocessed files
@@ -233,18 +240,18 @@ namespace AstroWall.BusinessLayer
             if (ImgLocalPostProcessedUrlsByScreenId != null)
             {
 
-            foreach (var KV in ImgLocalPostProcessedUrlsByScreenId)
-            {
-                Console.WriteLine($"Trying to delete postprocessed image at {KV.Value}");
-                try
+                foreach (var KV in ImgLocalPostProcessedUrlsByScreenId)
                 {
-                    FileHelpers.DeleteFile(KV.Value);
+                    Console.WriteLine($"Trying to delete postprocessed image at {KV.Value}");
+                    try
+                    {
+                        FileHelpers.DeleteFile(KV.Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception("Problem deleting file" + ex.Message);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    throw new Exception("Problem deleting file" + ex.Message);
-                }
-            }
             }
 
             // Save files and register file paths

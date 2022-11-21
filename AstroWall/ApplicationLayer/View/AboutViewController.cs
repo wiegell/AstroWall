@@ -21,11 +21,6 @@ namespace AstroWall
             OutletVersion.StringValue = General.currentVersion();
         }
 
-        //public override void 
-        //{
-        //    base.DidAddSubview(subview);
-        //}
-
         partial void ActionGithub(NSObject sender)
         {
             General.Open("https://github.com/wiegell/AstroWall/");

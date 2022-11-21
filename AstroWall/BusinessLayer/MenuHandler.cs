@@ -23,6 +23,8 @@ namespace AstroWall.BusinessLayer
         // Icon related
         private static System.Threading.Timer iconUpdateTimer;
         private int flipCounter = 0;
+        private int rotDegOffset = 0;
+        private bool goingdown = true;
         private AutoResetEvent autoEvent;
 
         // Browsing state
@@ -88,7 +90,7 @@ namespace AstroWall.BusinessLayer
       OnTimedEventDownloadAnimation,
       null,
       0,
-      500);
+      400);
         }
 
         public void RunSpinnerIconAnimation()
@@ -101,19 +103,15 @@ namespace AstroWall.BusinessLayer
                 OnTimedEventSpinnerAnimation,
                 null,
                 0,
-                200);
+                17);
 
         }
 
         public void SetIconToDefault()
         {
             iconUpdateTimer.Dispose();
-            //Task.Run(() =>
-            //{
-            //    Task.Delay(500);
-            appDelegate.changeIconTo("MainIcon_rot_0");
+            appDelegate.changeIconTo("MainIcon_rot_400");
             flipCounter = 0;
-            //});
         }
 
         public void HideState()
@@ -162,6 +160,12 @@ namespace AstroWall.BusinessLayer
         {
             General.Open(appHandler.Prefs.CurrentAstroWallpaper.PageUrl);
         }
+
+        public void OpenUrlToCurrentCredits()
+        {
+            General.Open(appHandler.Prefs.CurrentAstroWallpaper.CreditUrl);
+        }
+
         public void OpenCurrentPic()
         {
             string tmpPth = FileHelpers.GenTmpCopy(appHandler.Prefs.CurrentAstroWallpaper.ImgLocalUrl);
@@ -231,11 +235,18 @@ namespace AstroWall.BusinessLayer
 
         private void OnTimedEventSpinnerAnimation(Object stateInfo)
         {
-            int iconRotationDeg = (flipCounter * 15);
-            string iconName = "MainIcon_rot_" + iconRotationDeg;
+            int iconRotationDeg = 400 - (flipCounter * 7);
+            // made wrong calc in photoshop
+            if (iconRotationDeg > 204) rotDegOffset = 0;
+            if (iconRotationDeg <= 204) rotDegOffset = 2;
+            if (iconRotationDeg <= 3) rotDegOffset = -1;
+            string iconName = "MainIcon_rot_" + (iconRotationDeg + rotDegOffset);
+            Console.WriteLine("icon: " + iconName);
             //Console.WriteLine("iconname: " + iconName);
             appDelegate.changeIconTo(iconName, true);
-            flipCounter = (flipCounter + 1) % 6;
+            if (iconRotationDeg + rotDegOffset == 0) goingdown = false;
+            if (iconRotationDeg + rotDegOffset == 400) goingdown = true;
+            flipCounter = goingdown ? flipCounter + 1:flipCounter -1;
         }
 
         private async Task setEndBrowsingStateWithDelay()

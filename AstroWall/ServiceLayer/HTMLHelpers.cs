@@ -8,6 +8,7 @@ using System.Net;
 using System.Linq;
 using static System.Net.WebRequestMethods;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace AstroWall
 {
@@ -45,19 +46,44 @@ namespace AstroWall
             return "https://apod.nasa.gov/apod/ap" + date.ToString(NASADateFormat) + ".html";
         }
 
-        public static async Task<string[]> getDescAndTitleFromOnlineUrl(string pageUrl)
+        public static async Task<string[]> getDescTitleAndCreditFromOnlineUrl(string pageUrl)
         {
             HtmlWeb webparser = new HtmlAgilityPack.HtmlWeb();
             HtmlDocument doc = await webparser.LoadFromWebAsync(pageUrl);
-            List<HtmlNode> par = new List<HtmlNode>((new List<HtmlNode>(doc.DocumentNode.Descendants("b"))).Where((HtmlNode node) => node.InnerHtml.Contains("Image Credit")).First().ParentNode.ChildNodes.Where((node) => (node.NodeType != HtmlNodeType.Text)));
-            //foreach (HtmlNode no in par) Console.WriteLine(no.Name);
-            HtmlNode titleNode = par[0];
+            HtmlNode imgCredNode = doc.DocumentNode.Descendants("b").ToList().Where((HtmlNode node) => node.InnerHtml.Contains("Image Credit")).First();
+            List<HtmlNode> imgCredNodeSiblings = imgCredNode.ParentNode.ChildNodes.Where((node) => (node.NodeType != HtmlNodeType.Text)).ToList();
+
+            // Get title
+            HtmlNode titleNode = imgCredNodeSiblings[0];
             string title = titleNode.InnerText;
 
+            // Get credit text
+            StringBuilder sb = new StringBuilder();
+            HtmlNode sibling = imgCredNode.NextSibling;
+            string creditsUrl = "";
+            while (sibling != null)
+            {
+
+                sb.Append(sibling.InnerText);
+                if (sibling.Name == "a" && creditsUrl == "")
+                {
+                    try
+                    {
+                        creditsUrl = sibling.Attributes.Where(attrib => attrib.Name == "href").ToArray()[0].Value;
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Failed to parse credits url");
+                    }
+                }
+                sibling = sibling.NextSibling;
+            }
+            string credit = sb.ToString();
+
+            // Get description
             List<HtmlNode> bodyNodes = new List<HtmlNode>(doc.DocumentNode.Descendants("body").First().ChildNodes.Where((node) => (node.NodeType != HtmlNodeType.Text)));
             string desc = bodyNodes[2].InnerText;
-            return new string[] { title, desc };
-
+            return new string[] { title, desc, credit, creditsUrl };
         }
 
     }
