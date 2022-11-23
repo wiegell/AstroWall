@@ -2,7 +2,7 @@
 A MacOS agent to fetch [Astronomy Picture of the Day](https://apod.nasa.gov/apod/astropix.html) and set it as wallpaper.
 Written in C#.net as a Xamarin project. Published under the [MIT license](https://github.com/wiegell/AstroWall/blob/master/LICENSE).
 <p align="center">
-  <img src="https://wiegell.github.io/AstroWall/assets/LargeIcon.png" width="350" title="hover text">
+  <img src="https://wiegell.github.io/AstroWall/assets/LargeIcon.png" width="250" title="hover text">
 </p>
 
 ## Download
