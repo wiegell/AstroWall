@@ -26,6 +26,17 @@ From [public page](https://wiegell.github.io/AstroWall/) or to the right under r
 ## Future thoughts
 - Porting to MAUI
 - Porting to Windows/Linux
+- Porting to Windows/Linux
+
+## FAQ
+### Why can't i open the app?
+Right click, then open
+
+### How come macOS is warning me about malware?
+Because i didn't pay Apple for a developers license
+
+### What't the catch
+None, the project has been made to try out C# skills
 
 ## Source organization
 Tries to follow the [application layers as described by Microsoft](https://learn.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/architecture#typical-application-layers). The UI-layer and Application layer is somewhat intertwined, but the business layer should be almost platform independent.
