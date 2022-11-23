@@ -54,6 +54,11 @@ namespace cli5
                 Console.WriteLine(shret);
                 Console.WriteLine("PKGs created");
 
+                // Create dmg
+                Console.WriteLine("Creating dmg");
+                runCommand("rm ./AstroWall/bin/Dmg/Astro.dmg; appdmg ./AstroWall/dmgsrc/appdmg.json ./AstroWall/bin/Dmg/Astro.dmg");
+                Console.WriteLine("Dmg created");
+
                 // Update manifest
                 Release rel = new Release()
                 {
@@ -76,7 +81,7 @@ namespace cli5
 
                 // Upload release
                 Console.WriteLine("Uploading release to gh");
-                string uploadres = runCommand($"gh release create --generate-notes {newTagShort} ./AstroWall/bin/Package/Astro.pkg");
+                string uploadres = runCommand($"gh release create --generate-notes {newTagShort} ./AstroWall/bin/Package/Astro.pkg ./AstroWall/bin/Dmg/Astro.dmg");
                 Console.WriteLine("Upload res:\n" + uploadres);
 
                 // Push manifest

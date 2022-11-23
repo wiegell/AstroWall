@@ -1,0 +1,27 @@
+{
+  "title": "Astro Wall",
+  "icon": "icon.png",
+  "background": "dmgbg.png",
+  "icon-size": 75,
+  "contents": [
+    {
+      "x": 125,
+      "y": 125,
+      "type": "file",
+      "path": "../bin/Release/Astro Wall.app"
+    },
+    {
+      "x": 375,
+      "y": 125,
+
+      "type": "link",
+      "path": "/Applications"
+    }
+  ],
+  "window": {
+    "size": {
+      "width": 500,
+      "height": 300
+    }
+  }
+}
