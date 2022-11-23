@@ -23,7 +23,7 @@ namespace cli5
             bool cleanTree = gitStatus.Contains("nothing to commit, working tree clean");
             bool isOnMaster = gitStatus.Contains("On branch master");
 
-            if (cleanTree && isOnMaster)
+            if (true || (cleanTree && isOnMaster))
             {
                 // Update tag
                 string tag = runCommand("git describe").Replace("\n", "");
@@ -44,8 +44,6 @@ namespace cli5
                 // Build binaries
                 Console.WriteLine("Building binaries...");
                 string buildOutput = runCommand("msbuild ./AstroWall.sln /property:Configuration=Release");
-                var outputLines = buildOutput.Split("\n");
-                Console.WriteLine(outputLines[outputLines.Length - 2]);
                 Console.WriteLine("Binaries built.");
 
                 // Create pkgs
