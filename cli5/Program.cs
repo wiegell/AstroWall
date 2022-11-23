@@ -14,10 +14,12 @@ namespace cli5
         {
             UpdateManifest manifest = readFromFile();
 
-            regPreRelease(manifest);
+            bool preRelease = args.Length == 1 && args[0] == "-p";
+            Console.WriteLine("isPrerelease: " + preRelease);
+            regRelease(manifest, preRelease);
         }
 
-        static void regPreRelease(UpdateManifest manifest)
+        static void regRelease(UpdateManifest manifest, bool isPrerelease)
         {
             string gitStatus = runCommandReturnOutput("git status");
             bool cleanTree = gitStatus.Contains("nothing to commit, working tree clean");
@@ -79,7 +81,8 @@ namespace cli5
 
                 // Upload release
                 Console.WriteLine("Uploading release to gh");
-                string uploadres = runCommand($"gh release create --generate-notes {newTagShort} ./AstroWall/bin/Package/Astro.pkg ./AstroWall/bin/Dmg/Astro.dmg");
+                string preRelStr = isPrerelease ? " -p" : "";
+                string uploadres = runCommand($"gh release create{preRelStr} --generate-notes {newTagShort} ./AstroWall/bin/Package/Astro.pkg ./AstroWall/bin/Dmg/Astro.dmg");
                 Console.WriteLine("Upload res:\n" + uploadres);
 
                 // Push manifest
