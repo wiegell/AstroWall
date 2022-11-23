@@ -95,7 +95,13 @@ namespace AstroWall.ApplicationLayer
 
         private static string agentPath()
         {
-            return NSFileManager.HomeDirectory + "/Library/LaunchAgents/com.astro.wall.Astro-Wall.plist";
+            string agentFolder = NSFileManager.HomeDirectory + "/Library/LaunchAgents/";
+
+            if (!Directory.Exists(agentFolder))
+            {
+                Directory.CreateDirectory(agentFolder);
+            }
+            return agentFolder + "com.astro.wall.Astro-Wall.plist";
         }
     }
 }
