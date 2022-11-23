@@ -26,9 +26,9 @@ namespace cli5
             if ((cleanTree && isOnMaster))
             {
                 // Update tag
-                string tag = runCommand("git describe").Replace("\n", "");
+                string tag = runCommandReturnOutput("git describe").Replace("\n", "");
                 Console.WriteLine("Git clean on tag: " + tag);
-                string newTagShort = runCommand("git describe --tags --abbrev=0 | awk -F. '{OFS=\\\".\\\"; $NF+=1; print $0}'").Replace("\n", "").Replace("\r", "");
+                string newTagShort = runCommandReturnOutput("git describe --tags --abbrev=0 | awk -F. '{OFS=\\\".\\\"; $NF+=1; print $0}'").Replace("\n", "").Replace("\r", "");
                 newTagShort += "-alpha";
                 Console.WriteLine("Incrementing to: " + newTagShort);
                 runCommand($"git tag -a \\\"{newTagShort}\\\" -m \\\"version {newTagShort}\\\"");
@@ -38,7 +38,7 @@ namespace cli5
 
                 // Update plist
                 Console.WriteLine("Ready to update info.plist with build version: " + newTagShort);
-                string prebuildOutput = runCommand("node ./scripts/pre-build", "./AstroWall");
+                string prebuildOutput = runCommandReturnOutput("node ./scripts/pre-build", "./AstroWall");
                 Console.WriteLine("Update success");
 
                 // Build binaries
@@ -48,7 +48,7 @@ namespace cli5
 
                 // Create pkgs
                 Console.WriteLine("Creating pkg");
-                string shret = runCommand("sh ./scripts/pack.sh", "./AstroWall");
+                string shret = runCommandReturnOutput("sh ./scripts/pack.sh", "./AstroWall");
                 Console.WriteLine(shret);
                 Console.WriteLine("PKGs created");
 
@@ -109,13 +109,6 @@ namespace cli5
 
 
             proc.Start();
-
-            //string error = proc.StandardError.ReadToEnd();
-
-            //if (!string.IsNullOrEmpty(error))
-            //    return ("error: " + error);
-
-            //string output = proc.StandardOutput.ReadToEnd();
 
             proc.WaitForExit();
 
