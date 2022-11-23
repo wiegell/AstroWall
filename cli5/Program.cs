@@ -99,9 +99,9 @@ namespace cli5
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = "sh";
             psi.Arguments = "-c \"" + command + "\"";
-            psi.UseShellExecute = false;
+            psi.UseShellExecute = true;
             psi.RedirectStandardOutput = false;
-            psi.RedirectStandardError = true;
+            psi.RedirectStandardError = false;
             if (workdir != null) psi.WorkingDirectory = workdir;
 
             Process proc = new Process
@@ -112,16 +112,16 @@ namespace cli5
 
             proc.Start();
 
-            string error = proc.StandardError.ReadToEnd();
+            //string error = proc.StandardError.ReadToEnd();
 
-            if (!string.IsNullOrEmpty(error))
-                return ("error: " + error);
+            //if (!string.IsNullOrEmpty(error))
+            //    return ("error: " + error);
 
-            string output = proc.StandardOutput.ReadToEnd();
+            //string output = proc.StandardOutput.ReadToEnd();
 
             proc.WaitForExit();
 
-            return output;
+            return "output";
         }
 
         static UpdateManifest readFromFile(string path = "./docs/assets/manifest.json")
