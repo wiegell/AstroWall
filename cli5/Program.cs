@@ -100,7 +100,7 @@ namespace cli5
             psi.FileName = "sh";
             psi.Arguments = "-c \"" + command + "\"";
             psi.UseShellExecute = false;
-            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardOutput = false;
             psi.RedirectStandardError = true;
             if (workdir != null) psi.WorkingDirectory = workdir;
 
