@@ -166,6 +166,61 @@ namespace AstroWall
             nstask.WaitUntilExit();
         }
 
+        public static string GetInstallPath()
+        {
+            return NSRunningApplication.CurrentApplication.BundleUrl.Path;
+        }
+
+        public static string GetUserApplicationsPath()
+        {
+            return NSFileManager.DefaultManager
+     .GetUrls(NSSearchPathDirectory.ApplicationDirectory, NSSearchPathDomain.User)[0]
+     .Path;
+        }
+
+        public static string WantedBundleInstallPathInUserApplications()
+        {
+            return GetUserApplicationsPath() + "/Astro Wall.app";
+        }
+
+        private static string systemApplicationsFolder()
+        {
+            return "/Applications";
+        }
+        private static string symlinkPathInSystemApplications()
+        {
+            return systemApplicationsFolder() + "/Astro Wall.app";
+        }
+
+        public static void moveBundleToUserApplicationsFolder()
+        {
+            string wantedInstallLocation = WantedBundleInstallPathInUserApplications();
+            string symlinkPath = symlinkPathInSystemApplications();
+            string currentInstallLocation = GetInstallPath();
+
+            // Move
+            NSTask mvNStask = new NSTask();
+            mvNStask.LaunchPath = "/bin/bash";
+            mvNStask.Arguments = new string[]
+            {
+                "-c",
+            $"mv \"{currentInstallLocation}\" \"{wantedInstallLocation}\"",
+            };
+            mvNStask.Launch();
+            mvNStask.WaitUntilExit();
+            Console.WriteLine("wanted intern: " + wantedInstallLocation);
+
+            // Link
+            NSTask linkNStask = new NSTask();
+            linkNStask.LaunchPath = "/bin/bash";
+            linkNStask.Arguments = new string[]
+            {
+                "-c",
+             $"ln -s \"{wantedInstallLocation}\" \"{symlinkPath}\""
+            };
+            linkNStask.Launch();
+            linkNStask.WaitUntilExit();
+        }
     }
 }
 

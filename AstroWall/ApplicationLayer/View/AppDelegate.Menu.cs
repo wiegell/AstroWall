@@ -12,6 +12,7 @@ namespace AstroWall.ApplicationLayer
 
         private NSStatusBar statusBar;
         private NSStatusItem statusBarItem;
+        private bool updatesDisabled = false;
 
         public void createStatusBar(string title)
         {
@@ -19,15 +20,18 @@ namespace AstroWall.ApplicationLayer
             statusBar = NSStatusBar.SystemStatusBar;
             statusBarItem = statusBar.CreateStatusItem(NSStatusItemLength.Variable);
             General.InitIcon(statusBarItem, this.StatusMenu);
-            setTitle( title);
+            setTitle(title);
         }
 
         public void updateMenuCheckMarks(Preferences prefs)
         {
             General.RunOnUIThread(() =>
             {
-                this.MenuOutletAutoInstallUpdates.State = prefs.AutoInstallUpdates ? NSCellStateValue.On : NSCellStateValue.Off;
-                this.MenuOutletCheckUpdatesOnStartup.State = prefs.CheckUpdatesOnStartup ? NSCellStateValue.On : NSCellStateValue.Off;
+                if (!updatesDisabled)
+                {
+                    this.MenuOutletAutoInstallUpdates.State = prefs.AutoInstallUpdates ? NSCellStateValue.On : NSCellStateValue.Off;
+                    this.MenuOutletCheckUpdatesOnStartup.State = prefs.CheckUpdatesOnStartup ? NSCellStateValue.On : NSCellStateValue.Off;
+                }
                 this.MenuOutletRunAtLogin.State = prefs.RunAtStartup ? NSCellStateValue.On : NSCellStateValue.Off;
                 this.MenuOutletDailyCheckNewest.State = prefs.DailyCheck == DailyCheckEnum.Newest ? NSCellStateValue.On : NSCellStateValue.Off;
             });
@@ -172,6 +176,17 @@ namespace AstroWall.ApplicationLayer
 
         }
 
+        public void DeactivateUpdateOptions()
+        {
+            this.updatesDisabled = true;
+            this.MenuOutletCheckUpdatesManual.Enabled = false;
+            this.MenuOutletAutoInstallUpdates.Enabled = false;
+            this.MenuOutletCheckUpdatesOnStartup.Enabled = false;
+            this.MenuOutletAutoInstallUpdates.State = NSCellStateValue.Off;
+            this.MenuOutletCheckUpdatesManual.State = NSCellStateValue.Off;
+            this.MenuOutletCheckUpdatesOnStartup.State = NSCellStateValue.Off;
+        }
+
         partial void MenuActionRunAtLogin(NSObject sender)
         {
             bool newState = !getCheckmarkBoolFromSender(sender);
@@ -185,10 +200,13 @@ namespace AstroWall.ApplicationLayer
         /// <param name="enableAutoInstall"></param>
         public void EnableAllUpdateSubMenuItems(bool enableAutoInstall = true)
         {
-            Console.WriteLine("enable all update subitems");
-            this.MenuOutletAutoInstallUpdates.Enabled = enableAutoInstall;
-            this.MenuOutletCheckUpdatesOnStartup.Enabled = true;
-            this.MenuOutletCheckUpdatesManual.Enabled = true;
+            if (!updatesDisabled)
+            {
+                Console.WriteLine("enable all update subitems");
+                this.MenuOutletAutoInstallUpdates.Enabled = enableAutoInstall;
+                this.MenuOutletCheckUpdatesOnStartup.Enabled = true;
+                this.MenuOutletCheckUpdatesManual.Enabled = true;
+            }
         }
 
         partial void MenuActionAutoInstallUpdates(NSObject sender)

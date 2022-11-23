@@ -224,6 +224,12 @@ namespace AstroWall.BusinessLayer
             await appHandler.Updates.CheckForUpdates(true);
         }
 
+        public void DeactivateUpdateOptions()
+        {
+            appHandler.AppDelegate.DeactivateUpdateOptions();
+        }
+
+
         public async void ClickedInMenuManualCheckForNewPic()
         {
             await this.appHandler.checkForNewPics();

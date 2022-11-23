@@ -10,8 +10,7 @@ using AstroWall.BusinessLayer.Preferences;
 using CoreFoundation;
 using Darwin;
 using Foundation;
-
-
+using ObjCRuntime;
 
 namespace AstroWall.ApplicationLayer
 {
@@ -88,6 +87,20 @@ namespace AstroWall.ApplicationLayer
                 window.OrderFront(null);
                 NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
             }
+        }
+
+        public nint launchIncorrectInstallPathAlert()
+        {
+            var alert = new NSAlert();
+            alert.MessageText = "Incorrect Astro Wall install location";
+            alert.Icon = NSImage.GetSystemSymbol("folder.fill.badge.questionmark", null);
+            alert.InformativeText = "Current install location not suited for updates. Please confirm move app to user applications folder. A link will be created in the regular applications folder";
+            var okButton = alert.AddButton("Sure!");
+            var cancelButton = alert.AddButton("No thanks");
+            okButton.KeyEquivalent = "\r";
+
+            NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
+            return alert.RunModal();
         }
 
         public void launchAboutWindow()

@@ -4,6 +4,7 @@ using AstroWall.ApplicationLayer;
 using Foundation;
 using AstroWall.BusinessLayer.Preferences;
 using System.Threading;
+using AppKit;
 
 namespace AstroWall.BusinessLayer
 {
@@ -18,6 +19,7 @@ namespace AstroWall.BusinessLayer
         public Updates Updates { private set; get; }
         public Database db;
         public Preferences.Preferences Prefs { get; private set; }
+        public bool InvalidInstallPath { get; private set; }
 
         // Misc
         private string currentVersionStringWithCommit;
@@ -33,6 +35,17 @@ namespace AstroWall.BusinessLayer
 
         public async Task Init()
         {
+            nint installLocationCheck = checkIfInstallLocationIsIncorrectAndPrompt();
+            if (installLocationCheck == 1000)
+            {
+                // User agrees to move application to user applications folder
+                General.moveBundleToUserApplicationsFolder();
+                General.Relaunch();
+                System.Diagnostics.Process.GetCurrentProcess().Kill();
+                // Sleep until killed
+                Thread.Sleep(10000);
+            }
+
             bool prefsAreLoadedSuccessfully = primaryInitAndCheckIfPrefsAreAvail();
 
             if (prefsAreLoadedSuccessfully) await secondaryInit(null);
@@ -42,6 +55,25 @@ namespace AstroWall.BusinessLayer
                 // This will only fire if fresh install or user deleted prefs
                 AppDelegate.waitForUserToChosePrefs(secondaryInit);
             }
+        }
+
+        /// <summary>
+        /// return -1 on correct install path, otherwise returns
+        /// nint response from modal
+        /// </summary>
+        /// <returns></returns>
+        public nint checkIfInstallLocationIsIncorrectAndPrompt()
+        {
+            string installPath = General.GetInstallPath();
+            string wantedInstallPath = General.WantedBundleInstallPathInUserApplications();
+            Console.WriteLine("Wanted install path: " + wantedInstallPath);
+            Console.WriteLine("Current install path: " + installPath);
+            if (installPath != wantedInstallPath)
+            {
+                Console.WriteLine("Install location not suited for updates, prompting user to move");
+                return this.AppDelegate.launchIncorrectInstallPathAlert();
+            }
+            else return -1;
         }
 
         public void TerminationPreparations()
@@ -96,14 +128,22 @@ namespace AstroWall.BusinessLayer
                 Wallpaper.RunPostProcessAndSetWallpaperAllScreensUnobserved(db.ImgWrapList[0]);
             }
 
-            // Check for updates
-            // Don't wait on result
-            Task updateChecking = Task.Run(async () =>
+            // Evaluate install location
+            this.InvalidInstallPath = General.GetInstallPath() != General.WantedBundleInstallPathInUserApplications();
+
+            // Check if can update
+            if (!InvalidInstallPath)
             {
-                await Updates.ConsiderCheckingForUpdates();
-            });
-            if (Prefs.CheckUpdatesOnStartup)
-                Updates.registerWakeHandler();
+                // Check for updates
+                // Don't wait on result
+                Task updateChecking = Task.Run(async () =>
+                {
+                    await Updates.ConsiderCheckingForUpdates();
+                });
+                if (Prefs.CheckUpdatesOnStartup)
+                    Updates.registerWakeHandler();
+            }
+            else disableUpdateOptions();
 
             // Check if wallpaper wakehandler and noon check
             // should be set
@@ -121,6 +161,13 @@ namespace AstroWall.BusinessLayer
                     }
             }
             State.UnsetStateInitializing();
+        }
+
+        private void disableUpdateOptions()
+        {
+            Prefs.AutoInstallUpdates = false;
+            Prefs.CheckUpdatesOnStartup = false;
+            MenuHandler.DeactivateUpdateOptions();
         }
 
         public async Task checkForNewPics()
