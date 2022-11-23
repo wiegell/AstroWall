@@ -19,11 +19,11 @@ namespace cli5
 
         static void regPreRelease(UpdateManifest manifest)
         {
-            string gitStatus = runCommand("git status");
+            string gitStatus = runCommandReturnOutput("git status");
             bool cleanTree = gitStatus.Contains("nothing to commit, working tree clean");
             bool isOnMaster = gitStatus.Contains("On branch master");
 
-            if (true || (cleanTree && isOnMaster))
+            if ((cleanTree && isOnMaster))
             {
                 // Update tag
                 string tag = runCommand("git describe").Replace("\n", "");
@@ -120,6 +120,36 @@ namespace cli5
             proc.WaitForExit();
 
             return "output";
+        }
+
+        static string runCommandReturnOutput(string command, string workdir = null)
+        {
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = "sh";
+            psi.Arguments = "-c \"" + command + "\"";
+            psi.UseShellExecute = false;
+            psi.RedirectStandardOutput = true;
+            psi.RedirectStandardError = true;
+            if (workdir != null) psi.WorkingDirectory = workdir;
+
+            Process proc = new Process
+            {
+                StartInfo = psi
+            };
+
+
+            proc.Start();
+
+            string error = proc.StandardError.ReadToEnd();
+
+            if (!string.IsNullOrEmpty(error))
+                return ("error: " + error);
+
+            string output = proc.StandardOutput.ReadToEnd();
+
+            proc.WaitForExit();
+
+            return output;
         }
 
         static UpdateManifest readFromFile(string path = "./docs/assets/manifest.json")
