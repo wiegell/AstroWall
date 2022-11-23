@@ -51,6 +51,7 @@ namespace AstroWall.ApplicationLayer
             window.Delegate = new UpdatesWindowDelegate(window);
             var view = ((FreshInstallViewController)freshInstallWindowController.ContentViewController.View);
             view.regSaveCallback(callback);
+            if (appHandler.IncorrectInstallPath) view.DisableUpdatesOptions();
             freshInstallWindowController.ShowWindow(freshInstallWindowController);
             freshInstallWindowController.Window.Level = NSWindowLevel.Status;
             NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);

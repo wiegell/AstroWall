@@ -12,7 +12,7 @@ namespace AstroWall.ApplicationLayer
 
         private NSStatusBar statusBar;
         private NSStatusItem statusBarItem;
-        private bool updatesDisabled = false;
+        public bool UpdatesDisabled = false;
 
         public void createStatusBar(string title)
         {
@@ -23,11 +23,11 @@ namespace AstroWall.ApplicationLayer
             setTitle(title);
         }
 
-        public void updateMenuCheckMarks(Preferences prefs)
+        public void UpdateMenuCheckMarks(Preferences prefs)
         {
             General.RunOnUIThread(() =>
             {
-                if (!updatesDisabled)
+                if (!UpdatesDisabled)
                 {
                     this.MenuOutletAutoInstallUpdates.State = prefs.AutoInstallUpdates ? NSCellStateValue.On : NSCellStateValue.Off;
                     this.MenuOutletCheckUpdatesOnStartup.State = prefs.CheckUpdatesOnStartup ? NSCellStateValue.On : NSCellStateValue.Off;
@@ -178,7 +178,7 @@ namespace AstroWall.ApplicationLayer
 
         public void DeactivateUpdateOptions()
         {
-            this.updatesDisabled = true;
+            this.UpdatesDisabled = true;
             this.MenuOutletCheckUpdatesManual.Enabled = false;
             this.MenuOutletAutoInstallUpdates.Enabled = false;
             this.MenuOutletCheckUpdatesOnStartup.Enabled = false;
@@ -200,7 +200,7 @@ namespace AstroWall.ApplicationLayer
         /// <param name="enableAutoInstall"></param>
         public void EnableAllUpdateSubMenuItems(bool enableAutoInstall = true)
         {
-            if (!updatesDisabled)
+            if (!UpdatesDisabled)
             {
                 Console.WriteLine("enable all update subitems");
                 this.MenuOutletAutoInstallUpdates.Enabled = enableAutoInstall;

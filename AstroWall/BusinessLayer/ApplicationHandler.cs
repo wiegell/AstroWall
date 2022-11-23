@@ -19,7 +19,7 @@ namespace AstroWall.BusinessLayer
         public Updates Updates { private set; get; }
         public Database db;
         public Preferences.Preferences Prefs { get; private set; }
-        public bool InvalidInstallPath { get; private set; }
+        public bool IncorrectInstallPath { get; private set; }
 
         // Misc
         private string currentVersionStringWithCommit;
@@ -35,7 +35,12 @@ namespace AstroWall.BusinessLayer
 
         public async Task Init()
         {
-            nint installLocationCheck = checkIfInstallLocationIsIncorrectAndPrompt();
+            // Evaluate install location
+            this.IncorrectInstallPath = checkIfInstallLocationIsIncorrect();
+            this.AppDelegate.UpdatesDisabled = IncorrectInstallPath;
+
+            nint installLocationCheck = -1;
+            if (IncorrectInstallPath) installLocationCheck = promptUserToChangeInstallLocation();
             if (installLocationCheck == 1000)
             {
                 // User agrees to move application to user applications folder
@@ -62,18 +67,19 @@ namespace AstroWall.BusinessLayer
         /// nint response from modal
         /// </summary>
         /// <returns></returns>
-        public nint checkIfInstallLocationIsIncorrectAndPrompt()
+        private nint promptUserToChangeInstallLocation()
+        {
+            Console.WriteLine("Install location not suited for updates, prompting user to move");
+            return this.AppDelegate.launchIncorrectInstallPathAlert();
+        }
+
+        private bool checkIfInstallLocationIsIncorrect()
         {
             string installPath = General.GetInstallPath();
             string wantedInstallPath = General.WantedBundleInstallPathInUserApplications();
             Console.WriteLine("Wanted install path: " + wantedInstallPath);
             Console.WriteLine("Current install path: " + installPath);
-            if (installPath != wantedInstallPath)
-            {
-                Console.WriteLine("Install location not suited for updates, prompting user to move");
-                return this.AppDelegate.launchIncorrectInstallPathAlert();
-            }
-            else return -1;
+            return (installPath != wantedInstallPath);
         }
 
         public void TerminationPreparations()
@@ -128,11 +134,8 @@ namespace AstroWall.BusinessLayer
                 Wallpaper.RunPostProcessAndSetWallpaperAllScreensUnobserved(db.ImgWrapList[0]);
             }
 
-            // Evaluate install location
-            this.InvalidInstallPath = General.GetInstallPath() != General.WantedBundleInstallPathInUserApplications();
-
             // Check if can update
-            if (!InvalidInstallPath)
+            if (!IncorrectInstallPath)
             {
                 // Check for updates
                 // Don't wait on result

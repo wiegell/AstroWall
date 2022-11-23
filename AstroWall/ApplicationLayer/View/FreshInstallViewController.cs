@@ -30,6 +30,17 @@ namespace AstroWall
             this.callback = callbackArg;
         }
 
+        /// <summary>
+        /// To be used if install location is not correct
+        /// </summary>
+        public void DisableUpdatesOptions()
+        {
+            this.OutletAutoinstall.Enabled = false;
+            this.OutletCheckUpdatesAtStartup.Enabled = false;
+            this.OutletAutoinstall.State = NSCellStateValue.Off;
+            this.OutletCheckUpdatesAtStartup.State = NSCellStateValue.Off;
+        }
+
         private Preferences createPrefs()
         {
             var prefs = new Preferences();

@@ -49,7 +49,7 @@ namespace AstroWall.BusinessLayer
         public void updateMenuCheckMarksToReflectPrefs()
         {
             appDelegate.EnableAllUpdateSubMenuItems(appHandler.Prefs.CheckUpdatesOnStartup);
-            appDelegate.updateMenuCheckMarks(appHandler.Prefs);
+            appDelegate.UpdateMenuCheckMarks(appHandler.Prefs);
         }
 
         public void DisableAllItems()
@@ -188,13 +188,13 @@ namespace AstroWall.BusinessLayer
         {
             appHandler.Prefs.RunAtStartup = newState;
             appHandler.State.SetLaunchAgentToReflectPrefs();
-            appDelegate.updateMenuCheckMarks(appHandler.Prefs);
+            appDelegate.UpdateMenuCheckMarks(appHandler.Prefs);
         }
 
         public void changedInMenuAutoInstallUpdates(bool newState)
         {
             appHandler.Prefs.AutoInstallUpdates = newState;
-            appDelegate.updateMenuCheckMarks(appHandler.Prefs);
+            appDelegate.UpdateMenuCheckMarks(appHandler.Prefs);
         }
 
         public void changedInMenuCheckUpdatesAtStartup(bool newState)
@@ -208,7 +208,7 @@ namespace AstroWall.BusinessLayer
             {
                 appHandler.Updates.unregisterWakeHandler();
             }
-            appDelegate.updateMenuCheckMarks(appHandler.Prefs);
+            appDelegate.UpdateMenuCheckMarks(appHandler.Prefs);
         }
 
         public void changedInMenuDailyCheckNewest(bool newState)
@@ -216,7 +216,7 @@ namespace AstroWall.BusinessLayer
             Console.WriteLine("Daily check changed to newest: " + newState);
             appHandler.Prefs.DailyCheck = newState ? DailyCheckEnum.Newest : DailyCheckEnum.None;
             appHandler.Wallpaper.SetDailyCheckToNewest(newState);
-            appDelegate.updateMenuCheckMarks(appHandler.Prefs);
+            appDelegate.UpdateMenuCheckMarks(appHandler.Prefs);
         }
 
         public async void ClickedInMenuManualCheckUpdates()

@@ -237,6 +237,7 @@
     <ImageAsset Include="Assets.xcassets\MainIcon_download_6.imageset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\MainIcon_rot_400_trans.imageset\Contents.json" />
     <ImageAsset Include="Assets.xcassets\MainIcon_rot_400_trans.imageset\MainIcon_rot_400_trans-1.png" />
+    <ImageAsset Include="Assets.xcassets\MainIcon_rot_400_trans.imageset\MainIcon_rot_400_trans.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
