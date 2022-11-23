@@ -6,7 +6,7 @@ Written in C#.net as a Xamarin project. Published under the [MIT license](https:
 </p>
 
 ## Download
-From [public page](https://wiegell.github.io/AstroWall/) or to the right under releases.
+[Direct link](https://github.com/wiegell/AstroWall/releases/latest/download/Astro.dmg) or to the right under releases.
 
 ## Current features:
 - Auto fetch the latest picture each day
