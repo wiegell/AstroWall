@@ -912,7 +912,6 @@
                                 <rect key="frame" x="114" y="312" width="24" height="24"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <imageCell key="cell" refusesFirstResponder="YES" alignment="left" animates="YES" imageScaling="proportionallyDown" image="MainIcon_rot_400_trans" id="RbY-io-uGk"/>
-                                <color key="contentTintColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                             </imageView>
                             <imageView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hFj-p7-UYe">
                                 <rect key="frame" x="249" y="329" width="54" height="54"/>
