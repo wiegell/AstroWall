@@ -208,7 +208,14 @@ namespace AstroWall
             string symlinkPath = symlinkPathInSystemApplications();
             string currentInstallLocation = GetInstallPath();
 
-            // Move
+            // Remove potential old installation
+            if (Directory.Exists(wantedInstallLocation))
+            {
+                var dir = new DirectoryInfo(wantedInstallLocation);
+                dir.Delete(true);
+            }
+
+            // Move app to user applications folder
             NSTask mvNStask = new NSTask();
             mvNStask.LaunchPath = "/bin/bash";
             mvNStask.Arguments = new string[]
@@ -220,7 +227,7 @@ namespace AstroWall
             mvNStask.WaitUntilExit();
             Console.WriteLine("wanted intern: " + wantedInstallLocation);
 
-            // Link
+            // Link in applications folder
             NSTask linkNStask = new NSTask();
             linkNStask.LaunchPath = "/bin/bash";
             linkNStask.Arguments = new string[]
