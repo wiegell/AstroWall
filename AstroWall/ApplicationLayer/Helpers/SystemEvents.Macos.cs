@@ -63,7 +63,7 @@ namespace AstroWall.ApplicationLayer
         public static void SetAsLaunchAgent()
         {
             string ap = agentPath();
-            string agentXmlContent = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+            string agentXmlContent = $@"<?xml version=""1.0"" encoding=""UTF-8""?>
 <!DOCTYPE plist PUBLIC ""-//Apple//DTD PLIST 1.0//EN"" ""http://www.apple.com/DTDs/PropertyList-1.0.dtd"">
 <plist version=""1.0"">
 <dict>
@@ -72,7 +72,7 @@ namespace AstroWall.ApplicationLayer
     <key>LimitLoadToSessionType</key>
     <string>Aqua</string>
     <key>Program</key>
-    <string>/Applications/Astro Wall.app/Contents/MacOS/Astro Wall</string>
+    <string>{General.GetInstallPath()}/Contents/MacOS/Astro Wall</string>
     <key>RunAtLoad</key>
     <true/>
 </dict>
