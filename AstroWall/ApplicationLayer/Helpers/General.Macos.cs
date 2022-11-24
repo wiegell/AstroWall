@@ -173,9 +173,19 @@ namespace AstroWall
 
         public static string GetUserApplicationsPath()
         {
-            return NSFileManager.DefaultManager
+            string path = NSFileManager.DefaultManager
      .GetUrls(NSSearchPathDirectory.ApplicationDirectory, NSSearchPathDomain.User)[0]
      .Path;
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+                Console.WriteLine("Created user applications folder: " + path);
+            }
+            else
+            {
+                Console.WriteLine("user app folder found at: " + path);
+            }
+            return path;
         }
 
         public static string WantedBundleInstallPathInUserApplications()
