@@ -154,7 +154,7 @@ namespace AstroWall.BusinessLayer
                 ImgLoadList = new List<Task>();
                 foreach (ImgWrap pw in ImgWrapList)
                 {
-                    if (pw.OnlineDataExceptPicIsLoaded() && pw.Integrity && pw.ImgIsGettable)
+                    if (pw.Integrity && pw.ImgIsGettable)
                         ImgLoadList.Add(Task.Run(() => pw.LoadImg()));
                 }
                 await Task.WhenAll(ImgLoadList);

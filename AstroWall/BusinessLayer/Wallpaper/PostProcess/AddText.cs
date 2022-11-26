@@ -54,7 +54,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 throw ex;
             }
 
-            if (options.isEnabled)
+            if (options.isEnabled && description != null && description != "" && title != null && title != "" && credit != null && credit != "")
             {
                 // Format description
                 string descriptionFormatted = description.Replace("\n", " ").Replace("Explanation:", "").Replace("   ", " ").Replace("  ", " ").Replace("  ", " ").TrimStart();

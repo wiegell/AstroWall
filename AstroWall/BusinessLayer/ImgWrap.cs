@@ -136,6 +136,7 @@ namespace AstroWall.BusinessLayer
 
             try
             {
+                Console.WriteLine("Commencing download of date: " + this.PublishDate);
                 ImgLocalUrl = await FileHelpers.DownloadUrlToImageStorePath(ImgOnlineUrl);
                 await createPreviewFromFullSize();
             }
@@ -191,6 +192,8 @@ namespace AstroWall.BusinessLayer
             SKBitmap image;
             try
             {
+                Console.WriteLine("Trying to load image at local url: " + ImgLocalUrl);
+                Console.WriteLine(FileHelpers.SerializeNow(this));
                 image = await FileHelpers.LoadImageFromLocalUrl(ImgLocalUrl);
             }
             catch (Exception ex)
@@ -230,8 +233,8 @@ namespace AstroWall.BusinessLayer
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error postprocessing image ({0}): {1}", ImgLocalUrl, ex.Message);
-                throw new Exception($"Error postprocessing image ({ImgLocalUrl}): {ex.Message}", ex);
+                Console.WriteLine("Error postprocessing image ({0}): {1}", ImgLocalUrl, ex.Message, ex.StackTrace);
+                throw new Exception("error postprocessing", ex);
             }
 
             //Remove old postprocessed files

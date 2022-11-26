@@ -85,6 +85,10 @@ namespace AstroWall
             return bitmap;
         }
 
+        public static string SerializeNow(Object c)
+        {
+            return JsonConvert.SerializeObject(c);
+        }
         public static void SerializeNow(Object c, string path)
         {
             string jsonString = JsonConvert.SerializeObject(c);

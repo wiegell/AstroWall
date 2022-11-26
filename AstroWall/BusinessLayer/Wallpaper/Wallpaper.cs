@@ -76,7 +76,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 General.RunOnUIThread(() =>
                 {
                     Console.WriteLine("Exception in postProcess task on thread: " + Thread.CurrentThread.ManagedThreadId);
-                    throw newEx;
+                    throw ex;
                 });
 
                 // This will not bubble up
