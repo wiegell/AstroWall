@@ -7,8 +7,8 @@ using SkiaSharp;
 namespace AstroWall.BusinessLayer.Wallpaper
 {
     partial class PostProcess
-
     {
+
         public static Func<Dictionary<Screen, SKBitmap>, Dictionary<Screen, SKBitmap>> ScaleAndCropCurry()
         {
             // Not really needed atm, might be later
@@ -50,7 +50,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
                     ((int)Math.Ceiling(inputInfo.Width * resizefactor)),
                     ((int)Math.Ceiling(inputInfo.Height * resizefactor))
                     );
-                Console.WriteLine($"Resizing postprocess of screen {screen.Id} to size {newInfo.Width}x{newInfo.Height}");
+                log($"Resizing postprocess of screen {screen.Id} to size {newInfo.Width}x{newInfo.Height}");
                 SKBitmap newBitmap = inputBitmap.Resize(newInfo, SKFilterQuality.High);
 
                 // Crop
@@ -77,7 +77,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
                 // Return
                 var returnBM = SKBitmap.FromImage(croppedImage);
-                Console.WriteLine($"Cropped postprocess of screen {screen.Id} to {croppedImage.Info.Width}x{croppedImage.Info.Height}");
+                log($"Cropped postprocess of screen {screen.Id} to {croppedImage.Info.Width}x{croppedImage.Info.Height}");
 
                 returnDic.Add(screen, returnBM);
             }

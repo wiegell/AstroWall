@@ -43,6 +43,9 @@ namespace AstroWall.BusinessLayer
         [JsonProperty]
         public string CreditUrl { get; private set; }
 
+        // Log
+        private Action<string> log = Logging.GetLogger("Updates");
+
         public override bool Equals(object o)
         {
             if (!(o is ImgWrap)) return false;
@@ -71,13 +74,13 @@ namespace AstroWall.BusinessLayer
         {
             if (OnlineDataIsLoaded())
             {
-                Console.WriteLine("already loaded");
+                log("already loaded");
                 return;
             };
 
             try
             {
-                Console.WriteLine("loadonline url: " + PageUrl);
+                log("loadonline url: " + PageUrl);
                 urlResponseWrap wrap = await HTMLHelpers.getImgOnlineUrl(PageUrl);
                 if (wrap.status == System.Net.HttpStatusCode.NotFound)
                 {
@@ -92,7 +95,7 @@ namespace AstroWall.BusinessLayer
             }
             catch (Exception ex)
             {
-                Console.WriteLine("could not get pic url, integrity fail of: " + PageUrl + " Ex type: " + ex.GetType() + " Ex message: " + ex.Message);
+                log("could not get pic url, integrity fail of: " + PageUrl + " Ex type: " + ex.GetType() + " Ex message: " + ex.Message);
 
                 Integrity = false;
                 ImgIsGettable = false;
@@ -116,7 +119,7 @@ namespace AstroWall.BusinessLayer
             }
             catch (Exception ex)
             {
-                Console.WriteLine("could not get descr., credit or title of:" + PageUrl);
+                log("could not get descr., credit or title of:" + PageUrl);
                 Integrity = false;
             }
 
@@ -136,13 +139,13 @@ namespace AstroWall.BusinessLayer
 
             try
             {
-                Console.WriteLine("Commencing download of date: " + this.PublishDate);
+                log("Commencing download of date: " + this.PublishDate);
                 ImgLocalUrl = await FileHelpers.DownloadUrlToImageStorePath(ImgOnlineUrl);
                 await createPreviewFromFullSize();
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: could not load online url - no connection?: " + ImgOnlineUrl);
+                log("Error: could not load online url - no connection?: " + ImgOnlineUrl);
             }
         }
 
@@ -155,7 +158,7 @@ namespace AstroWall.BusinessLayer
             }
             catch (Exception ex)
             {
-                Console.WriteLine("error loading file ({0}): {1}", ImgLocalUrl, ex.Message);
+                log($"error loading file ({ImgLocalUrl}): {ex.Message}");
                 return;
             }
 
@@ -165,7 +168,7 @@ namespace AstroWall.BusinessLayer
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error resizing image ({0}): {1}", ImgLocalUrl, ex.Message);
+                log("Error resizing image ({ImgLocalUrl}): {ex.Message}");
 
             }
 
@@ -175,30 +178,30 @@ namespace AstroWall.BusinessLayer
                 FileStream f = File.Create(path);
                 image.Encode(f, (OnlineUrlIsJPG() ? SKEncodedImageFormat.Jpeg : SKEncodedImageFormat.Png), 90);
                 ImgLocalPreviewUrl = path;
-                Console.WriteLine("preview saved ({0}): {1}", FileType, path);
+                log($"preview saved ({FileType}): {path}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error saving preview ({0}): {1}", ImgLocalUrl, ex.Message);
+                log($"Error saving preview ({ImgLocalUrl}): {ex.Message}");
             }
             return;
         }
 
         public async Task createPostProcessedImages(Dictionary<string, Screen> screens, Dictionary<Preferences.PostProcessType, Preferences.PostProcess> postProcessPrefsDictionary)
         {
-            Console.WriteLine("creating postprocessed images on thread: " + Thread.CurrentThread.ManagedThreadId);
+            log("creating postprocessed images on thread: " + Thread.CurrentThread.ManagedThreadId);
 
             // Load full res image
             SKBitmap image;
             try
             {
-                Console.WriteLine("Trying to load image at local url: " + ImgLocalUrl);
-                Console.WriteLine(FileHelpers.SerializeNow(this));
+                log("Trying to load image at local url: " + ImgLocalUrl);
+                log(FileHelpers.SerializeNow(this));
                 image = await FileHelpers.LoadImageFromLocalUrl(ImgLocalUrl);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("error loading file ({0}): {1}", ImgLocalUrl, ex.Message);
+                log("error loading file ({ImgLocalUrl}): {ex.Message}");
                 return;
             }
 
@@ -233,19 +236,19 @@ namespace AstroWall.BusinessLayer
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error postprocessing image ({0}): {1}", ImgLocalUrl, ex.Message, ex.StackTrace);
+                log($"Error postprocessing image ({ImgLocalUrl}): {ex.Message}, {ex.StackTrace}");
                 throw new Exception("error postprocessing", ex);
             }
 
             //Remove old postprocessed files
             //(needs to be saved under new name to prevent wrong cache
-            Console.WriteLine("Commencing deleting old postproccesed images");
+            log("Commencing deleting old postproccesed images");
             if (ImgLocalPostProcessedUrlsByScreenId != null)
             {
 
                 foreach (var KV in ImgLocalPostProcessedUrlsByScreenId)
                 {
-                    Console.WriteLine($"Trying to delete postprocessed image at {KV.Value}");
+                    log($"Trying to delete postprocessed image at {KV.Value}");
                     try
                     {
                         FileHelpers.DeleteFile(KV.Value);
@@ -258,7 +261,7 @@ namespace AstroWall.BusinessLayer
             }
 
             // Save files and register file paths
-            Console.WriteLine("Commencing postprocess save");
+            log("Commencing postprocess save");
             try
             {
                 // This is the format saved in prefs
@@ -269,11 +272,11 @@ namespace AstroWall.BusinessLayer
                         Random rnd = new Random();
                         string path = $"{ImgLocalUrlNoExtension}_postprocessed_{bitmapKV.Key.Id}_{rnd.Next(999)}.{FileType}";
 
-                        Console.WriteLine($"Commencing save of postprocess of screen {bitmapKV.Key.Id} to path {path}");
+                        log($"Commencing save of postprocess of screen {bitmapKV.Key.Id} to path {path}");
 
                         FileStream f = File.Create(path);
                         bitmapKV.Value.Encode(f, (OnlineUrlIsJPG() ? SKEncodedImageFormat.Jpeg : SKEncodedImageFormat.Png), 90);
-                        Console.WriteLine($"Postprocess for screen {bitmapKV.Key} saved to path {path}");
+                        log($"Postprocess for screen {bitmapKV.Key} saved to path {path}");
                         f.Close();
                         return path;
                     }
@@ -281,7 +284,7 @@ namespace AstroWall.BusinessLayer
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error saving postprocess ({0}): {1}", ImgLocalUrl, ex.Message);
+                log($"Error saving postprocess ({ImgLocalUrl}): {ex.Message}");
             }
 
         }

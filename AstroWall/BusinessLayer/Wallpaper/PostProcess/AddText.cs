@@ -11,6 +11,10 @@ namespace AstroWall.BusinessLayer.Wallpaper
 {
     partial class PostProcess
     {
+
+        // Log
+        private static Action<string> log = Logging.GetLogger("Post process");
+
         public PostProcess()
         {
         }
@@ -42,7 +46,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             }
 
             SKBitmap returnBitmap;
-            Console.WriteLine("Running AddText");
+            log("Running AddText");
             try
             {
                 returnBitmap = mainScreenBitmap.Copy();
@@ -50,7 +54,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             catch (Exception ex)
             {
                 var exx = ex;
-                Console.WriteLine("Problem copying bitmap");
+                log("Problem copying bitmap");
                 throw ex;
             }
 
@@ -63,7 +67,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 string creditFormatted = "Credit / copyright: " + credit.Replace("\n", "").TrimStart().TrimEnd();
 
                 // string desc = "test \n test\n testtesttest";
-                Console.WriteLine("desc: " + descriptionFormatted);
+                log("desc: " + descriptionFormatted);
                 var canvas = new SKCanvas(returnBitmap);
                 canvas.DrawBitmap(mainScreenBitmap, 0, 0);
                 canvas.ResetMatrix();
@@ -106,7 +110,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             {
                 var tmpRect = SKRect.Create(x, y, width, 3000);
                 int height = DrawText(canvas, text, tmpRect, paint, margin, false, true);
-                Console.WriteLine("Calculated rect height: " + height);
+                log("Calculated rect height: " + height);
                 var properRect = SKRect.Create(x, y, width, height);
 
                 // Background

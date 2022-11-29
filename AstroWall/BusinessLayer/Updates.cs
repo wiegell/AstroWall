@@ -23,30 +23,33 @@ namespace AstroWall.BusinessLayer
         public Version currentVersion { get; private set; }
         private string pendingUpdatePKGpath;
 
+        // Log
+        private Action<string> log = Logging.GetLogger("Updates");
+
         public Updates(ApplicationHandler applicationHandlerArg, string currentVersionString)
         {
             this.applicationHandler = applicationHandlerArg;
             this.currentVersion = VersionFromString(currentVersionString);
-            Console.WriteLine("currentVersion: " + VersionFromString(currentVersionString));
+            log("currentVersion: " + VersionFromString(currentVersionString));
         }
 
         private UpdateLibrary.UpdateManifest manifest;
 
         public void registerWakeHandler()
         {
-            Console.WriteLine("Registering update wakehandler");
+            log("Registering update wakehandler");
             ApplicationLayer.SystemEvents.Instance.RegisterUpdateWakeHandler(this.wakeHandler);
         }
 
         public void unregisterWakeHandler()
         {
-            Console.WriteLine("Unregistering update wakehandler");
+            log("Unregistering update wakehandler");
             ApplicationLayer.SystemEvents.Instance.UnRegisterUpdateWakeHandler();
         }
 
         public void wakeHandler(NSNotification not)
         {
-            Console.WriteLine("Wake, checking for software updates");
+            log("Wake, checking for software updates");
             GetUpdateManifestAndCheckIfUpdatePending();
         }
 
@@ -70,8 +73,8 @@ namespace AstroWall.BusinessLayer
 
             Version latestVersion = VersionFromString(latestRelease.version);
 
-            Console.WriteLine("comparing currentversion: " + currentVersion);
-            Console.WriteLine("to latest version: " + latestVersion);
+            log("comparing currentversion: " + currentVersion);
+            log("to latest version: " + latestVersion);
             if (currentVersion < latestVersion) return latestRelease;
             else return null;
         }
@@ -94,31 +97,32 @@ namespace AstroWall.BusinessLayer
 
         public async Task<string> DownloadPendingUpdate()
         {
+            log("Starting pending update download: " + pendingUpdate.DirectPKGurl);
             string pathToPkg = await FileHelpers.DownloadUrlToTmpPath(pendingUpdate.DirectPKGurl);
-            Console.Write("Downloaded new pkg to path: " + pathToPkg);
+            log("Downloaded new pkg to path: " + pathToPkg);
             return pathToPkg;
         }
 
         public async Task<Boolean> GetUpdateManifestAndCheckIfUpdatePending()
         {
             await GetManifest();
-            Console.WriteLine("Update manifest downloaded and parsed");
+            log("Update manifest downloaded and parsed");
             pendingUpdate = checkManifestForNewer();
             bool hasPendingUpdate = pendingUpdate == null ? false : true;
-            Console.WriteLine("Has pending update: " + hasPendingUpdate);
+            log("Has pending update: " + hasPendingUpdate);
             return hasPendingUpdate;
         }
 
-        public async Task CheckForUpdates(bool manualCheck = false)
+        public async Task CheckForUpdates(bool manualCheck = false, bool runAtOnce = false)
         {
             bool hasPendingUpdate = await GetUpdateManifestAndCheckIfUpdatePending();
             if (hasPendingUpdate)
             {
-                Console.WriteLine("Has pending update: {0}", pendingUpdate.version);
+                log($"Has pending update: {pendingUpdate.version}");
 
                 if (applicationHandler.Prefs.AutoInstallUpdates)
                 {
-                    await downloadAndUpdate();
+                    await downloadAndUpdate(runAtOnce);
                 }
                 else
                 {
@@ -127,17 +131,18 @@ namespace AstroWall.BusinessLayer
             }
             else
             {
-                Console.WriteLine("No pending updates, is up to date");
+                log("No pending updates, is up to date");
                 if (manualCheck)
                     ApplicationLayer.Updates.Instance.AlertNoUpdates(currentVersion.ToString());
             }
         }
 
-        public async Task ConsiderCheckingForUpdates()
+        public async Task ConsiderCheckingForUpdates(bool runAtOnce)
         {
             if (applicationHandler.Prefs.CheckUpdatesOnStartup)
             {
-                await CheckForUpdates();
+                log("User has activated updates on startup, running updater");
+                await CheckForUpdates(manualCheck: false, runAtOnce);
             }
         }
 
@@ -162,10 +167,12 @@ namespace AstroWall.BusinessLayer
             applicationHandler.State.UnsetStateDownloading();
             if (runAtOnce)
             {
+                log("Running pending update");
                 runPendingUpdate();
             }
             else
             {
+                log("Queing pending update");
                 await queueUpdateInstall();
             }
         }
@@ -175,17 +182,17 @@ namespace AstroWall.BusinessLayer
             // Should be idle for 10 seconds before update is installed
             if (applicationHandler.State.isIdle)
             {
-                Console.WriteLine("Is idle, rechecking if still idle in 10 sec");
+                log("Is idle, rechecking if still idle in 10 sec");
                 await Task.Delay(10000);
                 if (applicationHandler.State.isIdle)
                 {
-                    Console.WriteLine("Still idle, running installer");
+                    log("Still idle, running installer");
                     runPendingUpdate();
                 }
             }
             else
             {
-                Console.WriteLine("Not idle, rechecking in 10 seconds");
+                log("Not idle, rechecking in 10 seconds");
                 await Task.Delay(10000);
                 await downloadAndUpdate();
             }
@@ -200,10 +207,10 @@ namespace AstroWall.BusinessLayer
                 {
                     applicationHandler.State.SetStateUpdating();
 
-                    Console.WriteLine("Prepping for update, saving prefs and DB");
+                    log("Prepping for update, saving prefs and DB");
                     applicationHandler.TerminationPreparations();
 
-                    Console.WriteLine("Running PKG update");
+                    log("Running PKG update");
                     ApplicationLayer.Updates.Instance.RunPKGUpdate(pendingUpdatePKGpath);
                     General.Relaunch();
                     System.Diagnostics.Process.GetCurrentProcess().Kill();
@@ -213,7 +220,7 @@ namespace AstroWall.BusinessLayer
                 }
                 else
                 {
-                    Console.WriteLine("Not idle for update, state must have been altered by other thread, resetting timer");
+                    log("Not idle for update, state must have been altered by other thread, resetting timer");
                     queueUpdateInstall();
                 }
             }

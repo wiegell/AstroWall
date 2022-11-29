@@ -312,6 +312,7 @@
       <DependentUpon>AboutViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="BusinessLayer\Wallpaper\PostProcess\Compose.cs" />
+    <Compile Include="BusinessLayer\Logging.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Main.storyboard" />

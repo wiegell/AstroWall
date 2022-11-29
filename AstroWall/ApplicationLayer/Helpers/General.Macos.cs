@@ -45,9 +45,23 @@ namespace AstroWall
             return dbDirectory;
         }
 
+        public static string getLogDirectory()
+        {
+            string dbDirectory = getAstroDirectory() + "log/";
+            if (!Directory.Exists(dbDirectory))
+            {
+                Directory.CreateDirectory(dbDirectory);
+            }
+            return dbDirectory;
+        }
+
         public static string getDBPath()
         {
             return getDBDirectory() + "db.json";
+        }
+        public static string getLogPath()
+        {
+            return getLogDirectory() + "log.txt";
         }
         public static string getPrefsPath()
         {

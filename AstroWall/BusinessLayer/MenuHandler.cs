@@ -33,6 +33,9 @@ namespace AstroWall.BusinessLayer
         private CancellationTokenSource taskCancellationSource;
         private CancellationToken cancellationToken;
 
+        // Log
+        private Action<string> log = Logging.GetLogger("Menu handler");
+
         public MenuHandler(AppDelegate del, ApplicationHandler app)
         {
             appDelegate = del;
@@ -83,7 +86,7 @@ namespace AstroWall.BusinessLayer
 
         public void RunDownloadIconAnimation()
         {
-            Console.WriteLine("Download animation about to start");
+            log("Download animation about to start");
             if (iconUpdateTimer != null) iconUpdateTimer.Dispose();
             autoEvent = new AutoResetEvent(false);
             flipCounter = 0;
@@ -98,7 +101,7 @@ namespace AstroWall.BusinessLayer
 
         public void RunSpinnerIconAnimation()
         {
-            Console.WriteLine("Spinner animation about to start");
+            log("Spinner animation about to start");
             if (iconUpdateTimer != null) iconUpdateTimer.Dispose();
             autoEvent = new AutoResetEvent(false);
             flipCounter = 0;
@@ -119,7 +122,7 @@ namespace AstroWall.BusinessLayer
             // Makes sure that one of the timer will not update icon
             // after this function
             await Task.Delay(50);
-            Console.WriteLine("Setting icon to default");
+            log("Setting icon to default");
 
             if (appHandler.State.isIdle)
             {
@@ -213,7 +216,7 @@ namespace AstroWall.BusinessLayer
 
         public void changedInMenuDailyCheckNewest(bool newState)
         {
-            Console.WriteLine("Daily check changed to newest: " + newState);
+            log("Daily check changed to newest: " + newState);
             appHandler.Prefs.DailyCheck = newState ? DailyCheckEnum.Newest : DailyCheckEnum.None;
             appHandler.Wallpaper.SetDailyCheckToNewest(newState);
             appDelegate.UpdateMenuCheckMarks(appHandler.Prefs);
@@ -268,8 +271,7 @@ namespace AstroWall.BusinessLayer
             if (iconRotationDeg <= 204) rotDegOffset = 2;
             if (iconRotationDeg <= 3) rotDegOffset = -1;
             string iconName = "MainIcon_rot_" + (iconRotationDeg + rotDegOffset);
-            Console.WriteLine("icon: " + iconName);
-            //Console.WriteLine("iconname: " + iconName);
+            //log("iconname: " + iconName);
             appDelegate.changeIconTo(iconName, true);
             if (iconRotationDeg + rotDegOffset == 0) goingdown = true;
             if (iconRotationDeg + rotDegOffset == 400) goingdown = false;

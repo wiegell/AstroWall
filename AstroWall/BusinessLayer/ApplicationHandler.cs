@@ -24,6 +24,10 @@ namespace AstroWall.BusinessLayer
         // Misc
         private string currentVersionStringWithCommit;
 
+        // Log
+        private Action<string> log = Logging.GetLogger("App handler");
+        private Action<string> logError = Logging.GetLogger("App handler", true);
+
 
         public ApplicationHandler(AppDelegate del)
         {
@@ -51,8 +55,10 @@ namespace AstroWall.BusinessLayer
                 Thread.Sleep(10000);
             }
 
+            log("Starting primary init");
             bool prefsAreLoadedSuccessfully = primaryInitAndCheckIfPrefsAreAvail();
 
+            log("Starting sec. init");
             if (prefsAreLoadedSuccessfully) await secondaryInit(null);
             else
             {
@@ -69,7 +75,7 @@ namespace AstroWall.BusinessLayer
         /// <returns></returns>
         private nint promptUserToChangeInstallLocation()
         {
-            Console.WriteLine("Install location not suited for updates, prompting user to move");
+            log("Install location not suited for updates, prompting user to move");
             return this.AppDelegate.launchIncorrectInstallPathAlert();
         }
 
@@ -77,25 +83,30 @@ namespace AstroWall.BusinessLayer
         {
             string installPath = General.GetInstallPath();
             string wantedInstallPath = General.WantedBundleInstallPathInUserApplications();
-            Console.WriteLine("Wanted install path: " + wantedInstallPath);
-            Console.WriteLine("Current install path: " + installPath);
+            log("Wanted install path: " + wantedInstallPath);
+            log("Current install path: " + installPath);
             return (installPath != wantedInstallPath);
         }
 
         public void TerminationPreparations()
         {
-            Console.WriteLine("Terminate called");
-            db.SaveToDisk();
-            Prefs.SaveToDisk();
+            log("Terminate called");
+            try
+            {
+                db.SaveToDisk();
+                Prefs.SaveToDisk();
+            }
+            catch (Exception ex)
+            {
+                logError("Could not save prefs and db (expected if terminated during startup update)");
+            }
         }
 
         private bool primaryInitAndCheckIfPrefsAreAvail()
         {
+
             // Create status bar icon / menu
             MenuHandler.createStatusBar("Astrowall v" + Updates.currentVersion);
-
-            // Init state
-            State = new State(this, currentVersionStringWithCommit);
 
             // Load prefs. If non-present halt further actions until
             // preft are confirmed by user
@@ -106,6 +117,21 @@ namespace AstroWall.BusinessLayer
 
         private async Task secondaryInit(Preferences.Preferences prefsFromPostInstallPrompt)
         {
+            // Init state
+            State = new State(this, currentVersionStringWithCommit);
+
+            // Check for updates.
+            if (!IncorrectInstallPath)
+            {
+                // Is checked syncronously to be able to push updates before app crashes
+                log("Checking for updates at startup");
+                Task updateChecking = Task.Run(async () =>
+                {
+                    await Updates.ConsiderCheckingForUpdates(runAtOnce: true);
+                });
+                updateChecking.Wait();
+            }
+
             // Set prefs from post-install welcome screen,
             // if calls comes from there.
             // If prefs == null it means they are not created
@@ -134,15 +160,9 @@ namespace AstroWall.BusinessLayer
                 Wallpaper.RunPostProcessAndSetWallpaperAllScreensUnobserved(db.ImgWrapList[0]);
             }
 
-            // Check if can update
+            // Update menus if updates are avail. and set wake handler
             if (!IncorrectInstallPath)
             {
-                // Check for updates
-                // Don't wait on result
-                Task updateChecking = Task.Run(async () =>
-                {
-                    await Updates.ConsiderCheckingForUpdates();
-                });
                 if (Prefs.CheckUpdatesOnStartup)
                     Updates.registerWakeHandler();
             }

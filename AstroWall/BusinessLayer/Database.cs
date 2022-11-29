@@ -20,17 +20,20 @@ namespace AstroWall.BusinessLayer
         private List<Task> DataLoadList;
         private List<Task> ImgLoadList;
 
+        // Log
+        private Action<string> log = Logging.GetLogger("Database");
+
         public Database()
         {
             ImgWrapList = new List<ImgWrap>();
             if (FileHelpers.DBExists())
             {
-                Console.WriteLine("db exists, deserialize");
+                log("db exists, deserialize");
                 ImgWrapList = FileHelpers.DeSerializeNow<List<ImgWrap>>(General.getDBPath());
             }
             else
             {
-                Console.WriteLine("db not found");
+                log("db not found");
             }
         }
 
@@ -57,14 +60,12 @@ namespace AstroWall.BusinessLayer
             bool datesAreInDB = true;
             foreach (string dateToCheck in datesToCheck)
             {
-                Console.Write("Checking date: {0}", dateToCheck);
                 if (!datesLoadedCache.Contains(dateToCheck))
                 {
-                    Console.Write(", date not found");
+                    log($"Date {dateToCheck} not found");
                     datesAreInDB = false;
                 }
-                else Console.Write(", date found");
-                Console.WriteLine();
+                else log($"Date {dateToCheck} found");
             }
 
             return datesAreInDB;
@@ -88,13 +89,13 @@ namespace AstroWall.BusinessLayer
             bool datesAreInDB = hasDates(n, date);
             bool isOffline = false;
             List<ImgWrap> tmpImgWrapList = new List<ImgWrap>();
-            Console.WriteLine("DB has all wanted days registered: " + datesAreInDB);
-            Console.WriteLine("All of DB has data loaded: " + allOfDBHasDataLoaded);
+            log("DB has all wanted days registered: " + datesAreInDB);
+            log("All of DB has data loaded: " + allOfDBHasDataLoaded);
 
             // Everything is loaded, no need to download, may
             if (datesAreInDB && allOfDBHasDataLoaded && !forceReload)
             {
-                Console.WriteLine("Everything is loaded, no onlinecheck, unnecessary check?");
+                log("Everything is loaded, no onlinecheck, unnecessary check?");
                 return true;
 
             };
@@ -109,7 +110,7 @@ namespace AstroWall.BusinessLayer
                     DateTime potentialDownload = date.AddDays(-i);
                     if (!this.hasDate(potentialDownload))
                     {
-                        Console.WriteLine("adding day: " + date.AddDays(-i));
+                        log("adding day: " + date.AddDays(-i));
                         ImgWrap tmppw = new ImgWrap(date.AddDays(-i));
                         Task t = tmppw.LoadOnlineDataButNotImg();
                         tmpImgWrapList.Add(tmppw);
@@ -136,7 +137,7 @@ namespace AstroWall.BusinessLayer
             }
             else
             {
-                Console.WriteLine("No host: probably offline, nothing is added to ImgWrapList");
+                log("No host: probably offline, nothing is added to ImgWrapList");
                 return false;
             }
 
@@ -146,7 +147,7 @@ namespace AstroWall.BusinessLayer
         {
             if (ImgWrapList.All(iw => iw.ImgsAreLoadedOrUngettable()) && !forceReload)
             {
-                Console.WriteLine("All images loaded, no download");
+                log("All images loaded, no download");
                 return;
             }
             else

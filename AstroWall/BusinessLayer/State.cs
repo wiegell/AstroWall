@@ -27,6 +27,9 @@ namespace AstroWall.BusinessLayer
         // Refs
         ApplicationHandler applicationHandler;
 
+        // Log
+        private Action<string> log = Logging.GetLogger("State");
+
         // currentVersionString is the long tag from git including commit hash  
         public State(ApplicationHandler applicationHandlerArg, string currentVersionString)
         {
@@ -37,7 +40,7 @@ namespace AstroWall.BusinessLayer
         {
             lock (_lock_)
             {
-                Console.WriteLine("State: Initializing");
+                log("State: Initializing");
                 isIdle = false;
                 isInitializing = true;
                 applicationHandler.MenuHandler.EnableStatusIcon();
@@ -50,7 +53,7 @@ namespace AstroWall.BusinessLayer
         {
             lock (_lock_)
             {
-                Console.WriteLine("State unset: Initializing");
+                log("State unset: Initializing");
                 isInitializing = false;
                 trySetStateIdle();
             }
@@ -60,7 +63,7 @@ namespace AstroWall.BusinessLayer
         {
             lock (_lock_)
             {
-                Console.WriteLine("State: Downloading");
+                log("State: Downloading");
                 isDownloading = true;
                 nDownloading++;
                 isIdle = false;
@@ -84,7 +87,7 @@ namespace AstroWall.BusinessLayer
                 nDownloading--;
                 if (nDownloading == 0)
                 {
-                    Console.WriteLine("State unset: Downloading");
+                    log("State unset: Downloading");
                     isDownloading = false;
                     if (isPostProcessing || isInitializing)
                     {
@@ -99,7 +102,7 @@ namespace AstroWall.BusinessLayer
         {
             lock (_lock_)
             {
-                Console.WriteLine("State: Choose prefs");
+                log("State: Choose prefs");
                 isDownloading = true;
                 isIdle = false;
                 applicationHandler.MenuHandler.DisableStatusIcon();
@@ -109,7 +112,7 @@ namespace AstroWall.BusinessLayer
         {
             lock (_lock_)
             {
-                Console.WriteLine("State unset: ChoosePrefs");
+                log("State unset: ChoosePrefs");
                 isChoosingPrefs = false;
                 trySetStateIdle();
             }
@@ -123,7 +126,7 @@ namespace AstroWall.BusinessLayer
                 if (!isPostProcessing)
                 {
                     applicationHandler.MenuHandler.SetSubTitle("Processing picture...");
-                    Console.WriteLine("State: PostProcessing");
+                    log("State: PostProcessing");
                     isPostProcessing = true;
                     isIdle = false;
                     // Check to see if animation already running
@@ -135,7 +138,7 @@ namespace AstroWall.BusinessLayer
         {
             lock (_lock_)
             {
-                Console.WriteLine("State unset: PostProcessing");
+                log("State unset: PostProcessing");
                 isPostProcessing = false;
                 trySetStateIdle();
             }
@@ -145,7 +148,7 @@ namespace AstroWall.BusinessLayer
         {
             lock (_lock_)
             {
-                Console.WriteLine("State: browsing wallpapers");
+                log("State: browsing wallpapers");
                 isBrowsingWallpapers = true;
             }
         }
@@ -153,7 +156,7 @@ namespace AstroWall.BusinessLayer
         {
             lock (_lock_)
             {
-                Console.WriteLine("State unset: browsing wallpapers");
+                log("State unset: browsing wallpapers");
                 isBrowsingWallpapers = false;
                 trySetStateIdle();
             }
@@ -163,7 +166,7 @@ namespace AstroWall.BusinessLayer
         {
             lock (_lock_)
             {
-                Console.WriteLine("State: updating");
+                log("State: updating");
                 isUpdating = true;
                 applicationHandler.MenuHandler.DisableStatusIcon();
             }
@@ -174,7 +177,7 @@ namespace AstroWall.BusinessLayer
         {
             lock (_lock_)
             {
-                Console.WriteLine("Trying to set state idle: {0},{1},{2},{3},{4},{5}", isBrowsingWallpapers, isChoosingPrefs, isDownloading, isInitializing, isPostProcessing, isSettingWallpaper);
+                log($"Trying to set state idle: {isBrowsingWallpapers},{isChoosingPrefs},{isDownloading},{isInitializing},{isPostProcessing},{isSettingWallpaper}");
                 if (
                     !(
                     isBrowsingWallpapers ||
@@ -186,7 +189,7 @@ namespace AstroWall.BusinessLayer
                     isSettingWallpaper
                     ))
                 {
-                    Console.WriteLine("Setting state to idle:");
+                    log("Setting state to idle:");
                     isIdle = true;
                     applicationHandler.MenuHandler.EnableStatusIcon();
                     Task t = applicationHandler.MenuHandler.SetIconToDefault();
