@@ -100,7 +100,7 @@ namespace AstroWall
                 try
                 {
                     boxedBool = NSWorkspace.SharedWorkspace.SetDesktopImageUrl(NSUrl.FromFilename(url), screen.toNSScreen(), new NSDictionary(), new NSError());
-                    Console.WriteLine("Success");
+                    Console.WriteLine("Success: " + boxedBool);
                 }
                 catch (Exception ex)
                 {

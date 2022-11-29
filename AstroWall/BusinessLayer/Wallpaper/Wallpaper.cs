@@ -121,28 +121,14 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 );
             return await SetWallpaperAllScreens(postProcessedImageUrlByScreen);
         }
-        //public async Task<bool> SetWallpaperAllScreens(ImgWrap iw)
-        //{
-        //    if (iw.FullResIsLoaded())
-        //    {
-        //        Object retObj = await General.SetWallpaper(iw.ImgLocalUrl, true); ;
-        //        return (bool)retObj;
-        //    }
-        //    else return false;
-        //}
 
-        //public void SetWallpaperMainScreen(string url)
-        //{
-
-        //    General.SetWallpaper();
-        //}
-        public void SetPreviewWallpaper(ImgWrap iw)
+        public async Task SetPreviewWallpaper(ImgWrap iw)
         {
             if (iw.PreviewIsLoaded())
-                General.SetWallpaper(Screen.Main(), iw.ImgLocalPreviewUrl);
+                await General.SetWallpaper(Screen.Main(), iw.ImgLocalUrl);
         }
 
-        public void ResetWallpaper()
+        public async Task ResetWallpaper()
         {
             if (applicationHandler.Prefs.hasAstroWall())
             {
@@ -160,12 +146,13 @@ namespace AstroWall.BusinessLayer.Wallpaper
                     screenKV => screenKV.Value
                     );
 
-                SetWallpaperAllScreens(postProcessedImageUrlByScreen);
+                await SetWallpaperAllScreens(postProcessedImageUrlByScreen);
             }
             else
             {
-                SetWallpaperAllScreens(applicationHandler.Prefs.CurrentPathToNonAstroWallpaper);
+                await SetWallpaperAllScreens(applicationHandler.Prefs.CurrentPathToNonAstroWallpaper);
             }
+
         }
 
         public void launchPostProcessWindow()
