@@ -297,7 +297,12 @@ namespace AstroWall.BusinessLayer
         {
             return
                 OnlineDataIsLoaded() &&
-                ImgLocalUrl == null;
+                !ImgIsLoaded();
+        }
+
+        public bool ImgIsLoaded()
+        {
+            return ImgLocalUrl != null;
         }
 
         public bool OnlineDataIsLoaded()
