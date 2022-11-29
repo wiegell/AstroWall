@@ -6,6 +6,9 @@ namespace AstroWall.BusinessLayer
     public class Logging
     {
 
+        // Formatting
+        private static string dateFormat = "dd/MM-yy--HH:mm:ss";
+
         //Singleton
         private static volatile Logging instance;
         private static object syncRoot = new object();
@@ -31,6 +34,7 @@ namespace AstroWall.BusinessLayer
 
         public Logging()
         {
+            pruneLogFile();
             sw = File.AppendText(General.getLogPath());
         }
 
@@ -40,12 +44,19 @@ namespace AstroWall.BusinessLayer
                     {
                         lock (syncRoot)
                         {
-                            string logStr = (isError ? "ERROR: " : "") + DateTime.Now.ToString("dd/MM-yy--HH:mm:ss") + ", " + caller + ": " + log;
+                            string logStr = (isError ? "ERROR: " : "") + DateTime.Now.ToString(dateFormat) + ", " + caller + ": " + log;
                             Logging.Instance.sw.WriteLine(logStr);
                             Logging.Instance.sw.Flush();
                             Console.WriteLine(logStr);
                         }
                     };
+        }
+
+        private void pruneLogFile()
+        {
+            string path = General.getLogPath();
+            long size = (new FileInfo(path)).Length;
+            if (size > 5000000) File.Delete(path);
         }
     }
 }
