@@ -55,8 +55,11 @@ namespace AstroWall.BusinessLayer
         private void pruneLogFile()
         {
             string path = General.getLogPath();
+            if (File.Exists(path))
+            {
             long size = (new FileInfo(path)).Length;
             if (size > 5000000) File.Delete(path);
+            }
         }
     }
 }

@@ -108,6 +108,9 @@ namespace AstroWall.BusinessLayer
             // Create status bar icon / menu
             MenuHandler.createStatusBar("Astrowall v" + Updates.currentVersion);
 
+            // Init state
+            State = new State(this, currentVersionStringWithCommit);
+
             // Load prefs. If non-present halt further actions until
             // preft are confirmed by user
             Prefs = Preferences.Preferences.fromSave();
@@ -117,8 +120,6 @@ namespace AstroWall.BusinessLayer
 
         private async Task secondaryInit(Preferences.Preferences prefsFromPostInstallPrompt)
         {
-            // Init state
-            State = new State(this, currentVersionStringWithCommit);
 
             // Check for updates.
             if (!IncorrectInstallPath)
