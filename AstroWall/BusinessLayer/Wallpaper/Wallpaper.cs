@@ -125,7 +125,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
         public async Task SetPreviewWallpaper(ImgWrap iw)
         {
             if (iw.PreviewIsLoaded())
-                await General.SetWallpaper(Screen.Main(), iw.ImgLocalUrl);
+                await General.SetWallpaper(Screen.Main(), iw.ImgLocalPreviewUrl);
         }
 
         public async Task ResetWallpaper()

@@ -164,7 +164,7 @@ namespace AstroWall.BusinessLayer
 
             try
             {
-                image = image.Resize(new SKSize(500, 360).ToSizeI(), SKFilterQuality.Medium);
+                image = image.Resize(new SKSize(1920, 1080).ToSizeI(), SKFilterQuality.Medium);
             }
             catch (Exception ex)
             {
