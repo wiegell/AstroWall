@@ -44,7 +44,7 @@ namespace AstroWall.BusinessLayer
         public string CreditUrl { get; private set; }
 
         // Log
-        private Action<string> log = Logging.GetLogger("Updates");
+        private Action<string> log = Logging.GetLogger("ImgWrap");
 
         public override bool Equals(object o)
         {

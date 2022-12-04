@@ -45,6 +45,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
         public async Task<bool> RunPostProcessAndSetWallpaperAllScreens(ImgWrap imgWrap)
         {
+            if (!imgWrap.ImgIsGettable) return false;
             try
             {
                 // Task wrap to run on non-ui thread
@@ -200,8 +201,8 @@ namespace AstroWall.BusinessLayer.Wallpaper
             // Double check, if prefs have changed since callback set
             if (applicationHandler.Prefs.DailyCheck == DailyCheckEnum.Newest)
             {
-                log("Wake, consider checking for new pics, now is: " + DateTime.Now);
-                log("Next scheduled check: " + applicationHandler.Prefs.NextScheduledCheck);
+                log("Wake, consider checking for new pics");
+                log("Next scheduled check: " + applicationHandler.Prefs.NextScheduledCheck.ToString(Logging.dateFormat));
                 if (lastScheduledCheckFailedToSetWallpaper)
                 {
                     log("Last online check was probably during sleep, retrying to set wallpapers in 10 sec");

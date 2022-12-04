@@ -7,7 +7,7 @@ namespace AstroWall.BusinessLayer
     {
 
         // Formatting
-        private static string dateFormat = "dd/MM-yy--HH:mm:ss";
+        public static readonly string dateFormat = "dd/MM-yy--HH:mm:ss";
 
         //Singleton
         private static volatile Logging instance;
@@ -57,8 +57,8 @@ namespace AstroWall.BusinessLayer
             string path = General.getLogPath();
             if (File.Exists(path))
             {
-            long size = (new FileInfo(path)).Length;
-            if (size > 5000000) File.Delete(path);
+                long size = (new FileInfo(path)).Length;
+                if (size > 5000000) File.Delete(path);
             }
         }
     }
