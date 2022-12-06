@@ -237,15 +237,19 @@ namespace AstroWall.BusinessLayer.Wallpaper
             TaskCancelWrap newTCW = new TaskCancelWrap();
             newTCW.task = Task.Run(async () =>
             {
-                log("Noontask started (before delay)");
                 DateTime now = DateTime.Now;
-                DateTime nowPlusOneDay = DateTime.Now.AddDays(1);
-                DateTime tomorrowNoon = new DateTime(nowPlusOneDay.Year, nowPlusOneDay.Month, nowPlusOneDay.Day, 12, 0, 0);
+                DateTime noonToday = new DateTime(now.Year, now.Month, now.Day, 12, 0, 0);
+
+                bool shouldSetCheckTomorrow = now > noonToday;
+                log("Setting next noon check to " + (shouldSetCheckTomorrow ? "tomorrow" : "today"));
+
+                DateTime dayToSetCheck = now.AddDays(shouldSetCheckTomorrow ? 1 : 0);
+                DateTime nextNoon = new DateTime(dayToSetCheck.Year, dayToSetCheck.Month, dayToSetCheck.Day, 12, 0, 0);
                 // Debugging line
                 // DateTime tomorrowNoon = now.AddMilliseconds(120000);
-                applicationHandler.Prefs.NextScheduledCheck = tomorrowNoon;
-                int diffMSuntilTomorrowNoon = (int)tomorrowNoon.Subtract(now).TotalMilliseconds;
-                log("MS diff until tomorrow noon: " + diffMSuntilTomorrowNoon);
+                applicationHandler.Prefs.NextScheduledCheck = nextNoon;
+                int diffMSuntilTomorrowNoon = (int)nextNoon.Subtract(now).TotalMilliseconds;
+                log("MS diff until next noon: " + diffMSuntilTomorrowNoon);
                 await Task.Delay(diffMSuntilTomorrowNoon);
                 log("Noon task token status: " + newTCW.token.IsCancellationRequested);
                 if (!newTCW.token.IsCancellationRequested) noonCallback();
