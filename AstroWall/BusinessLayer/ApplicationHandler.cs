@@ -128,9 +128,27 @@ namespace AstroWall.BusinessLayer
                 log("Checking for updates at startup");
                 Task updateChecking = Task.Run(async () =>
                 {
-                    await Updates.ConsiderCheckingForUpdates(runAtOnce: true);
+                    try
+                    {
+                        await Updates.ConsiderCheckingForUpdates(runAtOnce: true, overridePrefs: true);
+                    }
+                    catch (Exception ex)
+                    {
+                        // Rethrow to UI thread for debugging
+                        Exception newEx = new Exception("Exception in update check", ex);
+                        General.RunOnUIThread(() =>
+                        {
+                            logError("Exception in update check on thread: " + Thread.CurrentThread.ManagedThreadId);
+                            logError("Ex: " + ex.GetType() + ", " + ex.Message);
+                            throw ex;
+                        });
+
+                        // This will not bubble up
+                        throw newEx;
+                    }
                 });
                 updateChecking.Wait();
+                log("Update checking done");
             }
 
             // Set prefs from post-install welcome screen,

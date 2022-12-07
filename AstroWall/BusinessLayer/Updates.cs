@@ -25,6 +25,7 @@ namespace AstroWall.BusinessLayer
 
         // Log
         private Action<string> log = Logging.GetLogger("Updates");
+        private Action<string> logError = Logging.GetLogger("Updates", true);
 
         public Updates(ApplicationHandler applicationHandlerArg, string currentVersionString)
         {
@@ -50,7 +51,29 @@ namespace AstroWall.BusinessLayer
         public void wakeHandler(NSNotification not)
         {
             log("Wake, checking for software updates");
-            GetUpdateManifestAndCheckIfUpdatePending();
+            Task updateChecking = Task.Run(async () =>
+            {
+                try
+                {
+                    await ConsiderCheckingForUpdates(runAtOnce: true);
+                }
+                catch (Exception ex)
+                {
+                    // Rethrow to UI thread for debugging
+                    Exception newEx = new Exception("Exception in update check", ex);
+                    General.RunOnUIThread(() =>
+                    {
+                        logError("Exception in update check on thread: " + Thread.CurrentThread.ManagedThreadId);
+                        logError("Ex: " + ex.GetType() + ", " + ex.Message);
+                        throw ex;
+                    });
+
+                    // This will not bubble up
+                    throw newEx;
+                }
+            });
+            updateChecking.Wait();
+            log("Update checking done");
         }
 
         public async Task GetManifest()
@@ -137,9 +160,9 @@ namespace AstroWall.BusinessLayer
             }
         }
 
-        public async Task ConsiderCheckingForUpdates(bool runAtOnce)
+        public async Task ConsiderCheckingForUpdates(bool runAtOnce, bool overridePrefs = false)
         {
-            if (applicationHandler.Prefs.CheckUpdatesOnStartup)
+            if (overridePrefs || applicationHandler.Prefs.CheckUpdatesOnStartup)
             {
                 log("User has activated updates on startup, running updater");
                 await CheckForUpdates(manualCheck: false, runAtOnce);
