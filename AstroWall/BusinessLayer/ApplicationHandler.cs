@@ -228,6 +228,8 @@ namespace AstroWall.BusinessLayer
 
         public async Task checkForNewPics()
         {
+                // Cache latest
+                var tmp = db.Latest;
 
             // Set state downloading
             State.SetStateDownloading("Checking for new pics...");
@@ -235,6 +237,7 @@ namespace AstroWall.BusinessLayer
             bool successfullOnlinCheck = await db.LoadDataButNoImgFromOnlineStartingAtDate(20, DateTime.Now);
             if (successfullOnlinCheck)
             {
+
 
                 // Register successfull check in prefs
                 Prefs.LastOnlineCheck = DateTime.Now;
@@ -244,8 +247,12 @@ namespace AstroWall.BusinessLayer
                 await db.LoadImgs();
 
                 // Update submenu
+                log("Updating menu");
                 MenuHandler.PopulateSubmenuLatestPictures(db.getPresentableImages(), State);
                 State.UnsetStateDownloading();
+
+                // Run postProcess and set latest
+                if (db.Latest != null && !db.Latest.Equals(tmp)) await Wallpaper.RunPostProcessAndSetWallpaperAllScreens(db.Latest);
             }
 
             State.UnsetStateDownloading();
