@@ -45,7 +45,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
         public async Task<bool> RunPostProcessAndSetWallpaperAllScreens(ImgWrap imgWrap)
         {
-            if (!imgWrap.ImgIsGettable) return false;
+            if (imgWrap == null || !imgWrap.ImgIsGettable) return false;
             try
             {
                 // Task wrap to run on non-ui thread
@@ -208,7 +208,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
                     log("Last online check was probably during sleep, retrying to set wallpapers in 10 sec");
                     // Delay is to allow the user to sign in after wake
                     await Task.Delay(10000);
-                    this.RunPostProcessAndSetWallpaperAllScreensUnobserved(applicationHandler.db.ImgWrapList[0]);
+                    this.RunPostProcessAndSetWallpaperAllScreensUnobserved(applicationHandler.db.Latest);
                 }
                 else if (applicationHandler.Prefs.NextScheduledCheck < DateTime.Now)
                 {
@@ -216,7 +216,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
                     await applicationHandler.checkForNewPics();
                     // Delay is to allow the user to sign in after wake
                     await Task.Delay(10000);
-                    bool successChangeWallpaper = await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0]);
+                    bool successChangeWallpaper = await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.Latest);
                     createNoonCheck();
                 }
                 else
@@ -281,7 +281,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 log("Noon callback, checking for new pics");
                 applicationHandler.State.SetStateDownloading("Checking for new pics...");
                 await applicationHandler.checkForNewPics();
-                bool successChangeWallpaper = await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.ImgWrapList[0]);
+                bool successChangeWallpaper = await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.Latest);
                 if (!successChangeWallpaper) lastScheduledCheckFailedToSetWallpaper = true;
 
                 // Recreate nooncheck tomorrow

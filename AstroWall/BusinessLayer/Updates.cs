@@ -78,7 +78,8 @@ namespace AstroWall.BusinessLayer
 
         public async Task GetManifest()
         {
-            string tmpPath = await FileHelpers.DownloadUrlToTmpPath("https://wiegell.github.io/AstroWall/assets/manifest.json");
+            string tmpPath;
+            tmpPath = await FileHelpers.DownloadUrlToTmpPath("https://wiegell.github.io/AstroWall/assets/manifest.json");
             manifest = FileHelpers.DeSerializeNow<UpdateLibrary.UpdateManifest>(tmpPath);
         }
 
@@ -128,6 +129,8 @@ namespace AstroWall.BusinessLayer
 
         public async Task<Boolean> GetUpdateManifestAndCheckIfUpdatePending()
         {
+            log("Fetching manifest");
+
             await GetManifest();
             log("Update manifest downloaded and parsed");
             pendingUpdate = checkManifestForNewer();
@@ -138,7 +141,31 @@ namespace AstroWall.BusinessLayer
 
         public async Task CheckForUpdates(bool manualCheck = false, bool runAtOnce = false)
         {
-            bool hasPendingUpdate = await GetUpdateManifestAndCheckIfUpdatePending();
+            bool hasPendingUpdate;
+            try
+            {
+                hasPendingUpdate = await GetUpdateManifestAndCheckIfUpdatePending();
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType() == typeof(System.Net.WebException) && ex.Message == "Error: NameResolutionFailure")
+                {
+                    log("Is offline");
+                    if (manualCheck)
+                        // TODO update UI
+                        ApplicationLayer.Updates.Instance.AlertNoUpdates("ISOFFLINE");
+                    return;
+                }
+                else if (ex.GetType() == typeof(System.Net.WebException))
+                {
+                    log("could not get manifest: " + ex.Message);
+                    if (manualCheck)
+                        // TODO update UI
+                        ApplicationLayer.Updates.Instance.AlertNoUpdates("NETWORKERROR");
+                    return;
+                }
+                else throw ex;
+            }
             if (hasPendingUpdate)
             {
                 log($"Has pending update: {pendingUpdate.version}");
@@ -165,7 +192,10 @@ namespace AstroWall.BusinessLayer
             if (overridePrefs || applicationHandler.Prefs.CheckUpdatesOnStartup)
             {
                 log("User has activated updates on startup, running updater");
+
                 await CheckForUpdates(manualCheck: false, runAtOnce);
+
+
             }
         }
 

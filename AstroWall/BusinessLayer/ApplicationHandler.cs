@@ -125,21 +125,23 @@ namespace AstroWall.BusinessLayer
             if (!IncorrectInstallPath)
             {
                 // Is checked syncronously to be able to push updates before app crashes
-                log("Checking for updates at startup");
+                log("Correct install path, can check for updates at startup");
                 Task updateChecking = Task.Run(async () =>
                 {
                     try
                     {
-                        await Updates.ConsiderCheckingForUpdates(runAtOnce: true, overridePrefs: true);
+                        // Override prefs if postInstallPrompt has been fired
+                        await Updates.ConsiderCheckingForUpdates(runAtOnce: true, overridePrefs: prefsFromPostInstallPrompt != null);
                     }
                     catch (Exception ex)
                     {
-                        // Rethrow to UI thread for debugging
+                        logError("Exception in update check on thread: " + Thread.CurrentThread.ManagedThreadId);
+                        logError("Ex: " + ex.GetType() + ", " + ex.Message);
+
+                        // Rethrow to UI thread
                         Exception newEx = new Exception("Exception in update check", ex);
                         General.RunOnUIThread(() =>
                         {
-                            logError("Exception in update check on thread: " + Thread.CurrentThread.ManagedThreadId);
-                            logError("Ex: " + ex.GetType() + ", " + ex.Message);
                             throw ex;
                         });
 
@@ -163,27 +165,37 @@ namespace AstroWall.BusinessLayer
             MenuHandler.updateMenuCheckMarksToReflectPrefs();
 
             // Set run at login agent
+            log("Set launch agent to reflect prefs");
             State.SetLaunchAgentToReflectPrefs();
 
-            // Init state and db
+            // Init state
             State.SetStateInitializing();
+
+            // Init db
+            log("Init db");
             db = new Database();
 
             // Populate submenu
+            log("Populating menu");
             MenuHandler.PopulateSubmenuLatestPictures(db.getPresentableImages(), State);
 
             // Check for new pics
             if (Prefs.DailyCheck == DailyCheckEnum.Newest)
             {
+                log("Check for pics");
                 await checkForNewPics();
-                Wallpaper.RunPostProcessAndSetWallpaperAllScreensUnobserved(db.ImgWrapList[0]);
+                log("Run post process");
+                Wallpaper.RunPostProcessAndSetWallpaperAllScreensUnobserved(db.Latest);
             }
 
             // Update menus if updates are avail. and set wake handler
             if (!IncorrectInstallPath)
             {
                 if (Prefs.CheckUpdatesOnStartup)
+                {
+                    log("Install path ok and updates on startup enabled, setting wake handler");
                     Updates.registerWakeHandler();
+                }
             }
             else disableUpdateOptions();
 
@@ -193,7 +205,9 @@ namespace AstroWall.BusinessLayer
             {
                 case DailyCheckEnum.Newest:
                     {
+                        log("Setting wallpaper wake handler");
                         Wallpaper.registerWakeHandler();
+                        log("Setting wallpaper noon check");
                         Wallpaper.createNoonCheck();
                         break;
                     }

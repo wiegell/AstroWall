@@ -10,11 +10,19 @@ using SkiaSharp;
 
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using AstroWall.BusinessLayer;
+
 
 namespace AstroWall
 {
+
     public class FileHelpers
     {
+
+        // Log
+        private static Action<string> log = Logging.GetLogger("FileHelpers");
+        private static Action<string> logError = Logging.GetLogger("FileHelpers", true);
+
         public FileHelpers()
         {
         }
@@ -31,11 +39,11 @@ namespace AstroWall
             string ext = System.IO.Path.GetExtension(imgurl);
 
             string localFileName = getImageStoreDirectory() + ext;
-            Console.WriteLine("Downloading file: " + imgurl);
-            Console.WriteLine("Writing to path: " + localFileName);
+            log("Downloading file: " + imgurl);
+            log("Writing to path: " + localFileName);
             Task t = client.DownloadFileTaskAsync(uri, localFileName);
             await t;
-            Console.WriteLine("Write complete");
+            log("Write complete");
             return localFileName;
         }
 
@@ -45,11 +53,11 @@ namespace AstroWall
             Uri uri = new Uri(downloadUrl);
             string ext = System.IO.Path.GetExtension(downloadUrl);
             string localFileName = Path.GetTempFileName() + ext;
-            Console.WriteLine("Downloading file: " + downloadUrl);
-            Console.WriteLine("Writing to tmp path: " + localFileName);
+            log("Downloading file: " + downloadUrl);
+            log("Writing to tmp path: " + localFileName);
             Task t = client.DownloadFileTaskAsync(uri, localFileName);
             await t;
-            Console.WriteLine("Write complete");
+            log("Write complete");
             return localFileName;
         }
 
@@ -61,12 +69,12 @@ namespace AstroWall
 
                 using (MemoryStream memStream = new MemoryStream())
                 {
-                    Console.WriteLine("Opening file: " + path);
+                    log("Opening file: " + path);
                     FileStream fs = new FileStream(path, FileMode.Open);
 
                     await fs.CopyToAsync(memStream);
                     fs.Close();
-                    Console.WriteLine("Closed file: " + path);
+                    log("Closed file: " + path);
                     memStream.Seek(0, SeekOrigin.Begin);
 
                     SKImage img = SKImage.FromEncodedData(memStream);
@@ -79,7 +87,7 @@ namespace AstroWall
 
             catch (Exception ex)
             {
-                Console.WriteLine("image load error: " + path + ", " + ex.Message);
+                log("image load error: " + path + ", " + ex.Message);
                 throw ex;
             }
             return bitmap;
@@ -106,7 +114,7 @@ namespace AstroWall
 
         public static bool DBExists()
         {
-            Console.WriteLine("Checking, if db present at: " + General.getDBPath());
+            log("Checking, if db present at: " + General.getDBPath());
             return File.Exists(General.getDBPath());
         }
 
@@ -118,7 +126,7 @@ namespace AstroWall
         public static void DeleteFile(string path)
         {
             File.Delete(path);
-            Console.WriteLine("File deleted at: " + path);
+            log("File deleted at: " + path);
         }
 
         public static string GenTmpCopy(string src)
@@ -126,7 +134,7 @@ namespace AstroWall
             string ext = System.IO.Path.GetExtension(src);
             string dst = Path.GetTempFileName() + ext;
             File.Copy(src, dst);
-            Console.WriteLine("File copied from // to: " + src + " // " + dst);
+            log("File copied from // to: " + src + " // " + dst);
             return dst;
         }
 

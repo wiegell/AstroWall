@@ -37,6 +37,15 @@ namespace AstroWall.BusinessLayer
             }
         }
 
+        public ImgWrap Latest
+        {
+            get
+            {
+                if (ImgWrapList == null || ImgWrapList.Count == 0) return null;
+                else return ImgWrapList[0];
+            }
+        }
+
         private string[] datesLoaded()
         {
             return ImgWrapList.Select((iw) => iw.PublishDate.ToString(HTMLHelpers.NASADateFormat)).ToArray();
