@@ -28,6 +28,8 @@ namespace AstroWall.ApplicationLayer
         NSWindowController aboutWindowController;
         NSWindowController freshInstallWindowController;
 
+        private int testInt;
+
         public AppDelegate()
         {
             appHandler = new AstroWall.BusinessLayer.ApplicationHandler(this);
