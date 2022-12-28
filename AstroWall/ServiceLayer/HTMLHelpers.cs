@@ -12,10 +12,10 @@ using System.Text;
 
 namespace AstroWall
 {
-    public class urlResponseWrap
+    public struct urlResponseWrap
     {
-        public string url = "";
-        public HttpStatusCode status;
+        public string url { get; set; }
+        public HttpStatusCode status { get; set; }
     }
 
     public class HTMLHelpers
@@ -26,7 +26,7 @@ namespace AstroWall
 
         }
 
-        public static string NASADateFormat = "yyMMdd";
+        public const string NASADateFormat = "yyMMdd";
 
         public static async Task<urlResponseWrap> getImgOnlineUrl(string pageUrl)
         {
@@ -42,8 +42,7 @@ namespace AstroWall
 
         public static string genPublishDateUrl(DateTime date)
         {
-
-            return "https://apod.nasa.gov/apod/ap" + date.ToString(NASADateFormat) + ".html";
+            return "https://apod.nasa.gov/apod/ap" + date.ToString(NASADateFormat, System.Globalization.CultureInfo.InvariantCulture) + ".html";
         }
 
         public static async Task<string[]> getDescTitleAndCreditFromOnlineUrl(string pageUrl)
@@ -71,7 +70,7 @@ namespace AstroWall
                     {
                         creditsUrl = sibling.Attributes.Where(attrib => attrib.Name == "href").ToArray()[0].Value;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         Console.WriteLine("Failed to parse credits url");
                     }

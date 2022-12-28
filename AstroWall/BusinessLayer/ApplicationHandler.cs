@@ -11,15 +11,16 @@ namespace AstroWall.BusinessLayer
     public class ApplicationHandler
     {
 
-        // Refs
-        public AppDelegate AppDelegate { get; private set; }
-        public MenuHandler MenuHandler { get; private set; }
-        public Wallpaper.Wallpaper Wallpaper { get; private set; }
-        public State State { get; private set; }
-        public Updates Updates { private set; get; }
-        public Database db;
-        public Preferences.Preferences Prefs { get; private set; }
-        public bool IncorrectInstallPath { get; private set; }
+        // Instance refs, used by many other classes to navigate
+        // running project
+        internal AppDelegate AppDelegate { get; private set; }
+        internal MenuHandler MenuHandler { get; private set; }
+        internal Wallpaper.Wallpaper Wallpaper { get; private set; }
+        internal State State { get; private set; }
+        internal Updates Updates { private set; get; }
+        internal Database db;
+        internal Preferences.Preferences Prefs { get; private set; }
+        internal bool IncorrectInstallPath { get; private set; }
 
         // Misc
         private string currentVersionStringWithCommit;
@@ -76,7 +77,7 @@ namespace AstroWall.BusinessLayer
         private nint promptUserToChangeInstallLocation()
         {
             log("Install location not suited for updates, prompting user to move");
-            return this.AppDelegate.launchIncorrectInstallPathAlert();
+            return AppDelegate.launchIncorrectInstallPathAlert();
         }
 
         private bool checkIfInstallLocationIsIncorrect()
@@ -96,7 +97,7 @@ namespace AstroWall.BusinessLayer
                 db.SaveToDisk();
                 Prefs.SaveToDisk();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 logError("Could not save prefs and db (expected if terminated during startup update)");
             }
@@ -135,11 +136,11 @@ namespace AstroWall.BusinessLayer
                     }
                     catch (Exception ex)
                     {
-                        logError("Exception in update check on thread: " + Thread.CurrentThread.ManagedThreadId);
+                        logError("Exception in update check on thread: " + Environment.CurrentManagedThreadId);
                         logError("Ex: " + ex.GetType() + ", " + ex.Message);
 
                         // Rethrow to UI thread
-                        Exception newEx = new Exception("Exception in update check", ex);
+                        Exception newEx = new InvalidOperationException("Exception in update check", ex);
                         General.RunOnUIThread(() =>
                         {
                             throw ex;
@@ -228,8 +229,8 @@ namespace AstroWall.BusinessLayer
 
         public async Task checkForNewPics()
         {
-                // Cache latest
-                var tmp = db.Latest;
+            // Cache latest
+            var tmp = db.Latest;
 
             // Set state downloading
             State.SetStateDownloading("Checking for new pics...");

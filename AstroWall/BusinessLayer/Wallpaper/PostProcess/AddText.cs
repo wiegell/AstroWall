@@ -14,6 +14,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
         // Log
         private static Action<string> log = Logging.GetLogger("Post process");
+        private static Action<string> logError = Logging.GetLogger("Post process", true);
 
         public PostProcess()
         {
@@ -38,11 +39,11 @@ namespace AstroWall.BusinessLayer.Wallpaper
             }
             catch (Exception ex)
             {
-                throw new Exception("Could not get main screen from input dict", ex);
+                throw new InvalidOperationException("Could not get main screen from input dict", ex);
             }
             if (mainScreenBitmap == null)
             {
-                throw new Exception("Could not get main screen from input dict");
+                throw new InvalidOperationException("Could not get main screen from input dict");
             }
 
             SKBitmap returnBitmap;
@@ -53,9 +54,8 @@ namespace AstroWall.BusinessLayer.Wallpaper
             }
             catch (Exception ex)
             {
-                var exx = ex;
-                log("Problem copying bitmap");
-                throw ex;
+                logError("Problem copying bitmap:" + ex.Message);
+                throw;
             }
 
             if (options.isEnabled && description != null && description != "" && title != null && title != "" && credit != null && credit != "")

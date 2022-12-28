@@ -48,7 +48,7 @@ namespace AstroWall.BusinessLayer
 
         private string[] datesLoaded()
         {
-            return ImgWrapList.Select((iw) => iw.PublishDate.ToString(HTMLHelpers.NASADateFormat)).ToArray();
+            return ImgWrapList.Select((iw) => iw.PublishDate.ToString(HTMLHelpers.NASADateFormat, System.Globalization.CultureInfo.InvariantCulture)).ToArray();
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace AstroWall.BusinessLayer
             string[] datesToCheck = new string[n];
 
             // Gen dates to check
-            for (int i = 0; i < n; i++) datesToCheck[i] = date.AddDays(-i).ToString(HTMLHelpers.NASADateFormat);
+            for (int i = 0; i < n; i++) datesToCheck[i] = date.AddDays(-i).ToString(HTMLHelpers.NASADateFormat, System.Globalization.CultureInfo.InvariantCulture);
 
             // Check dates
             bool datesAreInDB = true;
@@ -82,7 +82,7 @@ namespace AstroWall.BusinessLayer
 
         private bool hasDate(DateTime date)
         {
-            return datesLoaded().Contains(date.ToString(HTMLHelpers.NASADateFormat));
+            return datesLoaded().Contains(date.ToString(HTMLHelpers.NASADateFormat, System.Globalization.CultureInfo.InvariantCulture));
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace AstroWall.BusinessLayer
                 {
                     isOffline = true;
                 }
-                else throw ex;
+                else throw;
             }
 
             if (!isOffline)
@@ -181,7 +181,7 @@ namespace AstroWall.BusinessLayer
             return ImgWrapList.Where((iw) => iw.ImgIsGettable).ToList<ImgWrap>();
         }
 
-        private bool loadDBFromDisk()
+        private static bool loadDBFromDisk()
         {
             return true;
         }

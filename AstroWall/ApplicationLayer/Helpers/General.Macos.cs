@@ -137,7 +137,7 @@ namespace AstroWall
         public static async Task<T2> RunOnUIThread<T2>(Func<Task<T2>> ac) where T2 : class
         {
             T2 returnVal = null;
-            if (Thread.CurrentThread.ManagedThreadId != 1)
+            if (Environment.CurrentManagedThreadId != 1)
             {
                 CoreFoundation.DispatchQueue.MainQueue.DispatchSync(async () => { returnVal = await ac(); });
             }
@@ -146,7 +146,7 @@ namespace AstroWall
         }
         public static void RunOnUIThread(Action ac)
         {
-            if (Thread.CurrentThread.ManagedThreadId != 1)
+            if (Environment.CurrentManagedThreadId != 1)
             {
                 CoreFoundation.DispatchQueue.MainQueue.DispatchAsync(() => ac());
             }

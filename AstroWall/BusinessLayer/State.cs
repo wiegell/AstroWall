@@ -12,17 +12,18 @@ namespace AstroWall.BusinessLayer
     public class State
     {
         // Application state
-        public readonly object _lock_ = new Object();
-        // All of below should only be accessed if locked
-        public bool isInitializing;
-        public bool isPostProcessing;
-        public bool isIdle;
-        public bool isDownloading;
-        private int nDownloading = 0;
-        public bool isSettingWallpaper;
-        public bool isBrowsingWallpapers;
-        public bool isUpdating;
-        public bool isChoosingPrefs;
+        internal readonly object _lock_ = new Object();
+
+        // All of below should only be modified if locked
+        internal bool isInitializing { get; private set; }
+        internal bool isPostProcessing { get; private set; }
+        internal bool isIdle { get; private set; }
+        internal bool isDownloading { get; private set; }
+        internal bool isSettingWallpaper { get; private set; }
+        internal bool isBrowsingWallpapers { get; private set; }
+        internal bool isUpdating { get; private set; }
+        internal bool isChoosingPrefs { get; private set; }
+        private int nDownloading;
 
         // Refs
         ApplicationHandler applicationHandler;

@@ -23,7 +23,7 @@ namespace AstroWall
             ver = rel.version;
         }
 
-        public void RegChoiceCallback(Action<BusinessLayer.UpdatePromptResponse> callback)
+        internal void RegChoiceCallback(Action<BusinessLayer.UpdatePromptResponse> callback)
         {
             choiceCallback = callback;
         }

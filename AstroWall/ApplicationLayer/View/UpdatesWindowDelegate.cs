@@ -21,7 +21,7 @@ namespace AstroWall
             var view = (FreshInstallViewController)this.Window.ContentViewController.View;
             if (view.GetType() != typeof(FreshInstallViewController))
             {
-                throw new Exception("Custom viewcontroller not attached");
+                throw new FormatException("Custom viewcontroller not attached");
             }
             view.runCallback();
             return true;

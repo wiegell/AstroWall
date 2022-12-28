@@ -8,25 +8,37 @@ using GameController;
 
 namespace AstroWall.ApplicationLayer.Helpers
 {
-    [JsonObject]
+    [JsonObject(MemberSerialization.OptIn)]
     public struct Screen
     {
-        public static Dictionary<string, Screen> FromCurrentConnected()
-        {
-            return NSScreen.Screens.Select(nsscreen => new Screen(nsscreen)).ToDictionary(screen => screen.Id);
-        }
-        public static Screen Main()
-        {
-            return new Screen(NSScreen.MainScreen);
-        }
+        // Properties
+        [JsonProperty]
+        internal string Id { get; }
+        [JsonProperty]
+        internal int xRes { get; }
+        [JsonProperty]
+        internal int yRes { get; }
+        [JsonProperty]
+        internal bool isMainScreen { get; }
 
+        // Constructor
         private Screen(NSScreen nSscreen)
         {
             Id = nSscreen.LocalizedName;
             // Always assume HDPI (x2)
-            xRes =  (int)(nSscreen.Frame.Size.Width * 2);
+            xRes = (int)(nSscreen.Frame.Size.Width * 2);
             yRes = (int)(nSscreen.Frame.Size.Height * 2);
             isMainScreen = NSScreen.MainScreen == nSscreen;
+        }
+
+        // Methods
+        internal static Dictionary<string, Screen> FromCurrentConnected()
+        {
+            return NSScreen.Screens.Select(nsscreen => new Screen(nsscreen)).ToDictionary(screen => screen.Id);
+        }
+        internal static Screen MainScreen()
+        {
+            return new Screen(NSScreen.MainScreen);
         }
 
         /// <summary>
@@ -42,24 +54,15 @@ namespace AstroWall.ApplicationLayer.Helpers
             else return filteredArray[0];
         }
 
-        [JsonProperty]
-        public string Id;
-        [JsonProperty]
-        public int xRes;
-        [JsonProperty]
-        public int yRes;
-        [JsonProperty]
-        public bool isMainScreen;
-
-        public bool isHorizontal()
+        internal bool isHorizontal()
         {
             return xRes > yRes;
         }
-        public bool isVertical()
+        internal bool isVertical()
         {
             return yRes > xRes;
         }
-        public double calcRatio()
+        internal double calcRatio()
         {
             return (double)xRes / (double)yRes;
         }

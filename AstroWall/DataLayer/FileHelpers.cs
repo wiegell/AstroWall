@@ -88,7 +88,7 @@ namespace AstroWall
             catch (Exception ex)
             {
                 log("image load error: " + path + ", " + ex.Message);
-                throw ex;
+                throw;
             }
             return bitmap;
         }

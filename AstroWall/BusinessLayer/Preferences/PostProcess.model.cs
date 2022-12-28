@@ -13,9 +13,9 @@ namespace AstroWall.BusinessLayer.Preferences
     public abstract class PostProcess
     {
         [JsonProperty]
-        public readonly bool isEnabled;
+        internal readonly bool isEnabled;
         [JsonProperty]
-        public readonly PostProcessType name;
+        internal readonly PostProcessType name;
 
         public PostProcess(PostProcessType name, bool isEnabled)
         {

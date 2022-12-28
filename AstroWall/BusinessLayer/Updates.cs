@@ -7,13 +7,13 @@ using Foundation;
 
 namespace AstroWall.BusinessLayer
 {
-    public class UpdatePromptResponse
+    internal struct UpdatePromptResponse
     {
-        public bool acceptOrSkipUpdate;
-        public string skippedVersion;
+        public bool acceptOrSkipUpdate { get; set; }
+        public string skippedVersion { get; set; }
     }
 
-    public class Updates
+    internal class Updates
     {
         // Refs
         private ApplicationHandler applicationHandler;
@@ -60,16 +60,15 @@ namespace AstroWall.BusinessLayer
                 catch (Exception ex)
                 {
                     // Rethrow to UI thread for debugging
-                    Exception newEx = new Exception("Exception in update check", ex);
                     General.RunOnUIThread(() =>
                     {
-                        logError("Exception in update check on thread: " + Thread.CurrentThread.ManagedThreadId);
+                        logError("Exception in update check on thread: " + Environment.CurrentManagedThreadId);
                         logError("Ex: " + ex.GetType() + ", " + ex.Message);
                         throw ex;
                     });
 
                     // This will not bubble up
-                    throw newEx;
+                    throw;
                 }
             });
             updateChecking.Wait();
@@ -87,7 +86,7 @@ namespace AstroWall.BusinessLayer
         {
             if (manifest == null)
             {
-                throw new Exception("manifest not defined");
+                throw new InvalidOperationException("manifest not defined");
             }
 
             UpdateLibrary.Release[] allReleases = manifest.getAllReleasesDateSorted();
@@ -153,7 +152,7 @@ namespace AstroWall.BusinessLayer
                     log("Is offline");
                     if (manualCheck)
                         // TODO update UI
-                        ApplicationLayer.Updates.Instance.AlertNoUpdates("ISOFFLINE");
+                        ApplicationLayer.Updates.AlertNoUpdates("ISOFFLINE");
                     return;
                 }
                 else if (ex.GetType() == typeof(System.Net.WebException))
@@ -161,10 +160,10 @@ namespace AstroWall.BusinessLayer
                     log("could not get manifest: " + ex.Message);
                     if (manualCheck)
                         // TODO update UI
-                        ApplicationLayer.Updates.Instance.AlertNoUpdates("NETWORKERROR");
+                        ApplicationLayer.Updates.AlertNoUpdates("NETWORKERROR");
                     return;
                 }
-                else throw ex;
+                else throw;
             }
             if (hasPendingUpdate)
             {
@@ -183,7 +182,7 @@ namespace AstroWall.BusinessLayer
             {
                 log("No pending updates, is up to date");
                 if (manualCheck)
-                    ApplicationLayer.Updates.Instance.AlertNoUpdates(currentVersion.ToString());
+                    ApplicationLayer.Updates.AlertNoUpdates(currentVersion.ToString());
             }
         }
 
@@ -264,7 +263,7 @@ namespace AstroWall.BusinessLayer
                     applicationHandler.TerminationPreparations();
 
                     log("Running PKG update");
-                    ApplicationLayer.Updates.Instance.RunPKGUpdate(pendingUpdatePKGpath);
+                    ApplicationLayer.Updates.RunPKGUpdate(pendingUpdatePKGpath);
                     General.Relaunch();
                     System.Diagnostics.Process.GetCurrentProcess().Kill();
 

@@ -15,41 +15,41 @@ namespace AstroWall.BusinessLayer
     public class ImgWrap : IComparable
     {
         [JsonProperty]
-        public string PageUrl { get; private set; }
+        internal string PageUrl { get; private set; }
         [JsonProperty]
-        public string ImgOnlineUrl { get; private set; }
+        internal string ImgOnlineUrl { get; private set; }
         [JsonProperty]
-        public string ImgLocalUrl { get; private set; }
+        internal string ImgLocalUrl { get; private set; }
         [JsonProperty]
-        public string ImgLocalPreviewUrl { get; private set; }
+        internal string ImgLocalPreviewUrl { get; private set; }
         [JsonProperty]
-        public Dictionary<string, string> ImgLocalPostProcessedUrlsByScreenId;
+        internal Dictionary<string, string> ImgLocalPostProcessedUrlsByScreenId { get; private set; }
         [JsonProperty]
-        public string FileType { get; private set; }
+        internal string FileType { get; private set; }
         [JsonProperty]
-        public DateTime PublishDate { get; private set; }
+        internal DateTime PublishDate { get; private set; }
         [JsonProperty]
-        public string Title { get; private set; }
+        internal string Title { get; private set; }
         [JsonProperty]
-        public string Description { get; private set; }
+        internal string Description { get; private set; }
         [JsonProperty]
-        public bool Integrity = true;
+        internal bool Integrity { get; private set; } = true;
         [JsonProperty]
-        public bool ImgIsGettable = true;
+        internal bool ImgIsGettable { get; private set; } = true;
         [JsonProperty]
-        public bool NotFound = false;
+        internal bool NotFound { get; private set; } = false;
         [JsonProperty]
-        public string Credit { get; private set; }
+        internal string Credit { get; private set; }
         [JsonProperty]
-        public string CreditUrl { get; private set; }
+        internal string CreditUrl { get; private set; }
 
         // Log
         private Action<string> log = Logging.GetLogger("ImgWrap");
 
-        public override bool Equals(object o)
+        public override bool Equals(object obj)
         {
-            if (!(o is ImgWrap)) return false;
-            return DateTimeHelpers.DTEquals(this.PublishDate, ((ImgWrap)o).PublishDate);
+            if (!(obj is ImgWrap)) return false;
+            return DateTimeHelpers.DTEquals(this.PublishDate, ((ImgWrap)obj).PublishDate);
         }
         public override int GetHashCode()
         {
@@ -102,7 +102,7 @@ namespace AstroWall.BusinessLayer
                 if (ex.Message.Contains("No such host is known"))
                 {
                     // Throw up http exception, gets caught up the chain
-                    throw ex;
+                    throw;
                 }
             }
 
@@ -117,7 +117,7 @@ namespace AstroWall.BusinessLayer
                 Credit = tmp[2];
                 CreditUrl = tmp[3];
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 log("could not get descr., credit or title of:" + PageUrl);
                 Integrity = false;
@@ -130,11 +130,11 @@ namespace AstroWall.BusinessLayer
         {
             if (OnlineDataAndPicIsLoaded())
             {
-                throw new Exception("already loaded");
+                throw new InvalidOperationException("Already loaded");
             }
             else if (!ImgIsGettable)
             {
-                throw new Exception("img not gettable");
+                throw new InvalidOperationException("img not gettable");
             }
 
             try
@@ -143,7 +143,7 @@ namespace AstroWall.BusinessLayer
                 ImgLocalUrl = await FileHelpers.DownloadUrlToImageStorePath(ImgOnlineUrl);
                 await createPreviewFromFullSize();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 log("Error: could not load online url - no connection?: " + ImgOnlineUrl);
             }
@@ -168,7 +168,7 @@ namespace AstroWall.BusinessLayer
             }
             catch (Exception ex)
             {
-                log("Error resizing image ({ImgLocalUrl}): {ex.Message}");
+                log($"Error resizing image ({ImgLocalUrl}): {ex.Message}");
 
             }
 
@@ -189,7 +189,7 @@ namespace AstroWall.BusinessLayer
 
         public async Task createPostProcessedImages(Dictionary<string, Screen> screens, Dictionary<Preferences.PostProcessType, Preferences.PostProcess> postProcessPrefsDictionary)
         {
-            log("creating postprocessed images on thread: " + Thread.CurrentThread.ManagedThreadId);
+            log("creating postprocessed images on thread: " + Environment.CurrentManagedThreadId);
 
             // Load full res image
             SKBitmap image;
@@ -201,7 +201,7 @@ namespace AstroWall.BusinessLayer
             }
             catch (Exception ex)
             {
-                log("error loading file ({ImgLocalUrl}): {ex.Message}");
+                log($"error loading file ({ImgLocalUrl}): {ex.Message}");
                 return;
             }
 
@@ -237,7 +237,7 @@ namespace AstroWall.BusinessLayer
             catch (Exception ex)
             {
                 log($"Error postprocessing image ({ImgLocalUrl}): {ex.Message}, {ex.StackTrace}");
-                throw new Exception("error postprocessing", ex);
+                throw new InvalidOperationException("Error postprocessing.", ex);
             }
 
             //Remove old postprocessed files
@@ -249,14 +249,9 @@ namespace AstroWall.BusinessLayer
                 foreach (var KV in ImgLocalPostProcessedUrlsByScreenId)
                 {
                     log($"Trying to delete postprocessed image at {KV.Value}");
-                    try
-                    {
-                        FileHelpers.DeleteFile(KV.Value);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception("Problem deleting file" + ex.Message);
-                    }
+
+                    FileHelpers.DeleteFile(KV.Value);
+
                 }
             }
 
@@ -358,12 +353,12 @@ namespace AstroWall.BusinessLayer
             return (PreviewIsLoaded() && FullResIsLoaded()) || !ImgIsGettable;
         }
 
-        public int CompareTo(Object o)
+        public int CompareTo(Object obj)
         {
-            if (o.GetType() != this.GetType())
-                throw new Exception("only compare to ImgWrap");
+            if (obj.GetType() != this.GetType())
+                throw new ArgumentException("only compare to ImgWrap");
             // - is to reverse sort order
-            return -this.PublishDate.CompareTo(((ImgWrap)o).PublishDate);
+            return -this.PublishDate.CompareTo(((ImgWrap)obj).PublishDate);
         }
     }
 }

@@ -7,6 +7,7 @@ namespace AstroWall.ApplicationLayer
     public class Updates
     {
 
+        // TODO is this needed anymore? Only static functions
         //Singleton
         private static volatile Updates instance;
         private static object syncRoot = new object();
@@ -31,7 +32,7 @@ namespace AstroWall.ApplicationLayer
         {
         }
 
-        public void RunPKGUpdate(string pathToPkg)
+        public static void RunPKGUpdate(string pathToPkg)
         {
             NSTask nstask = new NSTask();
             nstask.LaunchPath = "/bin/bash";
@@ -45,7 +46,7 @@ namespace AstroWall.ApplicationLayer
             nstask.WaitUntilExit();
         }
 
-        public void AlertNoUpdates(string curversion)
+        public static void AlertNoUpdates(string curversion)
         {
             var alert = new NSAlert()
             {

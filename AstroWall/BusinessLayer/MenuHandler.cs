@@ -22,14 +22,13 @@ namespace AstroWall.BusinessLayer
 
         // Icon related
         private static System.Threading.Timer iconUpdateTimer;
-        private int flipCounter = 0;
-        private int rotDegOffset = 0;
+        private int flipCounter;
+        private int rotDegOffset;
         // Which way is the counter going
         private bool goingdown = true;
         private AutoResetEvent autoEvent;
 
         // Browsing state
-        private Task restoreToIdleWithDelayTask;
         private CancellationTokenSource taskCancellationSource;
         private CancellationToken cancellationToken;
 
@@ -149,7 +148,7 @@ namespace AstroWall.BusinessLayer
                         stateRef,
                         iw.PreviewIsLoaded(),
                         cancelEndBrowsingStateWithDelay,
-                        () => appHandler.Wallpaper.SetPreviewWallpaper(iw),
+                        () => BusinessLayer.Wallpaper.Wallpaper.SetPreviewWallpaper(iw),
                         () =>
                         {
                             //appHandler.Wallpaper.SetWallpaperAllScreens(iw);

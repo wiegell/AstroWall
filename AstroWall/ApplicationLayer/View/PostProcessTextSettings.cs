@@ -37,9 +37,9 @@ namespace AstroWall
         partial void ActionSave(NSObject sender)
         {
             if (changePrefsCallback == null)
-                throw new Exception("callback not defined");
+                throw new InvalidOperationException("callback not defined");
             else if (addText == null)
-                throw new Exception("old AddText not defined");
+                throw new InvalidOperationException("old AddText not defined");
             else
             {
                 bool newStateOfEnabled = getCheckmarkBoolFromOutlet(this.OutletEnabled);
@@ -49,7 +49,7 @@ namespace AstroWall
             }
         }
 
-        private bool getCheckmarkBoolFromOutlet(NSButton sender)
+        private static bool getCheckmarkBoolFromOutlet(NSButton sender)
         {
             return sender.State == NSCellStateValue.On;
         }

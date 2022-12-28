@@ -21,18 +21,21 @@ namespace AstroWall
             OutletVersion.StringValue = General.currentVersion();
         }
 
+        // Not feasible to make static bc of partial class
+#pragma warning disable CA1822
         partial void ActionGithub(NSObject sender)
         {
             General.Open("https://github.com/wiegell/AstroWall/");
         }
         partial void ActionWeb(NSObject sender)
         {
-          General.Open("https://wiegell.github.io/AstroWall/");
+            General.Open("https://wiegell.github.io/AstroWall/");
         }
         partial void ActionIssues(NSObject sender)
         {
             General.Open("https://github.com/wiegell/AstroWall/issues");
         }
+#pragma warning restore
 
 
     }

@@ -12,7 +12,10 @@ namespace AstroWall.ApplicationLayer
 
         private NSStatusBar statusBar;
         private NSStatusItem statusBarItem;
-        public bool UpdatesDisabled = false;
+
+        // TODO
+        // Not the best place for this?
+        internal bool UpdatesDisabled;
 
         public void createStatusBar(string title)
         {
@@ -156,7 +159,7 @@ namespace AstroWall.ApplicationLayer
                         {
                             setEndBrowsingStateWithDelayCallback();
                         }
-                        catch (OperationCanceledException ex)
+                        catch (OperationCanceledException)
                         {
                             Console.WriteLine("End browsing cancel");
                         }
@@ -278,7 +281,7 @@ namespace AstroWall.ApplicationLayer
         {
             menuHandler.OpenAbout();
         }
-        private bool getCheckmarkBoolFromSender(NSObject sender)
+        private static bool getCheckmarkBoolFromSender(NSObject sender)
         {
             return ((NSMenuItem)sender).State == NSCellStateValue.On;
         }

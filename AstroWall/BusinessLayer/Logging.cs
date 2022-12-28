@@ -44,7 +44,7 @@ namespace AstroWall.BusinessLayer
                     {
                         lock (syncRoot)
                         {
-                            string logStr = (isError ? "ERROR: " : "") + DateTime.Now.ToString(dateFormat) + ", " + caller + ": " + log;
+                            string logStr = (isError ? "ERROR: " : "") + DateTime.Now.ToString(dateFormat, System.Globalization.CultureInfo.InvariantCulture) + ", " + caller + ": " + log;
                             Logging.Instance.sw.WriteLine(logStr);
                             Logging.Instance.sw.Flush();
                             Console.WriteLine(logStr);
@@ -52,7 +52,7 @@ namespace AstroWall.BusinessLayer
                     };
         }
 
-        private void pruneLogFile()
+        private static void pruneLogFile()
         {
             string path = General.getLogPath();
             if (File.Exists(path))

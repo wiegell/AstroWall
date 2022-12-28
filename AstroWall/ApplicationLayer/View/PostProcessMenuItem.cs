@@ -14,7 +14,6 @@ namespace AstroWall
         NSTrackingArea trackingArea;
         public override bool WantsUpdateLayer => true;
         public event EventHandler<TrackingEventArgs> OnDragChange = delegate { };
-        private CGRect textFieldRect;
         private NSTextField outerTextField;
 
         // Called when created from unmanaged code

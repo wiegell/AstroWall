@@ -16,14 +16,13 @@ namespace AstroWall
         NSTrackingArea trackingArea;
         public override bool WantsUpdateLayer => true;
         public event EventHandler<TrackingEventArgs> OnDragChange = delegate { };
-        private CGRect textFieldRect;
         private NSTextField outerTextField;
 
 
         // Called when created from unmanaged code
         public SubMenuItemHover(IntPtr handle) : base(handle)
         {
-            Initialize();
+
         }
 
         public SubMenuItemHover(CGRect rect) : base(rect)
@@ -34,20 +33,20 @@ namespace AstroWall
             LayerContentsRedrawPolicy = NSViewLayerContentsRedrawPolicy.OnSetNeedsDisplay;
             trackingArea = new NSTrackingArea(rect, NSTrackingAreaOptions.ActiveAlways | NSTrackingAreaOptions.MouseEnteredAndExited, this, null);
             AddTrackingArea(trackingArea);
-            Initialize();
+
         }
 
         // Called when created directly from a XIB file
         [Export("initWithCoder:")]
         public SubMenuItemHover(NSCoder coder) : base(coder)
         {
-            Initialize();
+
         }
 
         // XIP
         public SubMenuItemHover() : base()
         {
-            Initialize();
+
         }
 
         public static SubMenuItemHover StdSize(string text)
@@ -78,11 +77,6 @@ namespace AstroWall
             //sm.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
 
             return sm;
-        }
-
-        // Shared initialization code
-        void Initialize()
-        {
         }
 
         public override void MouseEntered(NSEvent theEvent)

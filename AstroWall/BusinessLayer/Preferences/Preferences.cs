@@ -17,26 +17,27 @@ namespace AstroWall.BusinessLayer.Preferences
     [JsonObject(MemberSerialization.OptIn)]
     public class Preferences
     {
+
         [JsonProperty]
-        public ImgWrap CurrentAstroWallpaper;
+        internal ImgWrap CurrentAstroWallpaper { get; set; }
         [JsonProperty]
-        public string CurrentPathToNonAstroWallpaper;
+        internal string CurrentPathToNonAstroWallpaper { get; set; }
         [JsonProperty]
-        public string UserChosenToSkipUpdatesBeforeVersion;
+        internal string UserChosenToSkipUpdatesBeforeVersion { get; set; }
         [JsonProperty]
-        public bool CheckUpdatesOnStartup;
+        internal bool CheckUpdatesOnStartup { get; set; }
         [JsonProperty]
-        public bool AutoInstallUpdates;
+        internal bool AutoInstallUpdates { get; set; }
         [JsonProperty]
-        public bool RunAtStartup;
+        internal bool RunAtStartup { get; set; }
         [JsonProperty]
-        public DailyCheckEnum DailyCheck;
+        internal DailyCheckEnum DailyCheck { get; set; }
         [JsonProperty]
-        public DateTime LastOnlineCheck;
+        internal DateTime LastOnlineCheck { get; set; }
         [JsonProperty]
-        public DateTime NextScheduledCheck;
+        internal DateTime NextScheduledCheck { get; set; }
         [JsonProperty]
-        public AddText AddTextPostProcess;
+        internal AddText AddTextPostProcess { get; set; }
 
         public Dictionary<PostProcessType, PostProcess> PostProcesses
         {

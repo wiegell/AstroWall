@@ -12,21 +12,29 @@ using Newtonsoft.Json;
 
 namespace AstroWall.BusinessLayer.Wallpaper
 {
-    public class TaskCancelWrap
-    {
-        public Task task;
-        public CancellationTokenSource cts = new CancellationTokenSource();
-        public CancellationToken token;
 
-        public TaskCancelWrap()
+    internal class Wallpaper
+    {
+
+        // Nested utility classes
+        private class TaskCancelWrap : IDisposable
         {
-            token = cts.Token;
+            public Task task;
+            public CancellationTokenSource cts = new CancellationTokenSource();
+            public CancellationToken token;
+
+            public TaskCancelWrap()
+            {
+                token = cts.Token;
+            }
+
+            public void Dispose()
+            {
+                cts.Dispose();
+                task.Dispose();
+            }
         }
 
-    }
-
-    public class Wallpaper
-    {
         // Refs
         ApplicationHandler applicationHandler;
 
@@ -76,16 +84,13 @@ namespace AstroWall.BusinessLayer.Wallpaper
             }
             catch (Exception ex)
             {
-                // Rethrow to UI thread for debugging
-                Exception newEx = new Exception("Exception in postProcess task", ex);
                 General.RunOnUIThread(() =>
                 {
-                    logError("Exception in postProcess task on thread: " + Thread.CurrentThread.ManagedThreadId);
+                    logError("Exception in postProcess task on thread: " + Environment.CurrentManagedThreadId);
                     throw ex;
                 });
 
-                // This will not bubble up
-                throw newEx;
+                throw;
             }
         }
 
@@ -97,7 +102,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             });
         }
 
-        public async Task<bool> SetWallpaperAllScreens(Dictionary<Screen, string> urlsByScreen)
+        public static async Task<bool> SetWallpaperAllScreens(Dictionary<Screen, string> urlsByScreen)
         {
             Object retObj = await General.SetWallpaper(urlsByScreen);
             return (bool)retObj;
@@ -137,7 +142,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
         //    General.SetWallpaper();
         //}
-        public void SetPreviewWallpaper(ImgWrap iw)
+        public static void SetPreviewWallpaper(ImgWrap iw)
         {
             if (iw.PreviewIsLoaded())
                 General.SetWallpaper(Screen.Main(), iw.ImgLocalPreviewUrl);
@@ -188,7 +193,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             ApplicationLayer.SystemEvents.Instance.RegisterWallpaperWakeHandler(this.wakeCallback);
         }
 
-        public void unregisterWakeHandler()
+        public static void unregisterWakeHandler()
         {
             log("Unregistering wallpaper login handler");
             ApplicationLayer.SystemEvents.Instance.UnRegisterWallpaperLoginHandler();
@@ -202,7 +207,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             if (applicationHandler.Prefs.DailyCheck == DailyCheckEnum.Newest)
             {
                 log("Wake, consider checking for new pics");
-                log("Next scheduled check: " + applicationHandler.Prefs.NextScheduledCheck.ToString(Logging.dateFormat));
+                log("Next scheduled check: " + applicationHandler.Prefs.NextScheduledCheck.ToString(Logging.dateFormat, System.Globalization.CultureInfo.InvariantCulture));
                 if (lastScheduledCheckFailedToSetWallpaper)
                 {
                     log("Last online check was probably during sleep, retrying to set wallpapers in 10 sec");

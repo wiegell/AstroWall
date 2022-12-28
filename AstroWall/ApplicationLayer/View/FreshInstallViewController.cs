@@ -20,7 +20,7 @@ namespace AstroWall
         partial void saveAction(Foundation.NSObject sender)
         {
             this.Window.Close();
-            if (callback == null) throw new Exception("Callback not registered");
+            if (callback == null) throw new InvalidOperationException("Callback not registered");
             var prefs = createPrefs();
             callback(prefs);
         }
@@ -55,7 +55,7 @@ namespace AstroWall
 
         public void runCallback()
         {
-            if (callback == null) throw new Exception("Callback not registered");
+            if (callback == null) throw new InvalidOperationException("Callback not registered");
             callback(createPrefs());
         }
 

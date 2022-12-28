@@ -14,8 +14,11 @@ using ObjCRuntime;
 
 namespace AstroWall.ApplicationLayer
 {
+#pragma warning disable CA1711
     [Register("AppDelegate")]
     public partial class AppDelegate : NSApplicationDelegate
+#pragma warning restore CA1711
+
     {
 
         // Refs
@@ -28,8 +31,6 @@ namespace AstroWall.ApplicationLayer
         NSWindowController aboutWindowController;
         NSWindowController freshInstallWindowController;
 
-        private int testInt;
-
         public AppDelegate()
         {
             appHandler = new AstroWall.BusinessLayer.ApplicationHandler(this);
@@ -40,7 +41,7 @@ namespace AstroWall.ApplicationLayer
         public async override void DidFinishLaunching(NSNotification notification)
         {
             var test = CoreFoundation.OSLog.Default;
-            Console.WriteLine("UI thread:" + Thread.CurrentThread.ManagedThreadId);
+            Console.WriteLine("UI thread:" + Environment.CurrentManagedThreadId);
             await appHandler.Init();
         }
 
@@ -59,7 +60,7 @@ namespace AstroWall.ApplicationLayer
             NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
         }
 
-        public void launchUpdatePrompt(UpdateLibrary.Release rel, Action<UpdatePromptResponse> callback)
+        internal void launchUpdatePrompt(UpdateLibrary.Release rel, Action<UpdatePromptResponse> callback)
         {
             // Launch prefs always on top window
             var storyboard = NSStoryboard.FromName("Main", null);
@@ -92,7 +93,7 @@ namespace AstroWall.ApplicationLayer
             }
         }
 
-        public nint launchIncorrectInstallPathAlert()
+        public static nint launchIncorrectInstallPathAlert()
         {
             var alert = new NSAlert();
             alert.MessageText = "Incorrect Astro Wall install location";
@@ -129,18 +130,18 @@ namespace AstroWall.ApplicationLayer
         }
         #endregion
 
-        private bool checkIfWindowIsAlreadyOpened(NSWindowController windowController)
+        private static bool checkIfWindowIsAlreadyOpened(NSWindowController windowController)
         {
             if (windowController == null) return false;
             if (!windowController.Window.IsVisible) return false;
-            if (windowController.Window.IsVisible)
+            else
             {
                 windowController.Window.OrderFront(null);
                 NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
 
                 return true;
             }
-            else throw new Exception("should never be reached");
+
         }
 
 
