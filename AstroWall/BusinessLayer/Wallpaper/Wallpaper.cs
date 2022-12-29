@@ -145,7 +145,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
         public static void SetPreviewWallpaper(ImgWrap iw)
         {
             if (iw.PreviewIsLoaded())
-                General.SetWallpaper(Screen.Main(), iw.ImgLocalPreviewUrl);
+                General.SetWallpaper(Screen.MainScreen(), iw.ImgLocalPreviewUrl);
         }
 
         public void ResetWallpaper()

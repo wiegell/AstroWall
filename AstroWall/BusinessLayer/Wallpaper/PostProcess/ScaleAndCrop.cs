@@ -6,7 +6,7 @@ using SkiaSharp;
 
 namespace AstroWall.BusinessLayer.Wallpaper
 {
-    partial class PostProcess
+    internal partial class PostProcess
     {
 
         public static Func<Dictionary<Screen, SKBitmap>, Dictionary<Screen, SKBitmap>> ScaleAndCropCurry()

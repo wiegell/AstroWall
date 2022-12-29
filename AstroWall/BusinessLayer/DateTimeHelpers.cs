@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace AstroWall
 {
-    public class DateTimeHelpers
+    internal class DateTimeHelpers
     {
-        public DateTimeHelpers()
+        internal DateTimeHelpers()
         {
         }
 
@@ -16,12 +16,12 @@ namespace AstroWall
         /// <param name="dts1"></param>
         /// <param name="dts2"></param>
         /// <returns></returns>
-        public static DateTime[] datesDiff(DateTime[] dts1, DateTime[] dts2)
+        internal static DateTime[] datesDiff(DateTime[] dts1, DateTime[] dts2)
         {
             return dts1.Where(dt1 => !dts2.Any(dt2 => DTEquals(dt1, dt2))).Cast<DateTime>().ToArray();
         }
 
-        public static bool DTEquals(DateTime dt1, DateTime dt2)
+        internal static bool DTEquals(DateTime dt1, DateTime dt2)
         {
             bool isEqual = true;
             if (!(dt1.Year == dt2.Year)) isEqual = false;

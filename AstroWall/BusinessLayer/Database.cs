@@ -12,18 +12,18 @@ using Newtonsoft.Json;
 namespace AstroWall.BusinessLayer
 {
 
-    public class Database
+    internal class Database
     {
-        public string Title { get; private set; }
+        internal string Title { get; private set; }
 
-        public List<ImgWrap> ImgWrapList { get; private set; }
+        internal List<ImgWrap> ImgWrapList { get; private set; }
         private List<Task> DataLoadList;
         private List<Task> ImgLoadList;
 
         // Log
         private Action<string> log = Logging.GetLogger("Database");
 
-        public Database()
+        internal Database()
         {
             ImgWrapList = new List<ImgWrap>();
             if (FileHelpers.DBExists())
@@ -37,7 +37,7 @@ namespace AstroWall.BusinessLayer
             }
         }
 
-        public ImgWrap Latest
+        internal ImgWrap Latest
         {
             get
             {
@@ -92,7 +92,7 @@ namespace AstroWall.BusinessLayer
         /// <param name="date"></param>
         /// <param name="forceReload"></param>
         /// <returns></returns>
-        public async Task<bool> LoadDataButNoImgFromOnlineStartingAtDate(int n, DateTime date, bool forceReload = false)
+        internal async Task<bool> LoadDataButNoImgFromOnlineStartingAtDate(int n, DateTime date, bool forceReload = false)
         {
             bool allOfDBHasDataLoaded = ImgWrapList.All(iw => iw.OnlineDataIsLoadedOrUngettable());
             bool datesAreInDB = hasDates(n, date);
@@ -152,7 +152,7 @@ namespace AstroWall.BusinessLayer
 
         }
 
-        public async Task LoadImgs(bool forceReload = false)
+        internal async Task LoadImgs(bool forceReload = false)
         {
             if (ImgWrapList.All(iw => iw.ImgsAreLoadedOrUngettable()) && !forceReload)
             {
@@ -171,12 +171,12 @@ namespace AstroWall.BusinessLayer
             }
         }
 
-        public void SaveToDisk()
+        internal void SaveToDisk()
         {
             FileHelpers.SerializeNow(ImgWrapList, General.getDBPath());
         }
 
-        public List<ImgWrap> getPresentableImages()
+        internal List<ImgWrap> getPresentableImages()
         {
             return ImgWrapList.Where((iw) => iw.ImgIsGettable).ToList<ImgWrap>();
         }
@@ -186,7 +186,7 @@ namespace AstroWall.BusinessLayer
             return true;
         }
 
-        public void Sort()
+        internal void Sort()
         {
             ImgWrapList.Sort();
         }

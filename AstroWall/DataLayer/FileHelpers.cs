@@ -16,23 +16,23 @@ using AstroWall.BusinessLayer;
 namespace AstroWall
 {
 
-    public class FileHelpers
+    internal class FileHelpers
     {
 
         // Log
         private static Action<string> log = Logging.GetLogger("FileHelpers");
         private static Action<string> logError = Logging.GetLogger("FileHelpers", true);
 
-        public FileHelpers()
+        internal FileHelpers()
         {
         }
 
-        public static string getImageStoreDirectory()
+        internal static string getImageStoreDirectory()
         {
             return General.getAstroDirectory() + Guid.NewGuid();
         }
 
-        public static async Task<String> DownloadUrlToImageStorePath(string imgurl)
+        internal static async Task<String> DownloadUrlToImageStorePath(string imgurl)
         {
             WebClient client = new WebClient();
             Uri uri = new Uri(imgurl);
@@ -47,7 +47,7 @@ namespace AstroWall
             return localFileName;
         }
 
-        public static async Task<String> DownloadUrlToTmpPath(string downloadUrl)
+        internal static async Task<String> DownloadUrlToTmpPath(string downloadUrl)
         {
             WebClient client = new WebClient();
             Uri uri = new Uri(downloadUrl);
@@ -61,7 +61,7 @@ namespace AstroWall
             return localFileName;
         }
 
-        public async static Task<SKBitmap> LoadImageFromLocalUrl(string path)
+        internal async static Task<SKBitmap> LoadImageFromLocalUrl(string path)
         {
             SKBitmap bitmap;
             try
@@ -93,17 +93,17 @@ namespace AstroWall
             return bitmap;
         }
 
-        public static string SerializeNow(Object c)
+        internal static string SerializeNow(Object c)
         {
             return JsonConvert.SerializeObject(c);
         }
-        public static void SerializeNow(Object c, string path)
+        internal static void SerializeNow(Object c, string path)
         {
             string jsonString = JsonConvert.SerializeObject(c);
             File.WriteAllText(path, jsonString);
         }
 
-        public static T DeSerializeNow<T>(string path)
+        internal static T DeSerializeNow<T>(string path)
         {
 
             string jsonString = String.Join("", File.ReadAllLines(path));
@@ -112,24 +112,24 @@ namespace AstroWall
             return result;
         }
 
-        public static bool DBExists()
+        internal static bool DBExists()
         {
             log("Checking, if db present at: " + General.getDBPath());
             return File.Exists(General.getDBPath());
         }
 
-        public static bool PrefsExists()
+        internal static bool PrefsExists()
         {
             return File.Exists(General.getPrefsPath());
         }
 
-        public static void DeleteFile(string path)
+        internal static void DeleteFile(string path)
         {
             File.Delete(path);
             log("File deleted at: " + path);
         }
 
-        public static string GenTmpCopy(string src)
+        internal static string GenTmpCopy(string src)
         {
             string ext = System.IO.Path.GetExtension(src);
             string dst = Path.GetTempFileName() + ext;

@@ -17,7 +17,7 @@ namespace AstroWall.ApplicationLayer
         // Not the best place for this?
         internal bool UpdatesDisabled;
 
-        public void createStatusBar(string title)
+        internal void createStatusBar(string title)
         {
             // Create a Status Bar Menu
             statusBar = NSStatusBar.SystemStatusBar;
@@ -26,7 +26,7 @@ namespace AstroWall.ApplicationLayer
             setTitle(title);
         }
 
-        public void UpdateMenuCheckMarks(Preferences prefs)
+        internal void UpdateMenuCheckMarks(Preferences prefs)
         {
             General.RunOnUIThread(() =>
             {
@@ -40,7 +40,7 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        public void noAutoEnableMenuItems()
+        internal void noAutoEnableMenuItems()
         {
             General.RunOnUIThread(() =>
             {
@@ -49,7 +49,7 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        public void disableAllItemsExceptQuit()
+        internal void disableAllItemsExceptQuit()
         {
             General.RunOnUIThread(() =>
             {
@@ -61,7 +61,7 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        public void enableStatusIcon()
+        internal void enableStatusIcon()
         {
             General.RunOnUIThread(() =>
             {
@@ -69,7 +69,7 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        public void disableStatusIcon()
+        internal void disableStatusIcon()
         {
             General.RunOnUIThread(() =>
             {
@@ -77,7 +77,7 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        public void setTitle(string title)
+        internal void setTitle(string title)
         {
             General.RunOnUIThread(() =>
             {
@@ -85,7 +85,7 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        public void setSubTitle(string str)
+        internal void setSubTitle(string str)
         {
             General.RunOnUIThread(() =>
             {
@@ -95,7 +95,7 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        public void HideSubTitle()
+        internal void HideSubTitle()
         {
             General.RunOnUIThread(() =>
             {
@@ -103,7 +103,7 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        public void changeIconTo(string iconName, bool doubleCheckState = false)
+        internal void changeIconTo(string iconName, bool doubleCheckState = false)
         {
             Action ac = () =>
             {
@@ -119,12 +119,12 @@ namespace AstroWall.ApplicationLayer
             General.RunOnUIThread(ac);
         }
 
-        public void removeAllPictureItemsInSubmenu()
+        internal void removeAllPictureItemsInSubmenu()
         {
             MenuOutletBrowseLatest.Submenu.RemoveAllItems();
         }
 
-        public void addPictureSubmenuItemAndRegEventHandlers(
+        internal void addPictureSubmenuItemAndRegEventHandlers(
             string title,
             BusinessLayer.State stateRef,
             bool previewIsLoaded,
@@ -179,7 +179,7 @@ namespace AstroWall.ApplicationLayer
 
         }
 
-        public void DeactivateUpdateOptions()
+        internal void DeactivateUpdateOptions()
         {
             this.UpdatesDisabled = true;
             this.MenuOutletCheckUpdatesManual.Enabled = false;

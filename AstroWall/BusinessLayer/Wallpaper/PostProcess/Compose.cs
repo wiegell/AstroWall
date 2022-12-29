@@ -5,16 +5,16 @@ using SkiaSharp;
 
 namespace AstroWall.BusinessLayer.Wallpaper
 {
-    partial class PostProcess
+    internal partial class PostProcess
     {
-        public static Func<Dictionary<Screen, SkiaSharp.SKBitmap>> ComposePostProcess(
+        internal static Func<Dictionary<Screen, SkiaSharp.SKBitmap>> ComposePostProcess(
             Func<Dictionary<Screen, SkiaSharp.SKBitmap>> f1,
             Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> f2,
             Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> f3)
         {
             return () => f3(f2(f1()));
         }
-        public static Func<Dictionary<Screen, SkiaSharp.SKBitmap>> ComposePostProcess(
+        internal static Func<Dictionary<Screen, SkiaSharp.SKBitmap>> ComposePostProcess(
             Func<Dictionary<Screen, SkiaSharp.SKBitmap>> f1,
             Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> f2,
             Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> f3,
@@ -23,7 +23,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             return () => f4(f3(f2(f1())));
         }
 
-        public static Func<Dictionary<Screen, SkiaSharp.SKBitmap>> ComposePostProcess(
+        internal static Func<Dictionary<Screen, SkiaSharp.SKBitmap>> ComposePostProcess(
             Func<Dictionary<Screen, SkiaSharp.SKBitmap>> f1,
             Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> f2)
         {

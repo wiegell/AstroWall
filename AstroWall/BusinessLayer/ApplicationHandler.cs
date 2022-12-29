@@ -29,7 +29,6 @@ namespace AstroWall.BusinessLayer
         private Action<string> log = Logging.GetLogger("App handler");
         private Action<string> logError = Logging.GetLogger("App handler", true);
 
-
         public ApplicationHandler(AppDelegate del)
         {
             AppDelegate = del;
@@ -38,7 +37,7 @@ namespace AstroWall.BusinessLayer
             Updates = new Updates(this, currentVersionStringWithCommit);
         }
 
-        public async Task Init()
+        internal async Task Init()
         {
             // Evaluate install location
             this.IncorrectInstallPath = checkIfInstallLocationIsIncorrect();
@@ -89,7 +88,7 @@ namespace AstroWall.BusinessLayer
             return (installPath != wantedInstallPath);
         }
 
-        public void TerminationPreparations()
+        internal void TerminationPreparations()
         {
             log("Terminate called");
             try
@@ -227,7 +226,7 @@ namespace AstroWall.BusinessLayer
             MenuHandler.DeactivateUpdateOptions();
         }
 
-        public async Task checkForNewPics()
+        internal async Task checkForNewPics()
         {
             // Cache latest
             var tmp = db.Latest;

@@ -37,6 +37,7 @@ namespace AstroWall.ApplicationLayer
             menuHandler = appHandler.MenuHandler;
         }
 
+        // Methods
         #region Override Methods
         public async override void DidFinishLaunching(NSNotification notification)
         {
@@ -45,7 +46,14 @@ namespace AstroWall.ApplicationLayer
             await appHandler.Init();
         }
 
-        public void waitForUserToChosePrefs(Func<Preferences, Task> callback)
+        public override void WillTerminate(NSNotification notification)
+        {
+            // Insert code here to tear down your application
+            appHandler.TerminationPreparations();
+        }
+        #endregion
+
+        internal void waitForUserToChosePrefs(Func<Preferences, Task> callback)
         {
             // Launch prefs always on top window
             var storyboard = NSStoryboard.FromName("Main", null);
@@ -74,7 +82,7 @@ namespace AstroWall.ApplicationLayer
             NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);
         }
 
-        public void launchPostProcessPrompt(Preferences oldPrefs, Action<AddText> callbackWithNewPostProcess)
+        internal void launchPostProcessPrompt(Preferences oldPrefs, Action<AddText> callbackWithNewPostProcess)
         {
             // Don't spawn new window if already opened
             if (!checkIfWindowIsAlreadyOpened(postProcessPromptWindowController))
@@ -93,7 +101,7 @@ namespace AstroWall.ApplicationLayer
             }
         }
 
-        public static nint launchIncorrectInstallPathAlert()
+        internal static nint launchIncorrectInstallPathAlert()
         {
             var alert = new NSAlert();
             alert.MessageText = "Incorrect Astro Wall install location";
@@ -107,7 +115,7 @@ namespace AstroWall.ApplicationLayer
             return alert.RunModal();
         }
 
-        public void launchAboutWindow()
+        internal void launchAboutWindow()
         {
             // Don't spawn new window if already opened
             if (!checkIfWindowIsAlreadyOpened(aboutWindowController))
@@ -123,13 +131,6 @@ namespace AstroWall.ApplicationLayer
             }
         }
 
-        public override void WillTerminate(NSNotification notification)
-        {
-            // Insert code here to tear down your application
-            appHandler.TerminationPreparations();
-        }
-        #endregion
-
         private static bool checkIfWindowIsAlreadyOpened(NSWindowController windowController)
         {
             if (windowController == null) return false;
@@ -143,10 +144,6 @@ namespace AstroWall.ApplicationLayer
             }
 
         }
-
-
-
-
     }
 }
 

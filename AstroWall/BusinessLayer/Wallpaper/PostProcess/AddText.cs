@@ -9,18 +9,26 @@ using SkiaSharp;
 
 namespace AstroWall.BusinessLayer.Wallpaper
 {
-    partial class PostProcess
+    internal partial class PostProcess
     {
+        // Utility classes
+        private struct Line
+        {
+            internal string Value { get; set; }
+            internal float Width { get; set; }
+        }
 
         // Log
         private static Action<string> log = Logging.GetLogger("Post process");
         private static Action<string> logError = Logging.GetLogger("Post process", true);
 
-        public PostProcess()
+        // Constructor
+        internal PostProcess()
         {
         }
 
-        public static Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> AddTextCurry(Preferences.AddText options, string title, string description, string credit)
+        // Methods
+        internal static Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> AddTextCurry(Preferences.AddText options, string title, string description, string credit)
         {
             return (Dictionary<Screen, SkiaSharp.SKBitmap> dic) =>
             {
@@ -28,7 +36,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             };
         }
 
-        public static Dictionary<Screen, SkiaSharp.SKBitmap> AddText(Dictionary<Screen, SkiaSharp.SKBitmap> dic, Preferences.AddText options, string title, string description, string credit)
+        internal static Dictionary<Screen, SkiaSharp.SKBitmap> AddText(Dictionary<Screen, SkiaSharp.SKBitmap> dic, Preferences.AddText options, string title, string description, string credit)
         {
             SKBitmap mainScreenBitmap;
             Screen mainScreen;
@@ -94,6 +102,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             }
             else return dic;
         }
+
         private static int PaintToRect(SKCanvas canvas, int width, int x, int y, int margin, int size, bool italic, bool isCredit, string text)
         {
             SKTypeface type = SKTypeface.FromFamilyName("Helvetica Neue", SKFontStyleWeight.Light, SKFontStyleWidth.Normal, italic ? SKFontStyleSlant.Italic : SKFontStyleSlant.Upright);
@@ -120,13 +129,6 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 DrawText(canvas, text, properRect, paint, margin, isCredit);
                 return height;
             }
-        }
-
-        public class Line
-        {
-            public string Value { get; set; }
-
-            public float Width { get; set; }
         }
 
         /// <summary>
