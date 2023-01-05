@@ -18,7 +18,7 @@ namespace AstroWall
         public override void ViewDidLoad()
         {
             base.ViewDidLoad();
-            OutletVersion.StringValue = General.currentVersion();
+            OutletVersion.StringValue = General.CurrentVersionLongWithCommit();
         }
 
         // Not feasible to make static bc of partial class

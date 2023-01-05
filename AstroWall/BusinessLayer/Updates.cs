@@ -31,7 +31,7 @@ namespace AstroWall.BusinessLayer
         {
             this.applicationHandler = applicationHandlerArg;
             this.currentVersion = VersionFromString(currentVersionString);
-            log("currentVersion: " + VersionFromString(currentVersionString));
+            this.log("currentVersion: " + VersionFromString(currentVersionString));
         }
 
         private UpdateLibrary.UpdateManifest manifest;
@@ -175,7 +175,7 @@ namespace AstroWall.BusinessLayer
                 }
                 else
                 {
-                    applicationHandler.AppDelegate.launchUpdatePrompt(pendingUpdate, updatePromptCallBack);
+                    applicationHandler.AppDelegate.LaunchUpdatePrompt(pendingUpdate, updatePromptCallBack);
                 }
             }
             else

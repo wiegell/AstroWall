@@ -29,7 +29,7 @@ namespace AstroWall
 
         internal static string getImageStoreDirectory()
         {
-            return General.getAstroDirectory() + Guid.NewGuid();
+            return General.GetAstroDirectory() + Guid.NewGuid();
         }
 
         internal static async Task<String> DownloadUrlToImageStorePath(string imgurl)
@@ -114,13 +114,13 @@ namespace AstroWall
 
         internal static bool DBExists()
         {
-            log("Checking, if db present at: " + General.getDBPath());
-            return File.Exists(General.getDBPath());
+            log("Checking, if db present at: " + General.GetDBPath());
+            return File.Exists(General.GetDBPath());
         }
 
         internal static bool PrefsExists()
         {
-            return File.Exists(General.getPrefsPath());
+            return File.Exists(General.GetPrefsPath());
         }
 
         internal static void DeleteFile(string path)

@@ -39,12 +39,12 @@ namespace AstroWall.BusinessLayer
         {
             appDelegate = del;
             appHandler = app;
-            renewCancellationSource();
+            RenewCancellationSource();
         }
 
         public void createStatusBar(string title)
         {
-            appDelegate.createStatusBar(title);
+            appDelegate.CreateStatusBar(title);
             noAutoEnableMenuItems();
         }
 
@@ -56,31 +56,31 @@ namespace AstroWall.BusinessLayer
 
         public void DisableAllItems()
         {
-            appDelegate.disableAllItemsExceptQuit();
+            appDelegate.DisableAllItemsExceptQuit();
         }
 
         public void noAutoEnableMenuItems()
         {
-            appDelegate.noAutoEnableMenuItems();
+            appDelegate.NoAutoEnableMenuItems();
         }
 
         public void EnableStatusIcon()
         {
-            appDelegate.enableStatusIcon();
+            appDelegate.EnableStatusIcon();
         }
 
         public void DisableStatusIcon()
         {
-            appDelegate.disableStatusIcon();
+            appDelegate.DisableStatusIcon();
         }
 
         public void SetSubTitleInitialising()
         {
-            appDelegate.setSubTitle("Initializing...");
+            appDelegate.SetSubTitle("Initializing...");
         }
         public void SetSubTitle(string msg)
         {
-            appDelegate.setSubTitle(msg);
+            appDelegate.SetSubTitle(msg);
         }
 
         public void RunDownloadIconAnimation()
@@ -126,7 +126,7 @@ namespace AstroWall.BusinessLayer
             if (appHandler.State.isIdle)
             {
                 // Double check that new process has not been started
-                appDelegate.changeIconTo("MainIcon_rot_400");
+                appDelegate.ChangeIconTo("MainIcon_rot_400");
                 flipCounter = 0;
             }
         }
@@ -135,7 +135,7 @@ namespace AstroWall.BusinessLayer
         {
 
             // Clear existing items of menu
-            removeAllPictureItemsInSubmenu();
+            ClearAllPictureItemsInSubmenu();
 
             foreach (ImgWrap iw in imgWrapList)
             {
@@ -143,21 +143,16 @@ namespace AstroWall.BusinessLayer
 
                 if (iw.OnlineDataAndPicIsLoaded() && iw.Integrity)
                 {
-                    appDelegate.addPictureSubmenuItemAndRegEventHandlers(
+                    appDelegate.AddPictureSubmenuItemAndRegEventHandlers(
                         title,
                         stateRef,
                         iw.PreviewIsLoaded(),
-                        cancelEndBrowsingStateWithDelay,
+                        CancelEndBrowsingState,
                         () => BusinessLayer.Wallpaper.Wallpaper.SetPreviewWallpaper(iw),
-                        () =>
-                        {
-                            //appHandler.Wallpaper.SetWallpaperAllScreens(iw);
-                        },
-                        () => setEndBrowsingStateWithDelay(),
+                        () => EndBrowsingWithDelay(),
                         async () =>
                         {
                             // Task wrap to run un non-UI thread
-
                             appHandler.State.UnsetStateBrowsingWallpapers();
                             appHandler.Wallpaper.RunPostProcessAndSetWallpaperAllScreensUnobserved(iw);
                         }
@@ -231,73 +226,111 @@ namespace AstroWall.BusinessLayer
             appHandler.AppDelegate.DeactivateUpdateOptions();
         }
 
-
-        public async void ClickedInMenuManualCheckForNewPic()
+        /// <summary>
+        /// Method to react to request for manual check for new pics.
+        /// </summary>
+        internal async void ClickedInMenuManualCheckForNewPic()
         {
             await this.appHandler.checkForNewPics();
         }
 
-        public void HideSubtitle()
+        /// <summary>
+        /// Hides subtitle in menu.
+        /// </summary>
+        internal void HideSubtitle()
         {
             this.appHandler.AppDelegate.HideSubTitle();
         }
 
-        public void OpenAbout()
+        /// <summary>
+        /// Launch about window.
+        /// </summary>
+        internal void LaunchAboutWindow()
         {
-            this.appHandler.AppDelegate.launchAboutWindow();
+            this.appHandler.AppDelegate.LaunchAboutWindow();
         }
 
-        private void renewCancellationSource()
+        private void RenewCancellationSource()
         {
             this.taskCancellationSource = new CancellationTokenSource();
             this.cancellationToken = taskCancellationSource.Token;
         }
 
-        private void OnTimedEventDownloadAnimation(Object stateInfo)
+        private void OnTimedEventDownloadAnimation(object stateInfo)
         {
             string iconName = "MainIcon_download_" + flipCounter;
-            appDelegate.changeIconTo(iconName, true);
-            if (flipCounter == 0) goingdown = false;
-            if (flipCounter == 9) goingdown = true;
+            appDelegate.ChangeIconTo(iconName);
+            if (flipCounter == 0)
+            {
+                goingdown = false;
+            }
+
+            if (flipCounter == 9)
+            {
+                goingdown = true;
+            }
+
             flipCounter = goingdown ? flipCounter - 1 : flipCounter + 1;
         }
 
-        private void OnTimedEventSpinnerAnimation(Object stateInfo)
+        private void OnTimedEventSpinnerAnimation(object stateInfo)
         {
             int iconRotationDeg = 400 - (flipCounter * 7);
-            // made wrong calc in photoshop
-            if (iconRotationDeg > 204) rotDegOffset = 0;
-            if (iconRotationDeg <= 204) rotDegOffset = 2;
-            if (iconRotationDeg <= 3) rotDegOffset = -1;
+
+            // made wrong calculation in naming the files,
+            // so these if clauses are needed...
+            if (iconRotationDeg > 204)
+            {
+                rotDegOffset = 0;
+            }
+
+            if (iconRotationDeg <= 204)
+            {
+                rotDegOffset = 2;
+            }
+
+            if (iconRotationDeg <= 3)
+            {
+                rotDegOffset = -1;
+            }
+
             string iconName = "MainIcon_rot_" + (iconRotationDeg + rotDegOffset);
-            //log("iconname: " + iconName);
-            appDelegate.changeIconTo(iconName, true);
-            if (iconRotationDeg + rotDegOffset == 0) goingdown = true;
+
+            appDelegate.ChangeIconTo(iconName);
+            if (iconRotationDeg + rotDegOffset == 0)
+            {
+                goingdown = true;
+            }
+
             if (iconRotationDeg + rotDegOffset == 400) goingdown = false;
             flipCounter = goingdown ? flipCounter - 1 : flipCounter + 1;
         }
 
-        private async Task setEndBrowsingStateWithDelay()
+        /// <summary>
+        /// Unsets the state from browsing wallpapers and resets wallpaper.
+        /// </summary>
+        private async Task EndBrowsingWithDelay()
         {
             await Task.Delay(100, this.cancellationToken);
             appHandler.Wallpaper.ResetWallpaper();
             appHandler.State.UnsetStateBrowsingWallpapers();
         }
 
-        private void cancelEndBrowsingStateWithDelay()
+        /// <summary>
+        /// Cancels the "delayed end browsing".
+        /// </summary>
+        private void CancelEndBrowsingState()
         {
             this.taskCancellationSource.Cancel();
-            renewCancellationSource();
+            RenewCancellationSource();
         }
 
-        private void removeAllPictureItemsInSubmenu()
+        /// <summary>
+        /// Clears all submenu items in "latest images".
+        /// </summary>
+        private void ClearAllPictureItemsInSubmenu()
         {
-            appDelegate.removeAllPictureItemsInSubmenu();
+            appDelegate.ClearAllPictureItemsInSubmenu();
         }
-
-
-
-
     }
 }
-

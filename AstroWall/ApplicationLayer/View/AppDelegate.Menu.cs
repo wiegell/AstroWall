@@ -7,25 +7,38 @@ using Foundation;
 
 namespace AstroWall.ApplicationLayer
 {
+    /// <summary>
+    /// Entry point of MacOS app and bootstrap of the business logic. Divided has partial .menu file
+    /// with all the OS-specific handling about the menu.
+    /// </summary>
     public partial class AppDelegate : NSApplicationDelegate
     {
-
         private NSStatusBar statusBar;
         private NSStatusItem statusBarItem;
 
-        // TODO
-        // Not the best place for this?
-        internal bool UpdatesDisabled;
 
-        internal void createStatusBar(string title)
+        /// <summary>
+        /// Gets a value indicating whether updates are disabled. This is state from application layer.
+        /// Should be generalized to business logic. TODO.
+        /// </summary>
+        internal bool UpdatesDisabled { get; private set; }
+
+        /// <summary>
+        /// Creates status bar item.
+        /// </summary>
+        /// <param name="title"></param>
+        internal void CreateStatusBar(string title)
         {
             // Create a Status Bar Menu
             statusBar = NSStatusBar.SystemStatusBar;
             statusBarItem = statusBar.CreateStatusItem(NSStatusItemLength.Variable);
             General.InitIcon(statusBarItem, this.StatusMenu);
-            setTitle(title);
+            SetTitle(title);
         }
 
+        /// <summary>
+        /// Updates UI checkmarks in menu to reflect input value.
+        /// </summary>
         internal void UpdateMenuCheckMarks(Preferences prefs)
         {
             General.RunOnUIThread(() =>
@@ -35,12 +48,16 @@ namespace AstroWall.ApplicationLayer
                     this.MenuOutletAutoInstallUpdates.State = prefs.AutoInstallUpdates ? NSCellStateValue.On : NSCellStateValue.Off;
                     this.MenuOutletCheckUpdatesOnStartup.State = prefs.CheckUpdatesOnStartup ? NSCellStateValue.On : NSCellStateValue.Off;
                 }
+
                 this.MenuOutletRunAtLogin.State = prefs.RunAtStartup ? NSCellStateValue.On : NSCellStateValue.Off;
                 this.MenuOutletDailyCheckNewest.State = prefs.DailyCheck == DailyCheckEnum.Newest ? NSCellStateValue.On : NSCellStateValue.Off;
             });
         }
 
-        internal void noAutoEnableMenuItems()
+        /// <summary>
+        /// Prevents macOS from autoenabling menu items.
+        /// </summary>
+        internal void NoAutoEnableMenuItems()
         {
             General.RunOnUIThread(() =>
             {
@@ -49,7 +66,10 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        internal void disableAllItemsExceptQuit()
+        /// <summary>
+        /// Disable all menu items except quit.
+        /// </summary>
+        internal void DisableAllItemsExceptQuit()
         {
             General.RunOnUIThread(() =>
             {
@@ -57,11 +77,15 @@ namespace AstroWall.ApplicationLayer
                 {
                     item.Enabled = true;
                 }
+
                 MenuOutletQuit.Enabled = true;
             });
         }
 
-        internal void enableStatusIcon()
+        /// <summary>
+        /// Enables status icon.
+        /// </summary>
+        internal void EnableStatusIcon()
         {
             General.RunOnUIThread(() =>
             {
@@ -69,7 +93,10 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        internal void disableStatusIcon()
+        /// <summary>
+        /// Disables status icon.
+        /// </summary>
+        internal void DisableStatusIcon()
         {
             General.RunOnUIThread(() =>
             {
@@ -77,7 +104,11 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        internal void setTitle(string title)
+        /// <summary>
+        /// Sets title in menu item.
+        /// </summary>
+        /// <param name="title"></param>
+        internal void SetTitle(string title)
         {
             General.RunOnUIThread(() =>
             {
@@ -85,7 +116,11 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        internal void setSubTitle(string str)
+        /// <summary>
+        /// Sets subtitle in menu as well as shows and enables the item.
+        /// </summary>
+        /// <param name="str"></param>
+        internal void SetSubTitle(string str)
         {
             General.RunOnUIThread(() =>
             {
@@ -95,6 +130,9 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
+        /// <summary>
+        /// Hides subtitle.
+        /// </summary>
         internal void HideSubTitle()
         {
             General.RunOnUIThread(() =>
@@ -103,39 +141,49 @@ namespace AstroWall.ApplicationLayer
             });
         }
 
-        internal void changeIconTo(string iconName, bool doubleCheckState = false)
+        /// <summary>
+        /// Changes icon in statusbar to supplied iconName.
+        /// </summary>
+        /// <param name="iconName">xAsset name</param>
+        internal void ChangeIconTo(string iconName)
         {
             Action ac = () =>
             {
-                //if (doubleCheckState && appHandler.State.state != doubleCheckStateShouldHaveThisValue) return;
                 var image = NSImage.ImageNamed(iconName);
                 image.Template = true;
                 statusBarItem.Button.Image = image;
                 statusBarItem.HighlightMode = true;
             };
-            // Needed since it sometimes
-            // is called from another thread via
-            // a task
+
             General.RunOnUIThread(ac);
         }
 
-        internal void removeAllPictureItemsInSubmenu()
+        /// <summary>
+        /// Clears submenu with "latest" images.
+        /// </summary>
+        internal void ClearAllPictureItemsInSubmenu()
         {
             MenuOutletBrowseLatest.Submenu.RemoveAllItems();
         }
 
-        internal void addPictureSubmenuItemAndRegEventHandlers(
+        /// <summary>
+        /// Adds picture to "latest" images submenu.
+        /// </summary>
+        /// <param name="title">the text displayed in the menu item.</param>
+        /// <param name="stateRef">Ref is used to check if state is already "browsing wallpapers".</param>
+        /// <param name="previewIsLoaded">Only changes wallpaper if preview is loaded.</param>
+        /// <param name="cancelEndBrowsingStateCallback">This callback is meant to cancel a timer that ends the browsing state.</param>
+        /// <param name="setPreviewWallpaperCallback">Callback to set preview.</param>
+        /// <param name="startTimerToEndBrowsingStateCallback">This timer triggers an end to browsing state, if the user e.g. moves the mouse outside the menu and not directly to another menu item.</param>
+        internal void AddPictureSubmenuItemAndRegEventHandlers(
             string title,
             BusinessLayer.State stateRef,
             bool previewIsLoaded,
-            Action cancelEndBrowsingStateWithDelayCallback,
+            Action cancelEndBrowsingStateCallback,
             Action setPreviewWallpaperCallback,
-            Action setFullWallpaperCallback,
-            Action setEndBrowsingStateWithDelayCallback,
-            Action onclickCallBack
-            )
+            Action startTimerToEndBrowsingStateCallback,
+            Action onclickCallBack)
         {
-
             General.RunOnUIThread(() =>
             {
                 NSMenuItem item = new NSMenuItem(title);
@@ -149,7 +197,8 @@ namespace AstroWall.ApplicationLayer
                         {
                             stateRef.SetStateBrowsingWallpapers();
                         }
-                        cancelEndBrowsingStateWithDelayCallback();
+
+                        cancelEndBrowsingStateCallback();
                         setPreviewWallpaperCallback();
                     }
                     if (e.Description == "Mouse Exited")
@@ -157,28 +206,30 @@ namespace AstroWall.ApplicationLayer
                         Console.WriteLine("Mouse exit");
                         try
                         {
-                            setEndBrowsingStateWithDelayCallback();
+                            startTimerToEndBrowsingStateCallback();
                         }
                         catch (OperationCanceledException)
                         {
                             Console.WriteLine("End browsing cancel");
                         }
-
                     }
+
                     if (e.Description == "Mouse Down" && previewIsLoaded)
                     {
+                        // TODO is this a suboptimal order?
                         onclickCallBack();
                         hoverView.DisableBGSelectionColor();
-                        setFullWallpaperCallback();
                         StatusMenu.CancelTracking();
                     }
                 };
                 item.View = hoverView;
                 MenuOutletBrowseLatest.Submenu.AddItem(item);
             });
-
         }
 
+        /// <summary>
+        /// Deactivates the option to click updates related menu items.
+        /// </summary>
         internal void DeactivateUpdateOptions()
         {
             this.UpdatesDisabled = true;
@@ -190,18 +241,14 @@ namespace AstroWall.ApplicationLayer
             this.MenuOutletCheckUpdatesOnStartup.State = NSCellStateValue.Off;
         }
 
-        partial void MenuActionRunAtLogin(NSObject sender)
-        {
-            bool newState = !getCheckmarkBoolFromSender(sender);
-            menuHandler.changedInMenuRunAtLogin(newState);
-        }
-
         /// <summary>
-        /// the argument is meant to disable autoinstall
-        /// if checkupdatesonstartup == false
+        /// Enables all submenuitems in the update menu.
         /// </summary>
-        /// <param name="enableAutoInstall"></param>
-        public void EnableAllUpdateSubMenuItems(bool enableAutoInstall = true)
+        /// <param name="enableAutoInstall">
+        /// The argument is meant to disable autoinstall
+        /// if checkupdatesonstartup == false.
+        /// </param>
+        internal void EnableAllUpdateSubMenuItems(bool enableAutoInstall = true)
         {
             if (!UpdatesDisabled)
             {
@@ -212,21 +259,32 @@ namespace AstroWall.ApplicationLayer
             }
         }
 
+        private static bool GetCheckmarkBoolFromSender(NSObject sender)
+        {
+            return ((NSMenuItem)sender).State == NSCellStateValue.On;
+        }
+
+        partial void MenuActionRunAtLogin(NSObject sender)
+        {
+            bool newState = !GetCheckmarkBoolFromSender(sender);
+            this.AppHandler.MenuHandler.changedInMenuRunAtLogin(newState);
+        }
+
         partial void MenuActionAutoInstallUpdates(NSObject sender)
         {
-            bool newState = !getCheckmarkBoolFromSender(sender);
-            menuHandler.changedInMenuAutoInstallUpdates(newState);
+            bool newState = !GetCheckmarkBoolFromSender(sender);
+            this.AppHandler.MenuHandler.changedInMenuAutoInstallUpdates(newState);
         }
 
         partial void MenuActionCheckUpdatesOnStartup(NSObject sender)
         {
-            bool newState = !getCheckmarkBoolFromSender(sender);
-            menuHandler.changedInMenuCheckUpdatesAtStartup(newState);
+            bool newState = !GetCheckmarkBoolFromSender(sender);
+            this.AppHandler.MenuHandler.changedInMenuCheckUpdatesAtStartup(newState);
 
             if (newState == false)
             {
                 // Cannot autoinstall updates if they are not checked
-                menuHandler.changedInMenuAutoInstallUpdates(newState);
+                this.AppHandler.MenuHandler.changedInMenuAutoInstallUpdates(newState);
                 MenuOutletAutoInstallUpdates.State = NSCellStateValue.Off;
 
                 MenuOutletAutoInstallUpdates.Enabled = false;
@@ -235,56 +293,53 @@ namespace AstroWall.ApplicationLayer
             else
             {
                 MenuOutletAutoInstallUpdates.Enabled = true;
-
             }
         }
 
         partial void ActionManualCheckForNewPic(NSObject sender)
         {
-            menuHandler.ClickedInMenuManualCheckForNewPic();
+            this.AppHandler.MenuHandler.ClickedInMenuManualCheckForNewPic();
         }
 
         partial void MenuActionDailyCheckNewest(NSObject sender)
         {
-            bool newState = !getCheckmarkBoolFromSender(sender);
-            appHandler.MenuHandler.changedInMenuDailyCheckNewest(newState);
+            bool newState = !GetCheckmarkBoolFromSender(sender);
+            AppHandler.MenuHandler.changedInMenuDailyCheckNewest(newState);
         }
 
         partial void MenuActionManualCheckUpdates(NSObject sender)
         {
-            menuHandler.ClickedInMenuManualCheckUpdates();
+            this.AppHandler.MenuHandler.ClickedInMenuManualCheckUpdates();
         }
 
         partial void MenuActionPostProcess(NSObject sender)
         {
-            appHandler.Wallpaper.launchPostProcessWindow();
+            AppHandler.Wallpaper.launchPostProcessWindow();
         }
 
         partial void ActionOpenCurrent(NSObject sender)
         {
-            menuHandler.OpenCurrentPic();
+            this.AppHandler.MenuHandler.OpenCurrentPic();
         }
 
         partial void ActionOpenCurrentUrl(NSObject sender)
         {
-            menuHandler.OpenUrlToCurrentPic();
+            this.AppHandler.MenuHandler.OpenUrlToCurrentPic();
         }
+
         partial void ActionOpenCurrentCredits(NSObject sender)
         {
-            menuHandler.OpenUrlToCurrentCredits();
+            this.AppHandler.MenuHandler.OpenUrlToCurrentCredits();
         }
+
         partial void ActionClickAbout(NSObject sender)
         {
-            menuHandler.OpenAbout();
+            this.AppHandler.MenuHandler.LaunchAboutWindow();
         }
+
         partial void ActionClickTitle(NSObject sender)
         {
-            menuHandler.OpenAbout();
-        }
-        private static bool getCheckmarkBoolFromSender(NSObject sender)
-        {
-            return ((NSMenuItem)sender).State == NSCellStateValue.On;
+            this.AppHandler.MenuHandler.LaunchAboutWindow();
         }
     }
 }
-

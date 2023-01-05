@@ -1,7 +1,7 @@
-﻿using AppKit;
-
-namespace AstroWall
+﻿namespace AstroWall
 {
+using AppKit;
+
     static class MainClass
     {
         static void Main(string[] args)

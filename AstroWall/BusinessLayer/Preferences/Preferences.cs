@@ -51,7 +51,7 @@ namespace AstroWall.BusinessLayer.Preferences
 
         public Preferences()
         {
-            CurrentPathToNonAstroWallpaper = General.getCurrentWallpaperPath();
+            CurrentPathToNonAstroWallpaper = General.GetCurrentWallpaperPath();
             AddTextPostProcess = new AddText(true);
         }
 
@@ -60,7 +60,7 @@ namespace AstroWall.BusinessLayer.Preferences
             if (FileHelpers.PrefsExists())
             {
                 Console.WriteLine("prefs exists, deserialize");
-                return FileHelpers.DeSerializeNow<Preferences>(General.getPrefsPath());
+                return FileHelpers.DeSerializeNow<Preferences>(General.GetPrefsPath());
             }
             else return null;
         }
@@ -73,7 +73,7 @@ namespace AstroWall.BusinessLayer.Preferences
 
         public void SaveToDisk()
         {
-            FileHelpers.SerializeNow(this, General.getPrefsPath());
+            FileHelpers.SerializeNow(this, General.GetPrefsPath());
         }
     }
 }

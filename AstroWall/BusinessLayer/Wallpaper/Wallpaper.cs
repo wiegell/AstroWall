@@ -176,7 +176,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
         public void launchPostProcessWindow()
         {
-            applicationHandler.AppDelegate.launchPostProcessPrompt(applicationHandler.Prefs, callbackWithNewPostProcessSettings);
+            applicationHandler.AppDelegate.LaunchPostProcessPrompt(applicationHandler.Prefs, callbackWithNewPostProcessSettings);
         }
 
         public void callbackWithNewPostProcessSettings(Preferences.AddText newAtFromDialogue)

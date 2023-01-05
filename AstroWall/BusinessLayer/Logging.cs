@@ -35,7 +35,7 @@ namespace AstroWall.BusinessLayer
         public Logging()
         {
             pruneLogFile();
-            sw = File.AppendText(General.getLogPath());
+            sw = File.AppendText(General.GetLogPath());
         }
 
         public static Action<string> GetLogger(string caller, bool isError = false)
@@ -54,7 +54,7 @@ namespace AstroWall.BusinessLayer
 
         private static void pruneLogFile()
         {
-            string path = General.getLogPath();
+            string path = General.GetLogPath();
             if (File.Exists(path))
             {
                 long size = (new FileInfo(path)).Length;

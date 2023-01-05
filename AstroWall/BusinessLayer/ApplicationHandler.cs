@@ -33,7 +33,7 @@ namespace AstroWall.BusinessLayer
         {
             AppDelegate = del;
             MenuHandler = new MenuHandler(AppDelegate, this);
-            currentVersionStringWithCommit = General.currentVersion();
+            currentVersionStringWithCommit = General.CurrentVersionLongWithCommit();
             Updates = new Updates(this, currentVersionStringWithCommit);
         }
 
@@ -48,7 +48,7 @@ namespace AstroWall.BusinessLayer
             if (installLocationCheck == 1000)
             {
                 // User agrees to move application to user applications folder
-                General.moveBundleToUserApplicationsFolder();
+                General.MoveBundleToUserApplicationsFolder();
                 General.Relaunch();
                 System.Diagnostics.Process.GetCurrentProcess().Kill();
                 // Sleep until killed
@@ -64,19 +64,20 @@ namespace AstroWall.BusinessLayer
             {
                 State.SetStateChoosePrefs();
                 // This will only fire if fresh install or user deleted prefs
-                AppDelegate.waitForUserToChosePrefs(secondaryInit);
+                AppDelegate.WaitForUserToChosePrefs(secondaryInit);
             }
         }
 
         /// <summary>
-        /// return -1 on correct install path, otherwise returns
-        /// nint response from modal
+        /// Calls application layer to prompt user to change install path.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>return -1 on correct install path, otherwise returns
+        /// nint response from modal.</returns>
         private nint promptUserToChangeInstallLocation()
         {
+            // TODO should be generalized to be non-OS-specific.
             log("Install location not suited for updates, prompting user to move");
-            return AppDelegate.launchIncorrectInstallPathAlert();
+            return AppDelegate.LaunchIncorrectInstallPathAlert();
         }
 
         private bool checkIfInstallLocationIsIncorrect()

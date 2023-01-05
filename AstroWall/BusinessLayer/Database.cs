@@ -25,15 +25,15 @@ namespace AstroWall.BusinessLayer
 
         internal Database()
         {
-            ImgWrapList = new List<ImgWrap>();
+            this.ImgWrapList = new List<ImgWrap>();
             if (FileHelpers.DBExists())
             {
-                log("db exists, deserialize");
-                ImgWrapList = FileHelpers.DeSerializeNow<List<ImgWrap>>(General.getDBPath());
+                this.log("db exists, deserialize");
+                this.ImgWrapList = FileHelpers.DeSerializeNow<List<ImgWrap>>(General.GetDBPath());
             }
             else
             {
-                log("db not found");
+                this.log("db not found");
             }
         }
 
@@ -173,7 +173,7 @@ namespace AstroWall.BusinessLayer
 
         internal void SaveToDisk()
         {
-            FileHelpers.SerializeNow(ImgWrapList, General.getDBPath());
+            FileHelpers.SerializeNow(ImgWrapList, General.GetDBPath());
         }
 
         internal List<ImgWrap> getPresentableImages()

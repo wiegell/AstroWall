@@ -42,7 +42,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             Screen mainScreen;
             try
             {
-                mainScreen = dic.Where(screen => screen.Key.isMainScreen).ToArray()[0].Key;
+                mainScreen = dic.Where(screen => screen.Key.IsMainScreen).ToArray()[0].Key;
                 mainScreenBitmap = dic[mainScreen];
             }
             catch (Exception ex)

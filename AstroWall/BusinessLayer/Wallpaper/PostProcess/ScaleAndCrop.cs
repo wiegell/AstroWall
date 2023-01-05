@@ -30,19 +30,19 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 double resizefactor;
                 //if (screen.isHorizontal())
                 //{
-                if (ratioFromInfo(inputInfo) > screen.calcRatio())
+                if (ratioFromInfo(inputInfo) > screen.Ratio)
                 {
                     // Image has a wider aspect than screen
                     // Resize to match heights
                     // (width overflow will be cropped soon)
-                    resizefactor = ((double)screen.yRes) / (double)inputInfo.Height;
+                    resizefactor = ((double)screen.YRes) / (double)inputInfo.Height;
                 }
                 else
                 {
                     // Image has a taller aspect than screen
                     // Resize to match widths
                     // (height overflow will be cropped soon)
-                    resizefactor = ((double)screen.xRes) / (double)inputInfo.Width;
+                    resizefactor = ((double)screen.XRes) / (double)inputInfo.Width;
                 }
 
                 // Resize
@@ -56,21 +56,21 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 // Crop
                 var image = SKImage.FromBitmap(newBitmap);
                 SKImage croppedImage;
-                if (ratioFromInfo(inputInfo) > screen.calcRatio())
+                if (ratioFromInfo(inputInfo) > screen.Ratio)
                 {
                     // Image has a wider aspect than screen
                     // Get the width diff
-                    int widthDiff = newBitmap.Info.Width - screen.xRes;
+                    int widthDiff = newBitmap.Info.Width - screen.XRes;
                     int xMargin = widthDiff / 2;
-                    var rect = SKRectI.Create(xMargin, 0, screen.xRes, screen.yRes);
+                    var rect = SKRectI.Create(xMargin, 0, screen.XRes, screen.YRes);
                     croppedImage = image.Subset(rect);
                 }
                 else
                 {
                     // Image is too tall, get the diff
-                    int heightDiff = newBitmap.Info.Height - screen.yRes;
+                    int heightDiff = newBitmap.Info.Height - screen.YRes;
                     int yMargin = heightDiff / 2;
-                    var rect = SKRectI.Create(0, yMargin, screen.xRes, screen.yRes);
+                    var rect = SKRectI.Create(0, yMargin, screen.XRes, screen.YRes);
                     //var rect = SKRectI.Create(0, yMargin, screen.xRes, screen.yRes);
                     croppedImage = image.Subset(rect);
                 }
