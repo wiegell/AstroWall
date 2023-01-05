@@ -1,336 +1,333 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{56081B0B-0F18-45C9-BEB6-054E4E96C5BA}</ProjectGuid>
-    <ProjectTypeGuids>{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>AstroWall</RootNamespace>
-    <AssemblyName>Astro Wall</AssemblyName>
-    <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <EnableCodeSigning>false</EnableCodeSigning>
-    <CodeSigningKey>Mac Developer</CodeSigningKey>
-    <CreatePackage>false</CreatePackage>
-    <EnablePackageSigning>false</EnablePackageSigning>
-    <IncludeMonoRuntime>false</IncludeMonoRuntime>
-    <UseSGen>true</UseSGen>
-    <UseRefCounting>true</UseRefCounting>
-    <LinkMode>None</LinkMode>
-    <AOTMode>None</AOTMode>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <EnableCodeSigning>false</EnableCodeSigning>
-    <CreatePackage>false</CreatePackage>
-    <EnablePackageSigning>false</EnablePackageSigning>
-    <IncludeMonoRuntime>true</IncludeMonoRuntime>
-    <UseSGen>true</UseSGen>
-    <UseRefCounting>true</UseRefCounting>
-    <CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
-    <LinkMode>SdkOnly</LinkMode>
-    <CustomCommands>
-      <CustomCommands>
-        <Command>
-          <type>BeforeBuild</type>
-          <command>/usr/local/bin/node ./scripts/pre-build.js</command>
-        </Command>
-        <Command>
-          <type>AfterBuild</type>
-          <command>sh scripts/pack.sh</command>
-        </Command>
-      </CustomCommands>
-    </CustomCommands>
-    <AOTMode>None</AOTMode>
-    <XamMacArch>x86_64</XamMacArch>
-    <CodeSigningKey>Mac Developer</CodeSigningKey>
-    <CodeSignProvision></CodeSignProvision>
-    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
-  </PropertyGroup>
-    <ItemGroup>
-    <None Remove="Microsoft.CodeAnalysis.NetAnalyzers" />
-  </ItemGroup>
-
-  <ItemGroup>
-  
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Xamarin.Mac" />
-    <Reference Include="HtmlAgilityPack">
-      <HintPath>..\packages\HtmlAgilityPack.1.11.46\lib\netstandard2.0\HtmlAgilityPack.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="SkiaSharp">
-      <HintPath>..\packages\SkiaSharp.2.88.3\lib\xamarinmac2.0\SkiaSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\netstandard2.1\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Buffers">
-      <HintPath>..\packages\System.Buffers.4.5.1\lib\netstandard2.0\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Memory">
-      <HintPath>..\packages\System.Memory.4.5.4\lib\netstandard2.0\System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Text.Encodings.Web">
-      <HintPath>..\packages\System.Text.Encodings.Web.6.0.0\lib\netstandard2.0\System.Text.Encodings.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\netstandard2.0\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-
-  </ItemGroup>
-  <ItemGroup>
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-1.png" />
-    <ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-2.png" />
-    <ImageAsset Include="Assets.xcassets\AppIconImage.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\AppIconImage.imageset\LargeIcon.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_45.imageset\MainIcon_rot_45.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_45.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_0.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_400.imageset\MainIcon_rot_400.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_400.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_232.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_232.imageset\MainIcon_rot_232.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_372.imageset\MainIcon_rot_372.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_372.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_115.imageset\MainIcon_rot_115.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_115.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_295.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_295.imageset\MainIcon_rot_295.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_206.imageset\MainIcon_rot_206.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_206.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_379.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_379.imageset\MainIcon_rot_379.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_157.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_157.imageset\MainIcon_rot_157.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_330.imageset\MainIcon_rot_330.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_330.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_239.imageset\MainIcon_rot_239.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_239.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_17.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_17.imageset\MainIcon_rot_17.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_253.imageset\MainIcon_rot_253.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_253.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_288.imageset\MainIcon_rot_288.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_288.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_365.imageset\MainIcon_rot_365.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_365.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_225.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_225.imageset\MainIcon_rot_225.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_211.imageset\MainIcon_rot_211.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_211.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_351.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_351.imageset\MainIcon_rot_351.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_136.imageset\MainIcon_rot_136.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_136.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_267.imageset\MainIcon_rot_267.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_267.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_108.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_108.imageset\MainIcon_rot_108.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_10.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_10.imageset\MainIcon_rot_10.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_386.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_386.imageset\MainIcon_rot_386.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_59.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_59.imageset\MainIcon_rot_59.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_66.imageset\MainIcon_rot_66.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_66.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_178.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_178.imageset\MainIcon_rot_178.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_52.imageset\MainIcon_rot_52.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_52.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_24.imageset\MainIcon_rot_24.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_24.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_260.imageset\MainIcon_rot_260.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_260.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_164.imageset\MainIcon_rot_164.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_164.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_302.imageset\MainIcon_rot_302.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_302.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_94.imageset\MainIcon_rot_94.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_94.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_38.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_38.imageset\MainIcon_rot_38.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_309.imageset\MainIcon_rot_309.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_309.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_150.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_150.imageset\MainIcon_rot_150.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_337.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_337.imageset\MainIcon_rot_337.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_281.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_281.imageset\MainIcon_rot_281.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_143.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_143.imageset\MainIcon_rot_143.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_199.imageset\MainIcon_rot_199.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_199.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_358.imageset\MainIcon_rot_358.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_358.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_87.imageset\MainIcon_rot_87.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_87.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_218.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_218.imageset\MainIcon_rot_218.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_101.imageset\MainIcon_rot_101.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_101.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_192.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_192.imageset\MainIcon_rot_192.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_344.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_344.imageset\MainIcon_rot_344.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_122.imageset\MainIcon_rot_122.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_122.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_246.imageset\MainIcon_rot_246.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_246.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_129.imageset\MainIcon_rot_129.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_129.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_0.imageset\MainIcon_rot_0.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_185.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_185.imageset\MainIcon_rot_185.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_274.imageset\MainIcon_rot_274.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_274.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_31.imageset\MainIcon_rot_31.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_31.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_393.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_393.imageset\MainIcon_rot_393.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_73.imageset\MainIcon_rot_73.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_73.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_323.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_323.imageset\MainIcon_rot_323.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_80.imageset\MainIcon_rot_80.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_80.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_316.imageset\MainIcon_rot_316.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_316.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_171.imageset\MainIcon_rot_171.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_171.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_9.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_9.imageset\MainIcon_download_9.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_8.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_8.imageset\MainIcon_download_8.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_3.imageset\MainIcon_download_3.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_3.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_2.imageset\MainIcon_download_2.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_2.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_4.imageset\MainIcon_download_4.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_4.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_5.imageset\MainIcon_download_5.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_5.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_0.imageset\MainIcon_download_0.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_0.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_1.imageset\MainIcon_download_1.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_1.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_7.imageset\MainIcon_download_7.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_7.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_6.imageset\MainIcon_download_6.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_download_6.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_400_trans.imageset\Contents.json" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_400_trans.imageset\MainIcon_rot_400_trans-1.png" />
-    <ImageAsset Include="Assets.xcassets\MainIcon_rot_400_trans.imageset\MainIcon_rot_400_trans.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\" />
-    <Folder Include="ApplicationLayer\" />
-    <Folder Include="DataLayer\" />
-    <Folder Include="BusinessLayer\" />
-    <Folder Include="ServiceLayer\" />
-    <Folder Include="ApplicationLayer\Helpers\" />
-    <Folder Include="ApplicationLayer\View\" />
-    <Folder Include="BusinessLayer\Preferences\" />
-    <Folder Include="BusinessLayer\Wallpaper\" />
-    <Folder Include="BusinessLayer\Wallpaper\PostProcess\" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Info.plist" />
-    <None Include="Entitlements.plist" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Main.cs" />
-    <Compile Include="BusinessLayer\DateTimeHelpers.cs" />
-    <Compile Include="DataLayer\FileHelpers.cs" />
-    <Compile Include="ServiceLayer\HTMLHelpers.cs" />
-    <Compile Include="BusinessLayer\Database.cs" />
-    <Compile Include="BusinessLayer\State.cs" />
-    <Compile Include="BusinessLayer\Updates.cs" />
-    <Compile Include="BusinessLayer\ApplicationHandler.cs" />
-    <Compile Include="BusinessLayer\MenuHandler.cs" />
-    <Compile Include="BusinessLayer\ImgWrap.cs" />
-    <Compile Include="ApplicationLayer\View\AppDelegate.cs" />
-    <Compile Include="ApplicationLayer\View\AppDelegate.designer.cs">
-      <DependentUpon>AppDelegate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ApplicationLayer\View\AppDelegate.Menu.cs" />
-    <Compile Include="ApplicationLayer\View\FreshInstallViewController.cs" />
-    <Compile Include="ApplicationLayer\View\FreshInstallViewController.designer.cs">
-      <DependentUpon>FreshInstallViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ApplicationLayer\View\SubMenuItemHover.cs" />
-    <Compile Include="ApplicationLayer\View\SubMenuItemHover.designer.cs">
-      <DependentUpon>SubMenuItemHover.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ApplicationLayer\Helpers\SystemEvents.Macos.cs" />
-    <Compile Include="ApplicationLayer\Helpers\General.Macos.cs" />
-    <Compile Include="ApplicationLayer\View\UpdaterPrompViewController.cs" />
-    <Compile Include="ApplicationLayer\View\UpdaterPrompViewController.designer.cs">
-      <DependentUpon>UpdaterPrompViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ApplicationLayer\Helpers\Updates.Macos.cs" />
-    <Compile Include="ApplicationLayer\View\UpdatesWindowDelegate.cs" />
-    <Compile Include="ApplicationLayer\View\PostProcessSidebarViewController.cs" />
-    <Compile Include="ApplicationLayer\View\PostProcessSidebarViewController.designer.cs">
-      <DependentUpon>PostProcessSidebarViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ApplicationLayer\View\PostProcessMenuItem.cs" />
-    <Compile Include="ApplicationLayer\View\PostProcessMenuItem.designer.cs">
-      <DependentUpon>PostProcessMenuItem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ApplicationLayer\View\PostProcessTextSettings.cs" />
-    <Compile Include="ApplicationLayer\View\PostProcessTextSettings.designer.cs">
-      <DependentUpon>PostProcessTextSettings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BusinessLayer\Preferences\Preferences.cs" />
-    <Compile Include="BusinessLayer\Preferences\PostProcess.model.cs" />
-    <Compile Include="BusinessLayer\Preferences\AddText.model.cs" />
-    <Compile Include="BusinessLayer\Wallpaper\Wallpaper.cs" />
-    <Compile Include="BusinessLayer\Wallpaper\PostProcess\AddText.cs" />
-    <Compile Include="BusinessLayer\Wallpaper\PostProcess\ScaleAndCrop.cs" />
-    <Compile Include="ApplicationLayer\Helpers\Screen.Model.Macos.cs" />
-    <Compile Include="ApplicationLayer\View\AboutViewController.cs" />
-    <Compile Include="ApplicationLayer\View\AboutViewController.designer.cs">
-      <DependentUpon>AboutViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="BusinessLayer\Wallpaper\PostProcess\Compose.cs" />
-    <Compile Include="BusinessLayer\Logging.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <InterfaceDefinition Include="Main.storyboard" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\UpdateLibrary\UpdateLibrary.csproj">
-      <Project>{E0CDA15D-4849-4199-827A-86FDE70425D7}</Project>
-      <Name>UpdateLibrary</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
-  <Import Project="..\packages\SkiaSharp.NativeAssets.macOS.2.88.3\build\xamarinmac2.0\SkiaSharp.NativeAssets.macOS.targets" Condition="Exists('..\packages\SkiaSharp.NativeAssets.macOS.2.88.3\build\xamarinmac2.0\SkiaSharp.NativeAssets.macOS.targets')" />
+	<PropertyGroup>
+		<RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+	</PropertyGroup>
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+		<ProjectGuid>{56081B0B-0F18-45C9-BEB6-054E4E96C5BA}</ProjectGuid>
+		<ProjectTypeGuids>{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+		<OutputType>Exe</OutputType>
+		<RootNamespace>AstroWall</RootNamespace>
+		<AssemblyName>Astro Wall</AssemblyName>
+		<MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
+		<TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+		<TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
+		<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<OutputPath>bin\Debug</OutputPath>
+		<DefineConstants>DEBUG;</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<EnableCodeSigning>false</EnableCodeSigning>
+		<CodeSigningKey>Mac Developer</CodeSigningKey>
+		<CreatePackage>false</CreatePackage>
+		<EnablePackageSigning>false</EnablePackageSigning>
+		<IncludeMonoRuntime>false</IncludeMonoRuntime>
+		<UseSGen>true</UseSGen>
+		<UseRefCounting>true</UseRefCounting>
+		<LinkMode>None</LinkMode>
+		<AOTMode>None</AOTMode>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<DebugType>pdbonly</DebugType>
+		<Optimize>true</Optimize>
+		<OutputPath>bin\Release</OutputPath>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<EnableCodeSigning>false</EnableCodeSigning>
+		<CreatePackage>false</CreatePackage>
+		<EnablePackageSigning>false</EnablePackageSigning>
+		<IncludeMonoRuntime>true</IncludeMonoRuntime>
+		<UseSGen>true</UseSGen>
+		<UseRefCounting>true</UseRefCounting>
+		<CodeSignEntitlements>Entitlements.plist</CodeSignEntitlements>
+		<LinkMode>SdkOnly</LinkMode>
+		<CustomCommands>
+		  <CustomCommands>
+		    <Command>
+		      <type>BeforeBuild</type>
+		      <command>/usr/local/bin/node ./scripts/pre-build.js</command>
+		    </Command>
+		    <Command>
+		      <type>AfterBuild</type>
+		      <command>sh scripts/pack.sh</command>
+		    </Command>
+		  </CustomCommands>
+		</CustomCommands>
+		<AOTMode>None</AOTMode>
+		<XamMacArch>x86_64</XamMacArch>
+		<CodeSigningKey>Mac Developer</CodeSigningKey>
+		<CodeSignProvision>
+		</CodeSignProvision>
+		<PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Remove="Microsoft.CodeAnalysis.NetAnalyzers" />
+	</ItemGroup>
+	<ItemGroup>
+		<Reference Include="System" />
+		<Reference Include="System.Core" />
+		<Reference Include="Xamarin.Mac" />
+	</ItemGroup>
+	<ItemGroup>
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-1.png" />
+		<ImageAsset Include="Assets.xcassets\AppIcon.appiconset\LargeIcon-2.png" />
+		<ImageAsset Include="Assets.xcassets\AppIconImage.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\AppIconImage.imageset\LargeIcon.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_45.imageset\MainIcon_rot_45.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_45.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_0.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_400.imageset\MainIcon_rot_400.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_400.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_232.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_232.imageset\MainIcon_rot_232.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_372.imageset\MainIcon_rot_372.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_372.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_115.imageset\MainIcon_rot_115.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_115.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_295.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_295.imageset\MainIcon_rot_295.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_206.imageset\MainIcon_rot_206.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_206.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_379.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_379.imageset\MainIcon_rot_379.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_157.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_157.imageset\MainIcon_rot_157.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_330.imageset\MainIcon_rot_330.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_330.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_239.imageset\MainIcon_rot_239.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_239.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_17.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_17.imageset\MainIcon_rot_17.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_253.imageset\MainIcon_rot_253.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_253.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_288.imageset\MainIcon_rot_288.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_288.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_365.imageset\MainIcon_rot_365.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_365.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_225.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_225.imageset\MainIcon_rot_225.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_211.imageset\MainIcon_rot_211.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_211.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_351.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_351.imageset\MainIcon_rot_351.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_136.imageset\MainIcon_rot_136.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_136.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_267.imageset\MainIcon_rot_267.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_267.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_108.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_108.imageset\MainIcon_rot_108.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_10.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_10.imageset\MainIcon_rot_10.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_386.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_386.imageset\MainIcon_rot_386.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_59.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_59.imageset\MainIcon_rot_59.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_66.imageset\MainIcon_rot_66.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_66.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_178.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_178.imageset\MainIcon_rot_178.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_52.imageset\MainIcon_rot_52.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_52.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_24.imageset\MainIcon_rot_24.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_24.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_260.imageset\MainIcon_rot_260.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_260.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_164.imageset\MainIcon_rot_164.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_164.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_302.imageset\MainIcon_rot_302.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_302.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_94.imageset\MainIcon_rot_94.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_94.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_38.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_38.imageset\MainIcon_rot_38.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_309.imageset\MainIcon_rot_309.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_309.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_150.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_150.imageset\MainIcon_rot_150.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_337.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_337.imageset\MainIcon_rot_337.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_281.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_281.imageset\MainIcon_rot_281.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_143.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_143.imageset\MainIcon_rot_143.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_199.imageset\MainIcon_rot_199.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_199.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_358.imageset\MainIcon_rot_358.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_358.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_87.imageset\MainIcon_rot_87.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_87.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_218.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_218.imageset\MainIcon_rot_218.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_101.imageset\MainIcon_rot_101.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_101.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_192.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_192.imageset\MainIcon_rot_192.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_344.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_344.imageset\MainIcon_rot_344.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_122.imageset\MainIcon_rot_122.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_122.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_246.imageset\MainIcon_rot_246.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_246.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_129.imageset\MainIcon_rot_129.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_129.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_0.imageset\MainIcon_rot_0.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_185.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_185.imageset\MainIcon_rot_185.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_274.imageset\MainIcon_rot_274.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_274.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_31.imageset\MainIcon_rot_31.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_31.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_393.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_393.imageset\MainIcon_rot_393.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_73.imageset\MainIcon_rot_73.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_73.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_323.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_323.imageset\MainIcon_rot_323.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_80.imageset\MainIcon_rot_80.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_80.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_316.imageset\MainIcon_rot_316.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_316.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_171.imageset\MainIcon_rot_171.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_171.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_9.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_9.imageset\MainIcon_download_9.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_8.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_8.imageset\MainIcon_download_8.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_3.imageset\MainIcon_download_3.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_3.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_2.imageset\MainIcon_download_2.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_2.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_4.imageset\MainIcon_download_4.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_4.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_5.imageset\MainIcon_download_5.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_5.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_0.imageset\MainIcon_download_0.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_0.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_1.imageset\MainIcon_download_1.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_1.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_7.imageset\MainIcon_download_7.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_7.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_6.imageset\MainIcon_download_6.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_download_6.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_400_trans.imageset\Contents.json" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_400_trans.imageset\MainIcon_rot_400_trans-1.png" />
+		<ImageAsset Include="Assets.xcassets\MainIcon_rot_400_trans.imageset\MainIcon_rot_400_trans.png" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Resources\" />
+		<Folder Include="ApplicationLayer\" />
+		<Folder Include="DataLayer\" />
+		<Folder Include="BusinessLayer\" />
+		<Folder Include="ServiceLayer\" />
+		<Folder Include="ApplicationLayer\Helpers\" />
+		<Folder Include="ApplicationLayer\View\" />
+		<Folder Include="BusinessLayer\Preferences\" />
+		<Folder Include="BusinessLayer\Wallpaper\" />
+		<Folder Include="BusinessLayer\Wallpaper\PostProcess\" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="Info.plist" />
+		<None Include="Entitlements.plist" />
+	</ItemGroup>
+	<ItemGroup>
+		<Compile Include="Main.cs" />
+		<Compile Include="BusinessLayer\DateTimeHelpers.cs" />
+		<Compile Include="DataLayer\FileHelpers.cs" />
+		<Compile Include="ServiceLayer\HTMLHelpers.cs" />
+		<Compile Include="BusinessLayer\Database.cs" />
+		<Compile Include="BusinessLayer\State.cs" />
+		<Compile Include="BusinessLayer\Updates.cs" />
+		<Compile Include="BusinessLayer\ApplicationHandler.cs" />
+		<Compile Include="BusinessLayer\MenuHandler.cs" />
+		<Compile Include="BusinessLayer\ImgWrap.cs" />
+		<Compile Include="ApplicationLayer\View\AppDelegate.cs" />
+		<Compile Include="ApplicationLayer\View\AppDelegate.designer.cs">
+			<DependentUpon>AppDelegate.cs</DependentUpon>
+		</Compile>
+		<Compile Include="ApplicationLayer\View\AppDelegate.Menu.cs" />
+		<Compile Include="ApplicationLayer\View\FreshInstallViewController.cs" />
+		<Compile Include="ApplicationLayer\View\FreshInstallViewController.designer.cs">
+			<DependentUpon>FreshInstallViewController.cs</DependentUpon>
+		</Compile>
+		<Compile Include="ApplicationLayer\View\SubMenuItemHover.cs" />
+		<Compile Include="ApplicationLayer\View\SubMenuItemHover.designer.cs">
+			<DependentUpon>SubMenuItemHover.cs</DependentUpon>
+		</Compile>
+		<Compile Include="ApplicationLayer\Helpers\SystemEvents.Macos.cs" />
+		<Compile Include="ApplicationLayer\Helpers\General.Macos.cs" />
+		<Compile Include="ApplicationLayer\View\UpdaterPrompViewController.cs" />
+		<Compile Include="ApplicationLayer\View\UpdaterPrompViewController.designer.cs">
+			<DependentUpon>UpdaterPrompViewController.cs</DependentUpon>
+		</Compile>
+		<Compile Include="ApplicationLayer\Helpers\Updates.Macos.cs" />
+		<Compile Include="ApplicationLayer\View\UpdatesWindowDelegate.cs" />
+		<Compile Include="ApplicationLayer\View\PostProcessSidebarViewController.cs" />
+		<Compile Include="ApplicationLayer\View\PostProcessSidebarViewController.designer.cs">
+			<DependentUpon>PostProcessSidebarViewController.cs</DependentUpon>
+		</Compile>
+		<Compile Include="ApplicationLayer\View\PostProcessMenuItem.cs" />
+		<Compile Include="ApplicationLayer\View\PostProcessMenuItem.designer.cs">
+			<DependentUpon>PostProcessMenuItem.cs</DependentUpon>
+		</Compile>
+		<Compile Include="ApplicationLayer\View\PostProcessTextSettings.cs" />
+		<Compile Include="ApplicationLayer\View\PostProcessTextSettings.designer.cs">
+			<DependentUpon>PostProcessTextSettings.cs</DependentUpon>
+		</Compile>
+		<Compile Include="BusinessLayer\Preferences\Preferences.cs" />
+		<Compile Include="BusinessLayer\Preferences\PostProcess.model.cs" />
+		<Compile Include="BusinessLayer\Preferences\AddText.model.cs" />
+		<Compile Include="BusinessLayer\Wallpaper\Wallpaper.cs" />
+		<Compile Include="BusinessLayer\Wallpaper\PostProcess\AddText.cs" />
+		<Compile Include="BusinessLayer\Wallpaper\PostProcess\ScaleAndCrop.cs" />
+		<Compile Include="ApplicationLayer\Helpers\Screen.Model.Macos.cs" />
+		<Compile Include="ApplicationLayer\View\AboutViewController.cs" />
+		<Compile Include="ApplicationLayer\View\AboutViewController.designer.cs">
+			<DependentUpon>AboutViewController.cs</DependentUpon>
+		</Compile>
+		<Compile Include="BusinessLayer\Wallpaper\PostProcess\Compose.cs" />
+		<Compile Include="BusinessLayer\Logging.cs" />
+	</ItemGroup>
+	<ItemGroup>
+		<InterfaceDefinition Include="Main.storyboard" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="HtmlAgilityPack">
+	    <Version>1.11.46</Version>
+	  </PackageReference>
+	  <PackageReference Include="Newtonsoft.Json">
+	    <Version>13.0.2</Version>
+	  </PackageReference>
+	  <PackageReference Include="SkiaSharp">
+	    <Version>2.88.3</Version>
+	  </PackageReference>
+	  <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers">
+	    <Version>7.0.0</Version>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	    <PrivateAssets>all</PrivateAssets>
+	  </PackageReference>
+	  <PackageReference Include="StyleCop.Analyzers">
+	    <Version>1.1.118</Version>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	    <PrivateAssets>all</PrivateAssets>
+	  </PackageReference>
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\UpdateLibrary\UpdateLibrary.csproj">
+	    <Project>{E0CDA15D-4849-4199-827A-86FDE70425D7}</Project>
+	    <Name>UpdateLibrary</Name>
+	  </ProjectReference>
+	</ItemGroup>
+	<ItemGroup>
+	  <AdditionalFiles Include="stylecop.json" />
+	</ItemGroup>
+	<Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 </Project>
