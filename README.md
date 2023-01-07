@@ -20,9 +20,9 @@ Written in C#.net as a Xamarin project. Published under the [MIT license](https:
 - Random picture of all time
 
 ## Future thoughts
+- Porting to Windows
 - Porting to MAUI
-- Porting to Windows/Linux
-- Porting to Windows/Linux
+- Generalizing to other wallpaper download sources 
 
 ## FAQ
 ### Why can't i open the app?
@@ -41,4 +41,4 @@ None, the project has been made to try out C# skills
 - Install nuget packages
 - Build in VS
 ## Source organization
-Tries to follow the [application layers as described by Microsoft](https://learn.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/architecture#typical-application-layers). The UI-layer and Application layer is somewhat intertwined, but the business layer should be almost platform independent.
+Tries to follow the [application layers as described by Microsoft](https://learn.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/architecture#typical-application-layers). The UI-layer and Application layer is intertwined, but the business layer is almost platform independent.

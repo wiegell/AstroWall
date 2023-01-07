@@ -24,7 +24,7 @@ namespace AstroWall.ApplicationLayer
             nstask.Arguments = new string[]
             {
                 "-c",
-                "installer -pkg "+pathToPkg+" -target CurrentUserHomeDirectory",
+                "installer -pkg " + pathToPkg + " -target CurrentUserHomeDirectory",
             };
             nstask.Launch();
             nstask.WaitUntilExit();

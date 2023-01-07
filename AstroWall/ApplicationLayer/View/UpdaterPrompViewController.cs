@@ -53,7 +53,7 @@ namespace AstroWall
         {
             var callRet = new BusinessLayer.UpdatePromptResponse()
             {
-                acceptOrSkipUpdate = true,
+                AcceptOrSkipUpdate = true,
             };
             choiceCallback(callRet);
             this.Window.Close();
@@ -67,8 +67,8 @@ namespace AstroWall
         {
             var callRet = new BusinessLayer.UpdatePromptResponse()
             {
-                acceptOrSkipUpdate = false,
-                skippedVersion = ver,
+                AcceptOrSkipUpdate = false,
+                SkippedVersion = ver,
             };
             choiceCallback(callRet);
             this.Window.Close();

@@ -8,66 +8,123 @@ using AppKit;
 
 namespace AstroWall.BusinessLayer
 {
-
-    public class State
+    /// <summary>
+    /// Manages state of application. The application can have multiple concurrent states
+    /// (e.g. PostProcessing and BrowsingWallPapers), but some states e.g. idle needs to be
+    /// the only active state. Only set state after Lock is performed (via setState methods).
+    /// </summary>
+    internal class State
     {
-        // Application state
-        internal readonly object _lock_ = new Object();
-
-        // All of below should only be modified if locked
-        internal bool isInitializing { get; private set; }
-        internal bool isPostProcessing { get; private set; }
-        internal bool isIdle { get; private set; }
-        internal bool isDownloading { get; private set; }
-        internal bool isSettingWallpaper { get; private set; }
-        internal bool isBrowsingWallpapers { get; private set; }
-        internal bool isUpdating { get; private set; }
-        internal bool isChoosingPrefs { get; private set; }
-        private int nDownloading;
-
         // Refs
-        ApplicationHandler applicationHandler;
+        private readonly ApplicationHandler applicationHandler;
 
         // Log
-        private Action<string> log = Logging.GetLogger("State");
+        private readonly Action<string> log = Logging.GetLogger("State");
 
-        // currentVersionString is the long tag from git including commit hash  
-        internal State(ApplicationHandler applicationHandlerArg, string currentVersionString)
+        /// <summary>
+        /// How many downloads are running? Needed to keep track of
+        /// when its possible to go back to idle state.
+        /// </summary>
+        private int nDownloading;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="State"/> class.
+        /// </summary>
+        /// <param name="currentVersionString">currentVersionString is the long tag from git including commit hash.</param>
+        internal State(ApplicationHandler applicationHandler, string currentVersionString)
         {
-            this.applicationHandler = applicationHandlerArg;
+            this.applicationHandler = applicationHandler;
         }
 
-        public void SetStateInitializing()
+        /// <summary>
+        /// Gets a value indicating whether state is initializing.
+        /// </summary>
+        internal bool IsInitializing { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether state is post processing.
+        /// </summary>
+        internal bool IsPostProcessing { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether state is idle.
+        /// </summary>
+        internal bool IsIdle { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether state is idle.
+        /// </summary>
+        internal bool IsDownloading { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether state is setting wallpaper.
+        /// TODO still used?.
+        /// </summary>
+        internal bool IsSettingWallpaper { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether state is browsing wallpapers.
+        /// </summary>
+        internal bool IsBrowsingWallpapers { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether state is updating the software.
+        /// </summary>
+        internal bool IsUpdating { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether state is choosing prefs (on fresh install).
+        /// </summary>
+        internal bool IsChoosingPrefs { get; private set; }
+
+        /// <summary>
+        /// Gets thread sync lock to prevent state changes from other threads.
+        /// </summary>
+        internal object Lock { get; private set; } = new object();
+
+        /// <summary>
+        /// Sets state to initializing.
+        /// </summary>
+        internal void SetStateInitializing()
         {
-            lock (_lock_)
+            lock (Lock)
             {
                 log("State: Initializing");
-                isIdle = false;
-                isInitializing = true;
+                IsIdle = false;
+                IsInitializing = true;
                 applicationHandler.MenuHandler.EnableStatusIcon();
                 applicationHandler.MenuHandler.DisableAllItems();
                 applicationHandler.MenuHandler.SetSubTitleInitialising();
                 applicationHandler.MenuHandler.RunSpinnerIconAnimation();
             }
         }
-        public void UnsetStateInitializing()
+
+        /// <summary>
+        /// Unsets state to be initializing.
+        /// </summary>
+        internal void UnsetStateInitializing()
         {
-            lock (_lock_)
+            lock (Lock)
             {
                 log("State unset: Initializing");
-                isInitializing = false;
-                trySetStateIdle();
+                IsInitializing = false;
+                TrySetStateIdle();
             }
         }
 
-        public void SetStateDownloading(string downloadingWhat, bool disableIcon = false)
+        /// <summary>
+        /// Sets state to downloadingg.
+        /// </summary>
+        /// <param name="downloadingWhat">What is downloading?</param>
+        /// <param name="disableIcon">Whether status icon should be disabled.</param>
+        internal void SetStateDownloading(string downloadingWhat, bool disableIcon = false)
         {
-            lock (_lock_)
+            lock (Lock)
             {
                 log("State: Downloading");
-                isDownloading = true;
+                IsDownloading = true;
                 nDownloading++;
-                isIdle = false;
+                IsIdle = false;
                 if (!disableIcon)
                 {
                     applicationHandler.MenuHandler.EnableStatusIcon();
@@ -76,136 +133,183 @@ namespace AstroWall.BusinessLayer
                 {
                     applicationHandler.MenuHandler.DisableStatusIcon();
                 }
+
                 applicationHandler.MenuHandler.DisableAllItems();
                 applicationHandler.MenuHandler.SetSubTitle(downloadingWhat);
                 applicationHandler.MenuHandler.RunDownloadIconAnimation();
             }
         }
-        public void UnsetStateDownloading()
+
+        /// <summary>
+        /// Unsets state from downloading. At least if it has been called
+        /// the same amount of times as SetStateDownloading().
+        /// </summary>
+        internal void UnsetStateDownloading()
         {
-            lock (_lock_)
+            lock (Lock)
             {
                 nDownloading--;
                 if (nDownloading == 0)
                 {
                     log("State unset: Downloading");
-                    isDownloading = false;
-                    if (isPostProcessing || isInitializing)
+                    IsDownloading = false;
+                    if (IsPostProcessing || IsInitializing)
                     {
                         applicationHandler.MenuHandler.RunSpinnerIconAnimation();
                     }
-                    trySetStateIdle();
+
+                    TrySetStateIdle();
                 }
             }
+
+            // TODO make the postprocess animmation take over.
         }
 
-        public void SetStateChoosePrefs()
+        /// <summary>
+        /// Sets state to choose prefs (on fresh install).
+        /// </summary>
+        internal void SetStateChoosePrefs()
         {
-            lock (_lock_)
+            lock (Lock)
             {
                 log("State: Choose prefs");
-                isDownloading = true;
-                isIdle = false;
+                IsDownloading = true;
+                IsIdle = false;
                 applicationHandler.MenuHandler.DisableStatusIcon();
             }
         }
-        public void UnsetStateChoosePrefs()
+
+        /// <summary>
+        /// Unsets choose prefs state.
+        /// </summary>
+        internal void UnsetStateChoosePrefs()
         {
-            lock (_lock_)
+            lock (Lock)
             {
                 log("State unset: ChoosePrefs");
-                isChoosingPrefs = false;
-                trySetStateIdle();
+                IsChoosingPrefs = false;
+                TrySetStateIdle();
             }
         }
 
-        public void SetStatePostProcessing()
+        /// <summary>
+        /// Sets state to post processing.
+        /// </summary>
+        internal void SetStatePostProcessing()
         {
-            lock (_lock_)
+            lock (Lock)
             {
                 // No reason for multiple sets
-                if (!isPostProcessing)
+                if (!IsPostProcessing)
                 {
                     applicationHandler.MenuHandler.SetSubTitle("Processing picture...");
                     log("State: PostProcessing");
-                    isPostProcessing = true;
-                    isIdle = false;
+                    IsPostProcessing = true;
+                    IsIdle = false;
+
                     // Check to see if animation already running
-                    if (!isInitializing && !isDownloading) applicationHandler.MenuHandler.RunSpinnerIconAnimation();
+                    if (!IsInitializing && !IsDownloading)
+                    {
+                        applicationHandler.MenuHandler.RunSpinnerIconAnimation();
+                    }
                 }
             }
         }
-        public void UnsetStatePostProcessing()
+
+        /// <summary>
+        /// Unsets state from post processing.
+        /// </summary>
+        internal void UnsetStatePostProcessing()
         {
-            lock (_lock_)
+            lock (Lock)
             {
                 log("State unset: PostProcessing");
-                isPostProcessing = false;
-                trySetStateIdle();
+                IsPostProcessing = false;
+                TrySetStateIdle();
             }
         }
 
-        public void SetStateBrowsingWallpapers()
+        /// <summary>
+        /// Sets state to browsing wallpapers.
+        /// </summary>
+        internal void SetStateBrowsingWallpapers()
         {
-            lock (_lock_)
+            lock (Lock)
             {
                 log("State: browsing wallpapers");
-                isBrowsingWallpapers = true;
-            }
-        }
-        public void UnsetStateBrowsingWallpapers()
-        {
-            lock (_lock_)
-            {
-                log("State unset: browsing wallpapers");
-                isBrowsingWallpapers = false;
-                trySetStateIdle();
+                IsBrowsingWallpapers = true;
             }
         }
 
-        public void SetStateUpdating()
+        /// <summary>
+        /// Unsets state to browsing wallpapers.
+        /// </summary>
+        internal void UnsetStateBrowsingWallpapers()
         {
-            lock (_lock_)
+            lock (Lock)
+            {
+                log("State unset: browsing wallpapers");
+                IsBrowsingWallpapers = false;
+                TrySetStateIdle();
+            }
+        }
+
+        /// <summary>
+        /// Sets state to updating.
+        /// </summary>
+        internal void SetStateUpdating()
+        {
+            lock (Lock)
             {
                 log("State: updating");
-                isUpdating = true;
+                IsUpdating = true;
                 applicationHandler.MenuHandler.DisableStatusIcon();
             }
+
             // No unsetter, will kill app after update
         }
 
-        private void trySetStateIdle()
+        /// <summary>
+        /// Sets launch agent to reflect preferences.
+        /// </summary>
+        internal void SetLaunchAgentToReflectPrefs()
         {
-            lock (_lock_)
+            if (applicationHandler
+                .Prefs.RunAtStartup)
             {
-                log($"Trying to set state idle: {isBrowsingWallpapers},{isChoosingPrefs},{isDownloading},{isInitializing},{isPostProcessing},{isSettingWallpaper}");
+                ApplicationLayer.SystemEvents.SetLaunchAgent();
+            }
+            else
+            {
+                ApplicationLayer.SystemEvents.RemoveLaunchAgent();
+            }
+        }
+
+        /// <summary>
+        /// Thies to set state to idle, if no other jobs are running.
+        /// </summary>
+        private void TrySetStateIdle()
+        {
+            lock (Lock)
+            {
+                log($"Trying to set state idle: {IsBrowsingWallpapers},{IsChoosingPrefs},{IsDownloading},{IsInitializing},{IsPostProcessing},{IsSettingWallpaper}");
                 if (
                     !(
-                    isBrowsingWallpapers ||
-                    isChoosingPrefs ||
-                    isDownloading ||
-                    isInitializing ||
-                    isPostProcessing ||
-                    isUpdating ||
-                    isSettingWallpaper
-                    ))
+                    IsBrowsingWallpapers ||
+                    IsChoosingPrefs ||
+                    IsDownloading ||
+                    IsInitializing ||
+                    IsPostProcessing ||
+                    IsUpdating ||
+                    IsSettingWallpaper))
                 {
                     log("Setting state to idle:");
-                    isIdle = true;
+                    IsIdle = true;
                     applicationHandler.MenuHandler.EnableStatusIcon();
                     Task t = applicationHandler.MenuHandler.SetIconToDefault();
                     applicationHandler.MenuHandler.HideSubtitle();
                 }
             }
         }
-
-        public void SetLaunchAgentToReflectPrefs()
-        {
-            if (applicationHandler
-                .Prefs.RunAtStartup) ApplicationLayer.SystemEvents.SetLaunchAgent();
-            else ApplicationLayer.SystemEvents.RemoveLaunchAgent();
-        }
-
     }
 }
-

@@ -192,7 +192,7 @@ namespace AstroWall.ApplicationLayer
                 {
                     if (e.Description == "Mouse Entered" && previewIsLoaded)
                     {
-                        if (!stateRef.isBrowsingWallpapers)
+                        if (!stateRef.IsBrowsingWallpapers)
                         {
                             stateRef.SetStateBrowsingWallpapers();
                         }
@@ -267,24 +267,24 @@ namespace AstroWall.ApplicationLayer
         partial void MenuActionRunAtLogin(NSObject sender)
         {
             bool newState = !GetCheckmarkBoolFromSender(sender);
-            this.AppHandler.MenuHandler.changedInMenuRunAtLogin(newState);
+            this.AppHandler.MenuHandler.ChangedInMenuRunAtLogin(newState);
         }
 
         partial void MenuActionAutoInstallUpdates(NSObject sender)
         {
             bool newState = !GetCheckmarkBoolFromSender(sender);
-            this.AppHandler.MenuHandler.changedInMenuAutoInstallUpdates(newState);
+            this.AppHandler.MenuHandler.ChangedInMenuAutoInstallUpdates(newState);
         }
 
         partial void MenuActionCheckUpdatesOnStartup(NSObject sender)
         {
             bool newState = !GetCheckmarkBoolFromSender(sender);
-            this.AppHandler.MenuHandler.changedInMenuCheckUpdatesAtStartup(newState);
+            this.AppHandler.MenuHandler.ChangedInMenuCheckUpdatesAtStartup(newState);
 
             if (newState == false)
             {
                 // Cannot autoinstall updates if they are not checked
-                this.AppHandler.MenuHandler.changedInMenuAutoInstallUpdates(newState);
+                this.AppHandler.MenuHandler.ChangedInMenuAutoInstallUpdates(newState);
                 MenuOutletAutoInstallUpdates.State = NSCellStateValue.Off;
 
                 MenuOutletAutoInstallUpdates.Enabled = false;
@@ -304,7 +304,7 @@ namespace AstroWall.ApplicationLayer
         partial void MenuActionDailyCheckNewest(NSObject sender)
         {
             bool newState = !GetCheckmarkBoolFromSender(sender);
-            AppHandler.MenuHandler.changedInMenuDailyCheckNewest(newState);
+            AppHandler.MenuHandler.ChangedInMenuDailyCheckNewest(newState);
         }
 
         partial void MenuActionManualCheckUpdates(NSObject sender)
@@ -314,7 +314,7 @@ namespace AstroWall.ApplicationLayer
 
         partial void MenuActionPostProcess(NSObject sender)
         {
-            AppHandler.Wallpaper.launchPostProcessWindow();
+            AppHandler.Wallpaper.LaunchPostProcessWindow();
         }
 
         partial void ActionOpenCurrent(NSObject sender)
@@ -324,7 +324,7 @@ namespace AstroWall.ApplicationLayer
 
         partial void ActionOpenCurrentUrl(NSObject sender)
         {
-            this.AppHandler.MenuHandler.OpenUrlToCurrentPic();
+            this.AppHandler.MenuHandler.OpenUrlToCurrentImage();
         }
 
         partial void ActionOpenCurrentCredits(NSObject sender)

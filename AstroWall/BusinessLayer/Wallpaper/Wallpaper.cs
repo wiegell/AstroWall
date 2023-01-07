@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
 using AstroWall.ApplicationLayer.Helpers;
 using AstroWall.BusinessLayer.Preferences;
 using Foundation;
@@ -12,74 +12,113 @@ using Newtonsoft.Json;
 
 namespace AstroWall.BusinessLayer.Wallpaper
 {
-
+    /// <summary>
+    /// Wallpaper related operations.
+    /// </summary>
     internal class Wallpaper
     {
-
-        // Nested utility classes
-        private class TaskCancelWrap : IDisposable
-        {
-            public Task task;
-            public CancellationTokenSource cts = new CancellationTokenSource();
-            public CancellationToken token;
-
-            public TaskCancelWrap()
-            {
-                token = cts.Token;
-            }
-
-            public void Dispose()
-            {
-                cts.Dispose();
-                task.Dispose();
-            }
-        }
-
-        // Refs
-        ApplicationHandler applicationHandler;
-
-        // Noon task
-        TaskCancelWrap noonTask;
-        bool lastScheduledCheckFailedToSetWallpaper;
-
         // Log
         private static Action<string> log = Logging.GetLogger("Wallpaper");
         private static Action<string> logError = Logging.GetLogger("Wallpaper", true);
 
-        public Wallpaper(ApplicationHandler applicationHandler)
+        // Refs
+        private ApplicationHandler applicationHandler;
+
+        // Noon task
+        private TaskCancelWrap noonTask;
+        private bool lastScheduledCheckFailedToSetWallpaper;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Wallpaper"/> class.
+        /// </summary>
+        /// <param name="applicationHandler">Ref back to parent applicationHandler.</param>
+        internal Wallpaper(ApplicationHandler applicationHandler)
         {
             this.applicationHandler = applicationHandler;
         }
 
-        public async Task<bool> RunPostProcessAndSetWallpaperAllScreens(ImgWrap imgWrap)
+        /// <summary>
+        /// Sets wallpaper on supplied screens.
+        /// </summary>
+        /// <param name="urlsByScreen"></param>
+        /// <returns>Bool true, if completed ok.</returns>
+        internal static async Task<bool> SetWallpaperAllScreens(Dictionary<Screen, string> urlsByScreen)
         {
-            if (imgWrap == null || !imgWrap.ImgIsGettable) return false;
+            object retObj = await General.SetWallpaper(urlsByScreen);
+            return (bool)retObj;
+        }
+
+        /// <summary>
+        /// Should only be used for reset to non-astro wall wallpaper.
+        /// </summary>
+        /// <returns>bool.</returns>
+        internal static async Task<bool> SetWallpaperAllScreens(string path)
+        {
+            // Get current screens
+            var currentScreensConnectedById = Screen.FromCurrentConnected();
+
+            // Set wallpapers
+            Dictionary<Screen, string> postProcessedImageUrlByScreen = currentScreensConnectedById.ToDictionary(
+                screenKV => screenKV.Value, // Key is set to Screen (former value)
+                screenKV => path); // Value is set to path from args
+            return await SetWallpaperAllScreens(postProcessedImageUrlByScreen);
+        }
+
+        /// <summary>
+        /// Unregisters wake handler.
+        /// </summary>
+        internal static void UnregisterWakeHandler()
+        {
+            log("Unregistering wallpaper login handler");
+            ApplicationLayer.SystemEvents.Instance.UnRegisterWallpaperLoginHandler();
+        }
+
+        /// <summary>
+        /// Sets preview wallpaper.
+        /// </summary>
+        /// <param name="iw">The preview image (low res) of iw is used.</param>
+        internal static void SetPreviewWallpaper(ImgWrap iw)
+        {
+            if (iw.PreviewIsLoaded)
+            {
+                General.SetWallpaper(Screen.MainScreen(), iw.ImgLocalPreviewUrl);
+            }
+        }
+
+        /// <summary>
+        /// Runs postprocessing on all wallpapers for all screens and sets the wallpapers.
+        /// </summary>
+        /// <param name="imgWrap"></param>
+        /// <returns>Task that completes with TRUE when wallpapers are set. Or FALSE if an error occurred.</returns>
+        internal async Task<bool> RunPostProcessAndSetWallpaperAllScreens(ImgWrap imgWrap)
+        {
+            if (imgWrap == null || !imgWrap.ImgIsGettable)
+            {
+                return false;
+            }
+
             try
             {
-                // Task wrap to run on non-ui thread
+                // Task wrap to run post process on non-ui thread
                 return await Task.Run(async () =>
                 {
-
                     applicationHandler.State.SetStatePostProcessing();
+
                     // Get current screens
                     var currentScreensConnectedById = Screen.FromCurrentConnected();
 
                     // Create postprocessed images
-                    await imgWrap.createPostProcessedImages(currentScreensConnectedById, applicationHandler.Prefs.PostProcesses);
+                    await imgWrap.CreatePostProcessedImages(currentScreensConnectedById, applicationHandler.Prefs.PostProcesses);
 
                     // Set wallpapers
                     Dictionary<Screen, string> postProcessedImageUrlByScreen = imgWrap.ImgLocalPostProcessedUrlsByScreenId.ToDictionary(
-                    // Key is screen id
-                    screenKV => currentScreensConnectedById[screenKV.Key],
-                    // Value is post processed url
-                    screenKV => screenKV.Value
-                    );
+                    screenKV => currentScreensConnectedById[screenKV.Key], // Key is screen id
+                    screenKV => screenKV.Value); // Value is post processed url
                     bool retVar = await SetWallpaperAllScreens(postProcessedImageUrlByScreen);
                     applicationHandler.Prefs.CurrentAstroWallpaper = imgWrap;
 
                     applicationHandler.State.UnsetStatePostProcessing();
                     return retVar;
-
                 });
             }
             catch (Exception ex)
@@ -94,7 +133,10 @@ namespace AstroWall.BusinessLayer.Wallpaper
             }
         }
 
-        public void RunPostProcessAndSetWallpaperAllScreensUnobserved(ImgWrap imgWrap)
+        /// <summary>
+        /// Run and forget version of RunPostProcessAndSetWallpaperAllScreens.
+        /// </summary>
+        internal void RunPostProcessAndSetWallpaperAllScreensUnobserved(ImgWrap imgWrap)
         {
             Task touter = Task.Run(async () =>
             {
@@ -102,53 +144,10 @@ namespace AstroWall.BusinessLayer.Wallpaper
             });
         }
 
-        public static async Task<bool> SetWallpaperAllScreens(Dictionary<Screen, string> urlsByScreen)
-        {
-            Object retObj = await General.SetWallpaper(urlsByScreen);
-            return (bool)retObj;
-        }
-
         /// <summary>
-        /// Should only be used for reset to non-astro wall wallpaper
+        /// Resets wallpaper to last used wallpaper. Used when exiting preview browsing.
         /// </summary>
-        /// <param name="urlsByScreen"></param>
-        /// <returns></returns>
-        public async Task<bool> SetWallpaperAllScreens(string path)
-        {
-            // Get current screens
-            var currentScreensConnectedById = Screen.FromCurrentConnected();
-
-            // Set wallpapers
-            Dictionary<Screen, string> postProcessedImageUrlByScreen = currentScreensConnectedById.ToDictionary(
-                // Key is set to Screen (former value)
-                screenKV => screenKV.Value,
-                // Value is set to path from args
-                screenKV => path
-                );
-            return await SetWallpaperAllScreens(postProcessedImageUrlByScreen);
-        }
-        //public async Task<bool> SetWallpaperAllScreens(ImgWrap iw)
-        //{
-        //    if (iw.FullResIsLoaded())
-        //    {
-        //        Object retObj = await General.SetWallpaper(iw.ImgLocalUrl, true); ;
-        //        return (bool)retObj;
-        //    }
-        //    else return false;
-        //}
-
-        //public void SetWallpaperMainScreen(string url)
-        //{
-
-        //    General.SetWallpaper();
-        //}
-        public static void SetPreviewWallpaper(ImgWrap iw)
-        {
-            if (iw.PreviewIsLoaded())
-                General.SetWallpaper(Screen.MainScreen(), iw.ImgLocalPreviewUrl);
-        }
-
-        public void ResetWallpaper()
+        internal void ResetWallpaper()
         {
             if (applicationHandler.Prefs.HasAstroWall)
             {
@@ -160,12 +159,8 @@ namespace AstroWall.BusinessLayer.Wallpaper
                     applicationHandler.Prefs.CurrentAstroWallpaper
                     .ImgLocalPostProcessedUrlsByScreenId
                     .ToDictionary(
-                    // Key is screen id
-                    screenKV => currentConnectedScreensById[screenKV.Key],
-                    // Value is post processed url
-                    screenKV => screenKV.Value
-                    );
-
+                    screenKV => currentConnectedScreensById[screenKV.Key], // Key is screen id
+                    screenKV => screenKV.Value); // Value is post processed url
                 SetWallpaperAllScreens(postProcessedImageUrlByScreen);
             }
             else
@@ -174,12 +169,19 @@ namespace AstroWall.BusinessLayer.Wallpaper
             }
         }
 
-        public void launchPostProcessWindow()
+        /// <summary>
+        /// Launches post process window.
+        /// </summary>
+        internal void LaunchPostProcessWindow()
         {
-            applicationHandler.AppDelegate.LaunchPostProcessPrompt(applicationHandler.Prefs, callbackWithNewPostProcessSettings);
+            applicationHandler.AppDelegate.LaunchPostProcessPrompt(applicationHandler.Prefs, CallbackWithNewPostProcessSettings);
         }
 
-        public void callbackWithNewPostProcessSettings(Preferences.AddTextPreference newAtFromDialogue)
+        /// <summary>
+        /// Callback that is called when exiting post process settings window.
+        /// </summary>
+        /// <param name="newAtFromDialogue">New AddText settings from user.</param>
+        internal void CallbackWithNewPostProcessSettings(Preferences.AddTextPreference newAtFromDialogue)
         {
             log("setting new post processing prefs" + newAtFromDialogue.IsEnabled);
             this.applicationHandler.Prefs.AddTextPostProcess = newAtFromDialogue;
@@ -187,60 +189,72 @@ namespace AstroWall.BusinessLayer.Wallpaper
             applicationHandler.Wallpaper.RunPostProcessAndSetWallpaperAllScreensUnobserved(applicationHandler.Prefs.CurrentAstroWallpaper);
         }
 
-        public void registerWakeHandler()
+        /// <summary>
+        /// Registers wake handler.
+        /// </summary>
+        internal void RegisterWakeHandler()
         {
             log("Registering wallpaper login handler");
-            ApplicationLayer.SystemEvents.Instance.RegisterWallpaperWakeHandler(this.wakeCallback);
+            ApplicationLayer.SystemEvents.Instance.RegisterWallpaperWakeHandler(this.WakeCallback);
         }
 
-        public static void unregisterWakeHandler()
+        /// <summary>
+        /// Checks if noon has passed and rechecks for new images if so.
+        /// In every case the noon check timer is recalibrated / reset.
+        /// </summary>
+        internal async void WakeCallback(NSNotification not)
         {
-            log("Unregistering wallpaper login handler");
-            ApplicationLayer.SystemEvents.Instance.UnRegisterWallpaperLoginHandler();
-        }
+            // TODO should not have macos data type in business layer
 
-
-        public async void wakeCallback(NSNotification not)
-        // TODO should not have macos data type in business layer
-        {
             // Double check, if prefs have changed since callback set
             if (applicationHandler.Prefs.DailyCheck == DailyCheckEnum.Newest)
             {
                 log("Wake, consider checking for new pics");
-                log("Next scheduled check: " + applicationHandler.Prefs.NextScheduledCheck.ToString(Logging.dateFormat, System.Globalization.CultureInfo.InvariantCulture));
+                log("Next scheduled check: " + applicationHandler.Prefs.NextScheduledCheck.ToString(Logging.DateFormat, System.Globalization.CultureInfo.InvariantCulture));
                 if (lastScheduledCheckFailedToSetWallpaper)
                 {
                     log("Last online check was probably during sleep, retrying to set wallpapers in 10 sec");
+
                     // Delay is to allow the user to sign in after wake
                     await Task.Delay(10000);
-                    this.RunPostProcessAndSetWallpaperAllScreensUnobserved(applicationHandler.db.Latest);
+                    this.RunPostProcessAndSetWallpaperAllScreensUnobserved(applicationHandler.DB.Latest);
                 }
                 else if (applicationHandler.Prefs.NextScheduledCheck < DateTime.Now)
                 {
                     log("Scheduled check has passed, performing check now, delaying set wall by 10 sec");
-                    await applicationHandler.checkForNewPics();
+                    await applicationHandler.CheckForNewPics();
+
                     // Delay is to allow the user to sign in after wake
                     await Task.Delay(10000);
-                    bool successChangeWallpaper = await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.Latest);
-                    createNoonCheck();
+                    bool successChangeWallpaper = await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.DB.Latest);
+                    CreateNoonCheck();
                 }
                 else
                 {
                     log("Scheduled check has not yet arrived, recalibrating timer postwake");
-                    createNoonCheck();
+                    CreateNoonCheck();
                 }
             }
-            else cancelNoonCheck();
+            else
+            {
+                CancelNoonCheck();
+            }
         }
 
-        public async void createNoonCheck()
+        /// <summary>
+        /// Creates check for new images at noon.
+        /// </summary>
+        internal async void CreateNoonCheck()
         {
             // Dispose old task (when the timer is reached it should cancel
             // bc. of token)
-            if (noonTask != null) noonTask.cts.Cancel();
+            if (noonTask != null)
+            {
+                noonTask.Cts.Cancel();
+            }
 
             TaskCancelWrap newTCW = new TaskCancelWrap();
-            newTCW.task = Task.Run(async () =>
+            newTCW.Task = Task.Run(async () =>
             {
                 DateTime now = DateTime.Now;
                 DateTime noonToday = new DateTime(now.Year, now.Month, now.Day, 12, 0, 0);
@@ -250,19 +264,23 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
                 DateTime dayToSetCheck = now.AddDays(shouldSetCheckTomorrow ? 1 : 0);
                 DateTime nextNoon = new DateTime(dayToSetCheck.Year, dayToSetCheck.Month, dayToSetCheck.Day, 12, 0, 0);
+
                 // Debugging line
                 // DateTime tomorrowNoon = now.AddMilliseconds(120000);
                 applicationHandler.Prefs.NextScheduledCheck = nextNoon;
                 int diffMSuntilTomorrowNoon = (int)nextNoon.Subtract(now).TotalMilliseconds;
                 log("MS diff until next noon: " + diffMSuntilTomorrowNoon);
                 await Task.Delay(diffMSuntilTomorrowNoon);
-                log("Noon task token status: " + newTCW.token.IsCancellationRequested);
-                if (!newTCW.token.IsCancellationRequested) noonCallback();
+                log("Noon task token status: " + newTCW.Token.IsCancellationRequested);
+                if (!newTCW.Token.IsCancellationRequested)
+                {
+                    NoonCallback();
+                }
             });
             noonTask = newTCW;
             try
             {
-                await newTCW.task;
+                await newTCW.Task;
             }
             catch (Exception ex)
             {
@@ -270,48 +288,80 @@ namespace AstroWall.BusinessLayer.Wallpaper
             }
         }
 
-
-        public void cancelNoonCheck()
+        /// <summary>
+        /// Cancel the noon check for new images.
+        /// </summary>
+        internal void CancelNoonCheck()
         {
             log("cancelling task to check new pics at noon");
-            noonTask.cts.Cancel();
+            noonTask.Cts.Cancel();
             noonTask = null;
         }
 
-        public async void noonCallback()
+        /// <summary>
+        /// Callback that is run on noon  (the actual check for new images).
+        /// </summary>
+        internal async void NoonCallback()
         {
             // Double check, if prefs have changed since callback set
             if (applicationHandler.Prefs.DailyCheck == DailyCheckEnum.Newest)
             {
                 log("Noon callback, checking for new pics");
                 applicationHandler.State.SetStateDownloading("Checking for new pics...");
-                await applicationHandler.checkForNewPics();
-                bool successChangeWallpaper = await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.db.Latest);
-                if (!successChangeWallpaper) lastScheduledCheckFailedToSetWallpaper = true;
+                await applicationHandler.CheckForNewPics();
+                bool successChangeWallpaper = await this.RunPostProcessAndSetWallpaperAllScreens(applicationHandler.DB.Latest);
+                if (!successChangeWallpaper)
+                {
+                    lastScheduledCheckFailedToSetWallpaper = true;
+                }
 
                 // Recreate nooncheck tomorrow
-                createNoonCheck();
+                CreateNoonCheck();
 
                 // Back to idle (set to download in earlier subfunction)
                 applicationHandler.State.UnsetStateDownloading();
             }
         }
 
-        public void SetDailyCheckToNewest(bool enabled)
+        /// <summary>
+        /// Set daily check preference to check for newest image.
+        /// </summary>
+        /// <param name="enabled"></param>
+        internal void SetDailyCheckToNewest(bool enabled)
         {
             if (enabled)
-            // User checks of check for newest daily
             {
                 this.applicationHandler.Prefs.DailyCheck = DailyCheckEnum.Newest;
-                registerWakeHandler();
+                RegisterWakeHandler();
             }
             else
-            //
             {
                 this.applicationHandler.Prefs.DailyCheck = DailyCheckEnum.None;
-                unregisterWakeHandler();
+                UnregisterWakeHandler();
+            }
+        }
+
+        /// <summary>
+        /// Nested class to cancel task.
+        /// </summary>
+        private class TaskCancelWrap : IDisposable
+        {
+            internal TaskCancelWrap()
+            {
+                Token = Cts.Token;
+            }
+
+            internal Task Task { get; set; }
+
+            internal CancellationTokenSource Cts { get; set; } = new CancellationTokenSource();
+
+            internal CancellationToken Token { get; set; }
+
+            public void Dispose()
+            {
+                Cts.Dispose();
+                Task.Dispose();
             }
         }
     }
 }
-

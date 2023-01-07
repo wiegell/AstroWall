@@ -17,8 +17,10 @@ namespace AstroWall.ApplicationLayer
 #pragma warning disable CA1711
 
     /// <summary>
-    /// Entry point of MacOS app and bootstrap of the business logic. Divided has partial .menu file
-    /// with all the OS-specific handling about the menu.
+    /// Entry point of MacOS app and bootstrap of the business logic.
+    /// The entire application layer is OS-specific.
+    /// Divided into a partial .menu file
+    /// with all the menu related stuff.
     /// </summary>
     [Register("AppDelegate")]
     public partial class AppDelegate : NSApplicationDelegate

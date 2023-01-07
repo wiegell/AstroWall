@@ -234,6 +234,7 @@
 		<Folder Include="BusinessLayer\Wallpaper\" />
 		<Folder Include="BusinessLayer\Wallpaper\PostProcess\" />
 		<Folder Include="ApplicationLayer\Models\" />
+		<Folder Include="BusinessLayer\Updates\" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="Info.plist" />
@@ -246,7 +247,6 @@
 		<Compile Include="ServiceLayer\HTMLHelpers.cs" />
 		<Compile Include="BusinessLayer\Database.cs" />
 		<Compile Include="BusinessLayer\State.cs" />
-		<Compile Include="BusinessLayer\Updates.cs" />
 		<Compile Include="BusinessLayer\ApplicationHandler.cs" />
 		<Compile Include="BusinessLayer\MenuHandler.cs" />
 		<Compile Include="BusinessLayer\ImgWrap.cs" />
@@ -287,18 +287,21 @@
 		<Compile Include="BusinessLayer\Preferences\PostProcessPreference.cs" />
 		<Compile Include="BusinessLayer\Preferences\AddTextPreference.cs" />
 		<Compile Include="BusinessLayer\Wallpaper\Wallpaper.cs" />
-		<Compile Include="BusinessLayer\Wallpaper\PostProcess\AddText.cs" />
-		<Compile Include="BusinessLayer\Wallpaper\PostProcess\ScaleAndCrop.cs" />
+		<Compile Include="BusinessLayer\Wallpaper\PostProcess\PostProcess.AddText.cs" />
+		<Compile Include="BusinessLayer\Wallpaper\PostProcess\PostProcess.ScaleAndCrop.cs" />
 		<Compile Include="ApplicationLayer\Helpers\Screen.Model.Macos.cs" />
 		<Compile Include="ApplicationLayer\View\AboutViewController.cs" />
 		<Compile Include="ApplicationLayer\View\AboutViewController.designer.cs">
 			<DependentUpon>AboutViewController.cs</DependentUpon>
 		</Compile>
-		<Compile Include="BusinessLayer\Wallpaper\PostProcess\Compose.cs" />
+		<Compile Include="BusinessLayer\Wallpaper\PostProcess\PostProcess.Compose.cs" />
 		<Compile Include="BusinessLayer\Logging.cs" />
 		<Compile Include="ApplicationLayer\Models\TrackingEventArgs.cs" />
 		<Compile Include="BusinessLayer\Preferences\PostProcessPreferenceEnum.cs" />
 		<Compile Include="BusinessLayer\Preferences\DailyCheckEnum.cs" />
+		<Compile Include="BusinessLayer\Updates\Updates.cs" />
+		<Compile Include="BusinessLayer\Updates\UpdatePromptResponse.cs" />
+		<Compile Include="ServiceLayer\UrlResponseWrap.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<InterfaceDefinition Include="Main.storyboard" />

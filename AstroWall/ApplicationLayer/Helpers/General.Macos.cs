@@ -11,7 +11,6 @@ using Foundation;
 
 namespace AstroWall
 {
-
     /// <summary>
     /// General OS specific helper methods.
     /// </summary>

@@ -1,31 +1,30 @@
 ﻿using System;
-using AppKit;
 using System.Collections.Generic;
-using AstroWall.ApplicationLayer;
-using System.Timers;
-using System.Threading.Tasks;
 using System.Drawing;
-using System.Threading;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
+using AppKit;
+using AstroWall.ApplicationLayer;
 using AstroWall.BusinessLayer.Preferences;
 
 namespace AstroWall.BusinessLayer
 {
     /// <summary>
-    /// (Almost) platform independent handling of the menu
+    /// Handles all menu operations.
     /// </summary>
-    public class MenuHandler
+    internal class MenuHandler
     {
-        // Refs
-        AppDelegate appDelegate;
-        ApplicationHandler appHandler;
+        // Refs to other class instances.
+        private AppDelegate appDelegate;
+        private ApplicationHandler appHandler;
 
         // Icon related
-        private static System.Threading.Timer iconUpdateTimer;
+        private System.Threading.Timer iconUpdateTimer;
         private int flipCounter;
         private int rotDegOffset;
-        // Which way is the counter going
-        private bool goingdown = true;
+        private bool iconCounterGoingDown = true;
         private AutoResetEvent autoEvent;
 
         // Browsing state
@@ -35,6 +34,11 @@ namespace AstroWall.BusinessLayer
         // Log
         private Action<string> log = Logging.GetLogger("Menu handler");
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MenuHandler"/> class.
+        /// </summary>
+        /// <param name="del"></param>
+        /// <param name="app"></param>
         internal MenuHandler(AppDelegate del, ApplicationHandler app)
         {
             appDelegate = del;
@@ -42,79 +46,125 @@ namespace AstroWall.BusinessLayer
             RenewCancellationSource();
         }
 
-        public void createStatusBar(string title)
+        /// <summary>
+        /// Creates status bar in application layer.
+        /// </summary>
+        /// <param name="title"></param>
+        internal void CreateStatusBar(string title)
         {
             appDelegate.CreateStatusBar(title);
-            noAutoEnableMenuItems();
+            NoAutoEnableMenuItems();
         }
 
-        public void updateMenuCheckMarksToReflectPrefs()
+        /// <summary>
+        /// Updates menu checkmarks to reflect prefs.
+        /// </summary>
+        internal void UpdateMenuCheckMarksToReflectPrefs()
         {
             appDelegate.EnableAllUpdateSubMenuItems(appHandler.Prefs.CheckUpdatesOnStartup);
             appDelegate.UpdateMenuCheckMarks(appHandler.Prefs);
         }
 
-        public void DisableAllItems()
+        /// <summary>
+        /// Disables all menu items except quit.
+        /// </summary>
+        internal void DisableAllItems()
         {
             appDelegate.DisableAllItemsExceptQuit();
         }
 
-        public void noAutoEnableMenuItems()
+        /// <summary>
+        /// Menu items not autoenabled.
+        /// </summary>
+        internal void NoAutoEnableMenuItems()
         {
             appDelegate.NoAutoEnableMenuItems();
         }
 
-        public void EnableStatusIcon()
+        /// <summary>
+        /// Enables status bar icon.
+        /// </summary>
+        internal void EnableStatusIcon()
         {
             appDelegate.EnableStatusIcon();
         }
 
-        public void DisableStatusIcon()
+        /// <summary>
+        /// Disables status bar icon.
+        /// </summary>
+        internal void DisableStatusIcon()
         {
             appDelegate.DisableStatusIcon();
         }
 
-        public void SetSubTitleInitialising()
+        /// <summary>
+        /// Sets subtitle of menu to "initializing".
+        /// </summary>
+        internal void SetSubTitleInitialising()
         {
             appDelegate.SetSubTitle("Initializing...");
         }
-        public void SetSubTitle(string msg)
+
+        /// <summary>
+        /// Sets subtitle of menu.
+        /// </summary>
+        /// <param name="msg"></param>
+        internal void SetSubTitle(string msg)
         {
             appDelegate.SetSubTitle(msg);
         }
 
-        public void RunDownloadIconAnimation()
+        /// <summary>
+        /// Runs download animation.
+        /// </summary>
+        internal void RunDownloadIconAnimation()
         {
             log("Download animation about to start");
-            if (iconUpdateTimer != null) iconUpdateTimer.Dispose();
+            if (iconUpdateTimer != null)
+            {
+                iconUpdateTimer.Dispose();
+            }
+
             autoEvent = new AutoResetEvent(false);
             flipCounter = 0;
-            goingdown = false;
+            iconCounterGoingDown = false;
+
             // Create a timer with a two second interval.
             iconUpdateTimer = new System.Threading.Timer(
-      OnTimedEventDownloadAnimation,
-      null,
-      0,
-      50);
+                OnTimedEventDownloadAnimation,
+                null,
+                0,
+                50);
         }
 
-        public void RunSpinnerIconAnimation()
+        /// <summary>
+        /// Runs spinner animation.
+        /// </summary>
+        internal void RunSpinnerIconAnimation()
         {
             log("Spinner animation about to start");
-            if (iconUpdateTimer != null) iconUpdateTimer.Dispose();
+            if (iconUpdateTimer != null)
+            {
+                iconUpdateTimer.Dispose();
+            }
+
             autoEvent = new AutoResetEvent(false);
             flipCounter = 0;
-            goingdown = false;
+            iconCounterGoingDown = false;
+
             // Create a timer with a two second interval.
             iconUpdateTimer = new System.Threading.Timer(
                 OnTimedEventSpinnerAnimation,
                 null,
                 0,
                 17);
-
         }
 
-        public async Task SetIconToDefault()
+        /// <summary>
+        /// Sets icon to default icon.
+        /// </summary>
+        /// <returns></returns>
+        internal async Task SetIconToDefault()
         {
             iconUpdateTimer.Dispose();
 
@@ -123,7 +173,7 @@ namespace AstroWall.BusinessLayer
             await Task.Delay(50);
             log("Setting icon to default");
 
-            if (appHandler.State.isIdle)
+            if (appHandler.State.IsIdle)
             {
                 // Double check that new process has not been started
                 appDelegate.ChangeIconTo("MainIcon_rot_400");
@@ -131,9 +181,13 @@ namespace AstroWall.BusinessLayer
             }
         }
 
-        public void PopulateSubmenuLatestPictures(List<ImgWrap> imgWrapList, State stateRef)
+        /// <summary>
+        /// Populates submenu with latest items.
+        /// </summary>
+        /// <param name="imgWrapList">Images to populate into submenu. Is filtered to only include those where an image and data is loaded.</param>
+        /// <param name="stateRef"></param>
+        internal void PopulateSubmenuLatestPictures(List<ImgWrap> imgWrapList, State stateRef)
         {
-
             // Clear existing items of menu
             ClearAllPictureItemsInSubmenu();
 
@@ -141,12 +195,12 @@ namespace AstroWall.BusinessLayer
             {
                 string title = iw.Title;
 
-                if (iw.OnlineDataAndPicIsLoaded() && iw.Integrity)
+                if (iw.OnlineDataAndImgIsLoaded && iw.Integrity)
                 {
                     appDelegate.AddPictureSubmenuItemAndRegEventHandlers(
                         title,
                         stateRef,
-                        iw.PreviewIsLoaded(),
+                        iw.PreviewIsLoaded,
                         CancelEndBrowsingState,
                         () => BusinessLayer.Wallpaper.Wallpaper.SetPreviewWallpaper(iw),
                         () => EndBrowsingWithDelay(),
@@ -155,60 +209,78 @@ namespace AstroWall.BusinessLayer
                             // Task wrap to run un non-UI thread
                             appHandler.State.UnsetStateBrowsingWallpapers();
                             appHandler.Wallpaper.RunPostProcessAndSetWallpaperAllScreensUnobserved(iw);
-                        }
-
-
-                        );
+                        });
                 }
             }
         }
 
-        public void OpenUrlToCurrentPic()
+        /// <summary>
+        /// Opens page to current image.
+        /// </summary>
+        internal void OpenUrlToCurrentImage()
         {
             General.Open(appHandler.Prefs.CurrentAstroWallpaper.PageUrl);
         }
 
-        public void OpenUrlToCurrentCredits()
+        /// <summary>
+        /// Opens url to current credits.
+        /// </summary>
+        internal void OpenUrlToCurrentCredits()
         {
             General.Open(appHandler.Prefs.CurrentAstroWallpaper.CreditUrl);
         }
 
-        public void OpenCurrentPic()
+        /// <summary>
+        /// Opens current image.
+        /// </summary>
+        internal void OpenCurrentPic()
         {
             string tmpPth = FileHelpers.GenTmpCopy(appHandler.Prefs.CurrentAstroWallpaper.ImgLocalUrl);
             General.Open(tmpPth);
         }
 
-
-
-        public void changedInMenuRunAtLogin(bool newState)
+        /// <summary>
+        /// Called from application layer and responds to changes in "Run at login" option.
+        /// </summary>
+        /// <param name="newState"></param>
+        internal void ChangedInMenuRunAtLogin(bool newState)
         {
             appHandler.Prefs.RunAtStartup = newState;
             appHandler.State.SetLaunchAgentToReflectPrefs();
             appDelegate.UpdateMenuCheckMarks(appHandler.Prefs);
         }
 
-        public void changedInMenuAutoInstallUpdates(bool newState)
+        /// <summary>
+        /// Responds to changes to "auto install updates" made in menu by user.
+        /// </summary>
+        internal void ChangedInMenuAutoInstallUpdates(bool newState)
         {
             appHandler.Prefs.AutoInstallUpdates = newState;
             appDelegate.UpdateMenuCheckMarks(appHandler.Prefs);
         }
 
-        public void changedInMenuCheckUpdatesAtStartup(bool newState)
+        /// <summary>
+        /// Responds to changes to "check updates at startup" made in menu by user.
+        /// </summary>
+        internal void ChangedInMenuCheckUpdatesAtStartup(bool newState)
         {
             appHandler.Prefs.CheckUpdatesOnStartup = newState;
             if (newState)
             {
-                appHandler.Updates.registerWakeHandler();
+                appHandler.Updates.RegisterWakeHandler();
             }
             else
             {
-                appHandler.Updates.unregisterWakeHandler();
+                appHandler.Updates.UnregisterWakeHandler();
             }
+
             appDelegate.UpdateMenuCheckMarks(appHandler.Prefs);
         }
 
-        public void changedInMenuDailyCheckNewest(bool newState)
+        /// <summary>
+        /// Responds to changes to "Daily check for new pic" made in menu by user.
+        /// </summary>
+        internal void ChangedInMenuDailyCheckNewest(bool newState)
         {
             log("Daily check changed to newest: " + newState);
             appHandler.Prefs.DailyCheck = newState ? DailyCheckEnum.Newest : DailyCheckEnum.None;
@@ -216,12 +288,18 @@ namespace AstroWall.BusinessLayer
             appDelegate.UpdateMenuCheckMarks(appHandler.Prefs);
         }
 
-        public async void ClickedInMenuManualCheckUpdates()
+        /// <summary>
+        /// Responds to user clicked in menu on "Check for new pic" (now).
+        /// </summary>
+        internal async void ClickedInMenuManualCheckUpdates()
         {
             await appHandler.Updates.CheckForUpdates(true);
         }
 
-        public void DeactivateUpdateOptions()
+        /// <summary>
+        /// Deactivates update options in menu.
+        /// </summary>
+        internal void DeactivateUpdateOptions()
         {
             appHandler.AppDelegate.DeactivateUpdateOptions();
         }
@@ -231,7 +309,7 @@ namespace AstroWall.BusinessLayer
         /// </summary>
         internal async void ClickedInMenuManualCheckForNewPic()
         {
-            await this.appHandler.checkForNewPics();
+            await this.appHandler.CheckForNewPics();
         }
 
         /// <summary>
@@ -262,15 +340,15 @@ namespace AstroWall.BusinessLayer
             appDelegate.ChangeIconTo(iconName);
             if (flipCounter == 0)
             {
-                goingdown = false;
+                iconCounterGoingDown = false;
             }
 
             if (flipCounter == 9)
             {
-                goingdown = true;
+                iconCounterGoingDown = true;
             }
 
-            flipCounter = goingdown ? flipCounter - 1 : flipCounter + 1;
+            flipCounter = iconCounterGoingDown ? flipCounter - 1 : flipCounter + 1;
         }
 
         private void OnTimedEventSpinnerAnimation(object stateInfo)
@@ -299,11 +377,15 @@ namespace AstroWall.BusinessLayer
             appDelegate.ChangeIconTo(iconName);
             if (iconRotationDeg + rotDegOffset == 0)
             {
-                goingdown = true;
+                iconCounterGoingDown = true;
             }
 
-            if (iconRotationDeg + rotDegOffset == 400) goingdown = false;
-            flipCounter = goingdown ? flipCounter - 1 : flipCounter + 1;
+            if (iconRotationDeg + rotDegOffset == 400)
+            {
+                iconCounterGoingDown = false;
+            }
+
+            flipCounter = iconCounterGoingDown ? flipCounter - 1 : flipCounter + 1;
         }
 
         /// <summary>

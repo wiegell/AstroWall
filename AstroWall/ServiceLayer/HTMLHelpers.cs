@@ -1,51 +1,61 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 using AppKit;
 using Foundation;
 using HtmlAgilityPack;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Linq;
 using static System.Net.WebRequestMethods;
-using System.Threading.Tasks;
-using System.Text;
 
 namespace AstroWall
 {
-    public struct urlResponseWrap
+    /// <summary>
+    /// HTML-related helper functions.
+    /// </summary>
+    internal class HTMLHelpers
     {
-        public string url { get; set; }
-        public HttpStatusCode status { get; set; }
-    }
+        /// <summary>
+        /// Date format of NASA urls.
+        /// </summary>
+        internal const string NASADateFormat = "yyMMdd";
 
-    public class HTMLHelpers
-    {
-        public HTMLHelpers()
-        {
-
-
-        }
-
-        public const string NASADateFormat = "yyMMdd";
-
-        public static async Task<urlResponseWrap> getImgOnlineUrl(string pageUrl)
+        /// <summary>
+        /// Gets online url of image at pageUrl.
+        /// </summary>
+        /// <returns>UrlResponseWrap.</returns>
+        internal static async Task<UrlResponseWrap> GetImgOnlineUrl(string pageUrl)
         {
             HtmlWeb parser = new HtmlAgilityPack.HtmlWeb();
             HtmlDocument doc = await parser.LoadFromWebAsync(pageUrl);
-            if (parser.StatusCode == HttpStatusCode.NotFound) return new urlResponseWrap() { status = parser.StatusCode };
+            if (parser.StatusCode == HttpStatusCode.NotFound)
+            {
+                return new UrlResponseWrap(parser.StatusCode);
+            }
+
             HtmlNode node = new List<HtmlNode>(doc.DocumentNode.Descendants("img")).First().ParentNode;
             HtmlAttribute attrib = node.Attributes.Where((HtmlAttribute attr) => attr.Name == "href").First();
             Console.WriteLine(attrib.Value);
-            //string task = await Task.Run(() => ();
-            return new urlResponseWrap() { url = "https://apod.nasa.gov/apod/" + attrib.Value };
+
+            return new UrlResponseWrap("https://apod.nasa.gov/apod/" + attrib.Value);
         }
 
-        public static string genPublishDateUrl(DateTime date)
+        /// <summary>
+        /// Generates NASA page url from date.
+        /// </summary>
+        /// <returns></returns>
+        internal static string GenPublishDateUrl(DateTime date)
         {
             return "https://apod.nasa.gov/apod/ap" + date.ToString(NASADateFormat, System.Globalization.CultureInfo.InvariantCulture) + ".html";
         }
 
-        public static async Task<string[]> getDescTitleAndCreditFromOnlineUrl(string pageUrl)
+        /// <summary>
+        /// Parse description, title and credit text from pageUrl.
+        /// </summary>
+        /// <returns>{ title, desc, credit, creditsUrl }.</returns>
+        internal static async Task<string[]> ParseTitleDescriptiontAndCreditFromOnlineUrl(string pageUrl)
         {
             HtmlWeb webparser = new HtmlAgilityPack.HtmlWeb();
             HtmlDocument doc = await webparser.LoadFromWebAsync(pageUrl);
@@ -59,12 +69,11 @@ namespace AstroWall
             // Get credit text
             StringBuilder sb = new StringBuilder();
             HtmlNode sibling = imgCredNode.NextSibling;
-            string creditsUrl = "";
+            string creditsUrl = string.Empty;
             while (sibling != null)
             {
-
                 sb.Append(sibling.InnerText);
-                if (sibling.Name == "a" && creditsUrl == "")
+                if (sibling.Name == "a" && creditsUrl == string.Empty)
                 {
                     try
                     {
@@ -75,8 +84,10 @@ namespace AstroWall
                         Console.WriteLine("Failed to parse credits url");
                     }
                 }
+
                 sibling = sibling.NextSibling;
             }
+
             string credit = sb.ToString();
 
             // Get description
@@ -84,7 +95,5 @@ namespace AstroWall
             string desc = bodyNodes[2].InnerText;
             return new string[] { title, desc, credit, creditsUrl };
         }
-
     }
 }
-

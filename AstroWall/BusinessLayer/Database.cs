@@ -1,35 +1,50 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using SkiaSharp;
 using Newtonsoft.Json;
+using SkiaSharp;
 
 namespace AstroWall.BusinessLayer
 {
-
+    /// <summary>
+    /// JSON database operations.
+    /// </summary>
     internal class Database
     {
-        internal string Title { get; private set; }
-
-        internal List<ImgWrap> ImgWrapList { get; private set; }
-        private List<Task> DataLoadList;
-        private List<Task> ImgLoadList;
+        /// <summary>
+        /// Private list with all loded images (wrapped).
+        /// </summary>
+        private readonly List<ImgWrap> imgWrapList;
 
         // Log
-        private Action<string> log = Logging.GetLogger("Database");
+        private readonly Action<string> log = Logging.GetLogger("Database");
 
+        /// <summary>
+        /// Private list which keeps track of data loading process from online.
+        /// </summary>
+        private List<Task> dataLoadList;
+
+        /// <summary>
+        /// Private list which keeps track of image loading process from online.
+        /// </summary>
+        private List<Task> imgLoadList;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Database"/> class.
+        /// Tries to read db from disk.
+        /// </summary>
         internal Database()
         {
-            this.ImgWrapList = new List<ImgWrap>();
+            this.imgWrapList = new List<ImgWrap>();
             if (FileHelpers.DBExists())
             {
                 this.log("db exists, deserialize");
-                this.ImgWrapList = FileHelpers.DeSerializeNow<List<ImgWrap>>(General.GetDBPath());
+                this.imgWrapList = FileHelpers.DeSerializeNow<List<ImgWrap>>(General.GetDBPath());
             }
             else
             {
@@ -37,33 +52,167 @@ namespace AstroWall.BusinessLayer
             }
         }
 
+        /// <summary>
+        /// Gets latest image.
+        /// </summary>
         internal ImgWrap Latest
         {
             get
             {
-                if (ImgWrapList == null || ImgWrapList.Count == 0) return null;
-                else return ImgWrapList[0];
+                if (imgWrapList == null || imgWrapList.Count == 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    return imgWrapList[0];
+                }
             }
         }
 
-        private string[] datesLoaded()
+        private string[] DatesLoaded => imgWrapList.Select((iw) => iw.PublishDate.ToString(HTMLHelpers.NASADateFormat, System.Globalization.CultureInfo.InvariantCulture)).ToArray();
+
+        /// <summary>
+        /// Loads data starting at date and going back "n" days.
+        /// </summary>
+        /// <param name="n">How many images to load data from.</param>
+        /// <param name="date">Starting date.</param>
+        /// <param name="forceReload">Forces reload of data.</param>
+        /// <returns>Returns true on successfull onlinecheck, e.g. false if connection offline.</returns>
+        internal async Task<bool> LoadDataButNoImgFromOnlineStartingAtDate(int n, DateTime date, bool forceReload = false)
         {
-            return ImgWrapList.Select((iw) => iw.PublishDate.ToString(HTMLHelpers.NASADateFormat, System.Globalization.CultureInfo.InvariantCulture)).ToArray();
+            bool allOfDBHasDataLoaded = imgWrapList.All(iw => iw.OnlineDataIsLoadedOrUngettable);
+            bool datesAreInDB = HasDates(n, date);
+            bool isOffline = false;
+            List<ImgWrap> tmpImgWrapList = new List<ImgWrap>();
+            log("DB has all wanted days registered: " + datesAreInDB);
+            log("All of DB has data loaded: " + allOfDBHasDataLoaded);
+
+            // Everything is loaded, no need to download
+            if (datesAreInDB && allOfDBHasDataLoaded && !forceReload)
+            {
+                log("Everything is loaded, no onlinecheck, unnecessary check?");
+                return true;
+            }
+
+            // Download n latest days, if not duplicates
+            dataLoadList = new List<Task>();
+            try
+            {
+                for (int i = 0; i < n; i++)
+                {
+                    DateTime potentialDownload = date.AddDays(-i);
+                    if (!this.HasDate(potentialDownload))
+                    {
+                        log("adding day: " + date.AddDays(-i));
+                        ImgWrap tmppw = new ImgWrap(date.AddDays(-i));
+                        Task t = tmppw.LoadOnlineDataButNotImg();
+                        tmpImgWrapList.Add(tmppw);
+                        dataLoadList.Add(t);
+                    }
+                }
+
+                await Task.WhenAll(dataLoadList);
+            }
+            catch (Exception ex)
+            {
+                // Catch offline exception
+                if (ex.Message.Contains("No such host is known"))
+                {
+                    isOffline = true;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            if (!isOffline)
+            {
+                // Filter out not found results, so that they can be fetched again in the future;
+                imgWrapList.AddRange(tmpImgWrapList.Where(iw => !iw.NotFound));
+                return true;
+            }
+            else
+            {
+                log("No host: probably offline, nothing is added to ImgWrapList");
+                return false;
+            }
         }
 
         /// <summary>
-        /// checks if dates are in db starting at <c>date</c> and going back <c>n</c> days
+        /// Loads the actual image data of all the items where data has been loaded.
         /// </summary>
-        /// <param name="date">first date to check</param>
-        /// <param name="n">n dates to check starting from (and including) date argument and going backwards</param>
-        /// <returns></returns>
-        private bool hasDates(int n, DateTime date)
+        /// <param name="forceReload"></param>
+        /// <returns>Task completes on successfull load.</returns>
+        internal async Task LoadImgs(bool forceReload = false)
         {
-            string[] datesLoadedCache = datesLoaded();
+            if (imgWrapList.All(iw => iw.ImgsAreLoadedOrUngettable) && !forceReload)
+            {
+                log("All images loaded, no download");
+                return;
+            }
+            else
+            {
+                imgLoadList = new List<Task>();
+                foreach (ImgWrap pw in imgWrapList)
+                {
+                    if (pw.Integrity && pw.ImgIsGettable && !pw.ImgIsLoaded)
+                    {
+                        imgLoadList.Add(Task.Run(() => pw.LoadImg()));
+                    }
+                }
+
+                await Task.WhenAll(imgLoadList);
+            }
+        }
+
+        /// <summary>
+        /// Saves db to disk.
+        /// </summary>
+        internal void SaveToDisk()
+        {
+            FileHelpers.SerializeNow(imgWrapList, General.GetDBPath());
+        }
+
+        /// <summary>
+        /// Gets gettable images.
+        /// </summary>
+        /// <returns>Returns list with all images that can be downloaded, e.g. youtube videos filtered out.</returns>
+        internal List<ImgWrap> GetGettableImages()
+        {
+            return imgWrapList.Where((iw) => iw.ImgIsGettable).ToList<ImgWrap>();
+        }
+
+        /// <summary>
+        /// Sorts imgWrapList.
+        /// </summary>
+        internal void Sort()
+        {
+            imgWrapList.Sort();
+        }
+
+        private static bool LoadDBFromDisk()
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if dates are in db starting at <c>date</c> and going back <c>n</c> days.
+        /// </summary>
+        /// <param name="n">n dates to check starting from (and including) date argument and going backwards.</param>
+        /// <param name="date">first date to check</param>
+        /// <returns>bool.</returns>
+        private bool HasDates(int n, DateTime date)
+        {
+            string[] datesLoadedCache = DatesLoaded;
             string[] datesToCheck = new string[n];
 
             // Gen dates to check
-            for (int i = 0; i < n; i++) datesToCheck[i] = date.AddDays(-i).ToString(HTMLHelpers.NASADateFormat, System.Globalization.CultureInfo.InvariantCulture);
+            for (int i = 0; i < n; i++)
+            {
+                datesToCheck[i] = date.AddDays(-i).ToString(HTMLHelpers.NASADateFormat, System.Globalization.CultureInfo.InvariantCulture);
+            }
 
             // Check dates
             bool datesAreInDB = true;
@@ -74,124 +223,18 @@ namespace AstroWall.BusinessLayer
                     log($"Date {dateToCheck} not found");
                     datesAreInDB = false;
                 }
-                else log($"Date {dateToCheck} found");
+                else
+                {
+                    log($"Date {dateToCheck} found");
+                }
             }
 
             return datesAreInDB;
         }
 
-        private bool hasDate(DateTime date)
+        private bool HasDate(DateTime date)
         {
-            return datesLoaded().Contains(date.ToString(HTMLHelpers.NASADateFormat, System.Globalization.CultureInfo.InvariantCulture));
-        }
-
-        /// <summary>
-        /// Returns true on successfull onlinecheck, e.g. false if connection offline
-        /// </summary>
-        /// <param name="n"></param>
-        /// <param name="date"></param>
-        /// <param name="forceReload"></param>
-        /// <returns></returns>
-        internal async Task<bool> LoadDataButNoImgFromOnlineStartingAtDate(int n, DateTime date, bool forceReload = false)
-        {
-            bool allOfDBHasDataLoaded = ImgWrapList.All(iw => iw.OnlineDataIsLoadedOrUngettable());
-            bool datesAreInDB = hasDates(n, date);
-            bool isOffline = false;
-            List<ImgWrap> tmpImgWrapList = new List<ImgWrap>();
-            log("DB has all wanted days registered: " + datesAreInDB);
-            log("All of DB has data loaded: " + allOfDBHasDataLoaded);
-
-            // Everything is loaded, no need to download, may
-            if (datesAreInDB && allOfDBHasDataLoaded && !forceReload)
-            {
-                log("Everything is loaded, no onlinecheck, unnecessary check?");
-                return true;
-
-            };
-
-            // Download n latest days, if not duplicates
-            DataLoadList = new List<Task>();
-            try
-            {
-
-                for (int i = 0; i < n; i++)
-                {
-                    DateTime potentialDownload = date.AddDays(-i);
-                    if (!this.hasDate(potentialDownload))
-                    {
-                        log("adding day: " + date.AddDays(-i));
-                        ImgWrap tmppw = new ImgWrap(date.AddDays(-i));
-                        Task t = tmppw.LoadOnlineDataButNotImg();
-                        tmpImgWrapList.Add(tmppw);
-                        DataLoadList.Add(t);
-                    }
-                }
-                await Task.WhenAll(DataLoadList);
-            }
-            catch (Exception ex)
-            {
-                // Catch offline exception
-                if (ex.Message.Contains("No such host is known"))
-                {
-                    isOffline = true;
-                }
-                else throw;
-            }
-
-            if (!isOffline)
-            {
-                // Filter out not found results, so that they can be fetched again in the future;
-                ImgWrapList.AddRange(tmpImgWrapList.Where(iw => !iw.NotFound));
-                return true;
-            }
-            else
-            {
-                log("No host: probably offline, nothing is added to ImgWrapList");
-                return false;
-            }
-
-        }
-
-        internal async Task LoadImgs(bool forceReload = false)
-        {
-            if (ImgWrapList.All(iw => iw.ImgsAreLoadedOrUngettable()) && !forceReload)
-            {
-                log("All images loaded, no download");
-                return;
-            }
-            else
-            {
-                ImgLoadList = new List<Task>();
-                foreach (ImgWrap pw in ImgWrapList)
-                {
-                    if (pw.Integrity && pw.ImgIsGettable && !pw.ImgIsLoaded())
-                        ImgLoadList.Add(Task.Run(() => pw.LoadImg()));
-                }
-                await Task.WhenAll(ImgLoadList);
-            }
-        }
-
-        internal void SaveToDisk()
-        {
-            FileHelpers.SerializeNow(ImgWrapList, General.GetDBPath());
-        }
-
-        internal List<ImgWrap> getPresentableImages()
-        {
-            return ImgWrapList.Where((iw) => iw.ImgIsGettable).ToList<ImgWrap>();
-        }
-
-        private static bool loadDBFromDisk()
-        {
-            return true;
-        }
-
-        internal void Sort()
-        {
-            ImgWrapList.Sort();
+            return DatesLoaded.Contains(date.ToString(HTMLHelpers.NASADateFormat, System.Globalization.CultureInfo.InvariantCulture));
         }
     }
-
-
 }
-
