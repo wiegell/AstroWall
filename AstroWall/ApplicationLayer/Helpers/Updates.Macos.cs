@@ -4,58 +4,45 @@ using Foundation;
 
 namespace AstroWall.ApplicationLayer
 {
+    /// <summary>
+    /// Helper class with static OS specific functions related to updating.
+    /// </summary>
     public class Updates
     {
-
-        // TODO is this needed anymore? Only static functions
-        //Singleton
-        private static volatile Updates instance;
-        private static object syncRoot = new object();
-        public static Updates Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    lock (syncRoot)
-                    {
-                        if (instance == null)
-                            instance = new Updates();
-                    }
-                }
-
-                return instance;
-            }
-        }
-
+        // Has no state, only static functions.
         private Updates()
         {
         }
 
-        public static void RunPKGUpdate(string pathToPkg)
+        /// <summary>
+        /// Runs pkg update, overwrites current open application!.
+        /// </summary>
+        internal static void RunPKGUpdate(string pathToPkg)
         {
             NSTask nstask = new NSTask();
             nstask.LaunchPath = "/bin/bash";
             nstask.Arguments = new string[]
             {
                 "-c",
-            "installer -pkg "+pathToPkg+" -target CurrentUserHomeDirectory"
+                "installer -pkg "+pathToPkg+" -target CurrentUserHomeDirectory",
             };
-            //+" "
             nstask.Launch();
             nstask.WaitUntilExit();
         }
 
-        public static void AlertNoUpdates(string curversion)
+        /// <summary>
+        /// Shows modal that tells the user, that no updates are pending.
+        /// </summary>
+        /// <param name="curversion"></param>
+        internal static void AlertNoUpdates(string curversion)
         {
             var alert = new NSAlert()
             {
                 AlertStyle = NSAlertStyle.Informational,
                 InformativeText = $"You are up to date at version v{curversion}",
-                MessageText = "Up to date"
+                MessageText = "Up to date",
             };
             alert.RunModal();
         }
     }
 }
-

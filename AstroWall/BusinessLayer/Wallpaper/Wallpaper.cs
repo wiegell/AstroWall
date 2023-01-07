@@ -150,7 +150,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
         public void ResetWallpaper()
         {
-            if (applicationHandler.Prefs.hasAstroWall())
+            if (applicationHandler.Prefs.HasAstroWall)
             {
                 // Postprocessed should already be created, reset to those
                 var currentConnectedScreensById = Screen.FromCurrentConnected();
@@ -179,9 +179,9 @@ namespace AstroWall.BusinessLayer.Wallpaper
             applicationHandler.AppDelegate.LaunchPostProcessPrompt(applicationHandler.Prefs, callbackWithNewPostProcessSettings);
         }
 
-        public void callbackWithNewPostProcessSettings(Preferences.AddText newAtFromDialogue)
+        public void callbackWithNewPostProcessSettings(Preferences.AddTextPreference newAtFromDialogue)
         {
-            log("setting new post processing prefs" + newAtFromDialogue.isEnabled);
+            log("setting new post processing prefs" + newAtFromDialogue.IsEnabled);
             this.applicationHandler.Prefs.AddTextPostProcess = newAtFromDialogue;
             log("rerunning postprocess");
             applicationHandler.Wallpaper.RunPostProcessAndSetWallpaperAllScreensUnobserved(applicationHandler.Prefs.CurrentAstroWallpaper);

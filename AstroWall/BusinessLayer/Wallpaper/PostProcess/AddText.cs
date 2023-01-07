@@ -9,34 +9,51 @@ using SkiaSharp;
 
 namespace AstroWall.BusinessLayer.Wallpaper
 {
+    /// <summary>
+    /// Post processing. Is divided into general functions and subfunctions.
+    /// Should be reflected with a preference class as well.
+    /// </summary>
     internal partial class PostProcess
     {
-        // Utility classes
-        private struct Line
-        {
-            internal string Value { get; set; }
-            internal float Width { get; set; }
-        }
-
         // Log
         private static Action<string> log = Logging.GetLogger("Post process");
         private static Action<string> logError = Logging.GetLogger("Post process", true);
 
-        // Constructor
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostProcess"/> class.
+        /// </summary>
         internal PostProcess()
         {
         }
 
-        // Methods
-        internal static Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> AddTextCurry(Preferences.AddText options, string title, string description, string credit)
+        /// <summary>
+        /// Make curry AddText delegate. AddText adds text to bitmap of main screen.
+        /// </summary>
+        /// <param name="addTextpreferences">AddText prefs.</param>
+        /// <param name="title">Title text.</param>
+        /// <param name="description">Description text.</param>
+        /// <param name="credit">Credit text.</param>
+        /// <returns>Returns a curried delegate with all arguments set, that
+        /// only needs screen/bitmap dictionary as argument.</returns>
+        internal static Func<Dictionary<Screen, SkiaSharp.SKBitmap>, Dictionary<Screen, SkiaSharp.SKBitmap>> AddTextCurry(Preferences.AddTextPreference addTextpreferences, string title, string description, string credit)
         {
             return (Dictionary<Screen, SkiaSharp.SKBitmap> dic) =>
             {
-                return AddText(dic, options, title, description, credit);
+                return AddText(dic, addTextpreferences, title, description, credit);
             };
         }
 
-        internal static Dictionary<Screen, SkiaSharp.SKBitmap> AddText(Dictionary<Screen, SkiaSharp.SKBitmap> dic, Preferences.AddText options, string title, string description, string credit)
+        /// <summary>
+        /// AddText adds text to bitmap of main screen.
+        /// </summary>
+        /// <param name="dic"></param>
+        /// <param name="addTextpreferences">AddText prefs.</param>
+        /// <param name="title">Title text.</param>
+        /// <param name="description">Description text.</param>
+        /// <param name="credit">Credit text.</param>
+        /// <returns>Returns new dictionary with text added to main screen bitmap.</returns>
+        /// <exception cref="InvalidOperationException">Throws if main screen cannot be determinde.</exception>
+        internal static Dictionary<Screen, SkiaSharp.SKBitmap> AddText(Dictionary<Screen, SkiaSharp.SKBitmap> dic, Preferences.AddTextPreference addTextpreferences, string title, string description, string credit)
         {
             SKBitmap mainScreenBitmap;
             Screen mainScreen;
@@ -49,6 +66,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
             {
                 throw new InvalidOperationException("Could not get main screen from input dict", ex);
             }
+
             if (mainScreenBitmap == null)
             {
                 throw new InvalidOperationException("Could not get main screen from input dict");
@@ -66,13 +84,13 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 throw;
             }
 
-            if (options.isEnabled && description != null && description != "" && title != null && title != "" && credit != null && credit != "")
+            if (addTextpreferences.IsEnabled && description != null && description != string.Empty && title != null && title != string.Empty && credit != null && credit != string.Empty)
             {
                 // Format description
-                string descriptionFormatted = description.Replace("\n", " ").Replace("Explanation:", "").Replace("   ", " ").Replace("  ", " ").Replace("  ", " ").TrimStart();
+                string descriptionFormatted = description.Replace("\n", " ").Replace("Explanation:", string.Empty).Replace("   ", " ").Replace("  ", " ").Replace("  ", " ").TrimStart();
 
                 // Format credit
-                string creditFormatted = "Credit / copyright: " + credit.Replace("\n", "").TrimStart().TrimEnd();
+                string creditFormatted = "Credit / copyright: " + credit.Replace("\n", string.Empty).TrimStart().TrimEnd();
 
                 // string desc = "test \n test\n testtesttest";
                 log("desc: " + descriptionFormatted);
@@ -81,14 +99,13 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 canvas.ResetMatrix();
 
                 // Paint Title
-                PaintToRect(canvas, 1000, 250, 120, 20, 40, false, false, title
-                    );
+                PaintToRect(canvas, 1000, 250, 120, 20, 40, false, false, title);
+
                 // Paint description
-                int height = PaintToRect(canvas, 1000, 250, 200, 20, 25, true, false, descriptionFormatted
-                    );
+                int height = PaintToRect(canvas, 1000, 250, 200, 20, 25, true, false, descriptionFormatted);
+
                 // Paint credit
-                PaintToRect(canvas, 1000, 250, 200 + height, 20, 25, true, true, creditFormatted
-                    );
+                PaintToRect(canvas, 1000, 250, 200 + height, 20, 25, true, true, creditFormatted);
                 canvas.Flush();
                 canvas.Dispose();
 
@@ -100,7 +117,10 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
                 return returnDic;
             }
-            else return dic;
+            else
+            {
+                return dic;
+            }
         }
 
         private static int PaintToRect(SKCanvas canvas, int width, int x, int y, int margin, int size, bool italic, bool isCredit, string text)
@@ -114,7 +134,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
                 TextSize = size,
                 IsAntialias = true,
                 TextAlign = SKTextAlign.Left,
-                Typeface = type
+                Typeface = type,
             })
             {
                 var tmpRect = SKRect.Create(x, y, width, 3000);
@@ -132,13 +152,15 @@ namespace AstroWall.BusinessLayer.Wallpaper
         }
 
         /// <summary>
-        /// Returns needed rect height
+        /// Draws text to image.
         /// </summary>
-        /// <param name="canvas"></param>
-        /// <param name="text"></param>
-        /// <param name="rect"></param>
-        /// <param name="paint"></param>
-        /// <returns></returns>
+        /// <param name="canvas">Canvas to be drawed onto.</param>
+        /// <param name="text">Text to be drawn.</param>
+        /// <param name="rect">Rect to fit text into.</param>
+        /// <param name="paint">Describes text, e.g. size.</param>
+        /// <param name="margin">Margin inside rect.</param>
+        /// <param name="dryRun">Used to only get the return val and not actually paint to canvas.</param>
+        /// <returns>Returns needed rect height.</returns>
         private static int DrawText(SKCanvas canvas, string text, SKRect rect, SKPaint paint, int margin, bool isCredit, bool dryRun = false)
         {
             float spaceWidth = paint.MeasureText(" ");
@@ -150,28 +172,41 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
                 if (wordWidth <= rect.Right - wordX - margin && word != "\n")
                 {
-                    if (!dryRun) canvas.DrawText(word, wordX, wordY, paint);
+                    if (!dryRun)
+                    {
+                        canvas.DrawText(word, wordX, wordY, paint);
+                    }
+
                     wordX += wordWidth + spaceWidth;
                 }
                 else
                 {
                     wordY += paint.FontSpacing;
                     wordX = rect.Left + margin;
-                    if (!dryRun) canvas.DrawText(word, wordX, wordY, paint);
+                    if (!dryRun)
+                    {
+                        canvas.DrawText(word, wordX, wordY, paint);
+                    }
+
                     wordX += wordWidth + spaceWidth;
                 }
             }
+
             return (int)(wordY - rect.Top + margin);
         }
 
-        private static Line[] SplitLines(string text, SKPaint paint, float maxWidth)
+        /// <summary>
+        /// Splits text to lines to match max width.
+        /// </summary>
+        /// <returns>Text lines.</returns>
+        private static TextLine[] SplitLines(string text, SKPaint paint, float maxWidth)
         {
             var spaceWidth = paint.MeasureText(" ");
             var lines = text.Split('\n');
 
             return lines.SelectMany((line) =>
             {
-                var result = new List<Line>();
+                var result = new List<TextLine>();
 
                 var words = line.Split(new[] { " " }, StringSplitOptions.None);
 
@@ -185,7 +220,7 @@ namespace AstroWall.BusinessLayer.Wallpaper
 
                     if (width + wordWidth > maxWidth)
                     {
-                        result.Add(new Line() { Value = lineResult.ToString(), Width = width });
+                        result.Add(new TextLine() { Value = lineResult.ToString(), Width = width });
                         lineResult = new StringBuilder(wordWithSpace);
                         width = wordWithSpaceWidth;
                     }
@@ -196,11 +231,20 @@ namespace AstroWall.BusinessLayer.Wallpaper
                     }
                 }
 
-                result.Add(new Line() { Value = lineResult.ToString(), Width = width });
+                result.Add(new TextLine() { Value = lineResult.ToString(), Width = width });
 
                 return result.ToArray();
             }).ToArray();
         }
+
+        /// <summary>
+        /// Used in text box sizing.
+        /// </summary>
+        private struct TextLine
+        {
+            internal string Value { get; set; }
+
+            internal float Width { get; set; }
+        }
     }
 }
-

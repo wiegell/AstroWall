@@ -8,7 +8,7 @@ using AppKit;
 
 namespace AstroWall.BusinessLayer
 {
-    public class ApplicationHandler
+    internal class ApplicationHandler
     {
 
         // Instance refs, used by many other classes to navigate
@@ -114,7 +114,7 @@ namespace AstroWall.BusinessLayer
 
             // Load prefs. If non-present halt further actions until
             // preft are confirmed by user
-            Prefs = Preferences.Preferences.fromSave();
+            Prefs = Preferences.Preferences.FromSave;
             bool prefsAreLoadedSuccessfully = Prefs != null;
             return prefsAreLoadedSuccessfully;
         }
@@ -241,7 +241,7 @@ namespace AstroWall.BusinessLayer
 
 
                 // Register successfull check in prefs
-                Prefs.LastOnlineCheck = DateTime.Now;
+                Prefs.LastOnlineImageCheck = DateTime.Now;
 
                 db.Sort();
                 State.SetStateDownloading("Downloading pictures...");

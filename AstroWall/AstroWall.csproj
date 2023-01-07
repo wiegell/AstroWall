@@ -233,6 +233,7 @@
 		<Folder Include="BusinessLayer\Preferences\" />
 		<Folder Include="BusinessLayer\Wallpaper\" />
 		<Folder Include="BusinessLayer\Wallpaper\PostProcess\" />
+		<Folder Include="ApplicationLayer\Models\" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="Info.plist" />
@@ -283,8 +284,8 @@
 			<DependentUpon>PostProcessTextSettings.cs</DependentUpon>
 		</Compile>
 		<Compile Include="BusinessLayer\Preferences\Preferences.cs" />
-		<Compile Include="BusinessLayer\Preferences\PostProcess.model.cs" />
-		<Compile Include="BusinessLayer\Preferences\AddText.model.cs" />
+		<Compile Include="BusinessLayer\Preferences\PostProcessPreference.cs" />
+		<Compile Include="BusinessLayer\Preferences\AddTextPreference.cs" />
 		<Compile Include="BusinessLayer\Wallpaper\Wallpaper.cs" />
 		<Compile Include="BusinessLayer\Wallpaper\PostProcess\AddText.cs" />
 		<Compile Include="BusinessLayer\Wallpaper\PostProcess\ScaleAndCrop.cs" />
@@ -295,6 +296,9 @@
 		</Compile>
 		<Compile Include="BusinessLayer\Wallpaper\PostProcess\Compose.cs" />
 		<Compile Include="BusinessLayer\Logging.cs" />
+		<Compile Include="ApplicationLayer\Models\TrackingEventArgs.cs" />
+		<Compile Include="BusinessLayer\Preferences\PostProcessPreferenceEnum.cs" />
+		<Compile Include="BusinessLayer\Preferences\DailyCheckEnum.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<InterfaceDefinition Include="Main.storyboard" />

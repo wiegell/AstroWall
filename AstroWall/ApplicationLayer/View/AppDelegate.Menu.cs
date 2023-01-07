@@ -16,12 +16,11 @@ namespace AstroWall.ApplicationLayer
         private NSStatusBar statusBar;
         private NSStatusItem statusBarItem;
 
-
         /// <summary>
-        /// Gets a value indicating whether updates are disabled. This is state from application layer.
+        /// Gets or sets a value indicating whether updates are disabled. This is state from application layer.
         /// Should be generalized to business logic. TODO.
         /// </summary>
-        internal bool UpdatesDisabled { get; private set; }
+        internal bool UpdatesDisabled { get; set; }
 
         /// <summary>
         /// Creates status bar item.
@@ -201,6 +200,7 @@ namespace AstroWall.ApplicationLayer
                         cancelEndBrowsingStateCallback();
                         setPreviewWallpaperCallback();
                     }
+
                     if (e.Description == "Mouse Exited")
                     {
                         Console.WriteLine("Mouse exit");

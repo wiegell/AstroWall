@@ -32,7 +32,7 @@ namespace AstroWall.BusinessLayer
         private Action<string> log = Logging.GetLogger("State");
 
         // currentVersionString is the long tag from git including commit hash  
-        public State(ApplicationHandler applicationHandlerArg, string currentVersionString)
+        internal State(ApplicationHandler applicationHandlerArg, string currentVersionString)
         {
             this.applicationHandler = applicationHandlerArg;
         }
@@ -202,7 +202,7 @@ namespace AstroWall.BusinessLayer
         public void SetLaunchAgentToReflectPrefs()
         {
             if (applicationHandler
-                .Prefs.RunAtStartup) ApplicationLayer.SystemEvents.SetAsLaunchAgent();
+                .Prefs.RunAtStartup) ApplicationLayer.SystemEvents.SetLaunchAgent();
             else ApplicationLayer.SystemEvents.RemoveLaunchAgent();
         }
 

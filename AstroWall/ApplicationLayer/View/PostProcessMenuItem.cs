@@ -6,35 +6,61 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace AstroWall
 {
-
+    /// <summary>
+    /// View of post process menu item.
+    /// </summary>
     public partial class PostProcessMenuItem : AppKit.NSView
     {
-
         private bool selected = true;
-        NSTrackingArea trackingArea;
-        public override bool WantsUpdateLayer => true;
-        public event EventHandler<TrackingEventArgs> OnDragChange = delegate { };
+        private NSTrackingArea trackingArea;
         private NSTextField outerTextField;
 
-        // Called when created from unmanaged code
-        public PostProcessMenuItem(IntPtr handle) : base(handle)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostProcessMenuItem"/> class.
+        /// XCode default constructor.
+        /// </summary>
+        /// <param name="handle"></param>
+        public PostProcessMenuItem(IntPtr handle)
+            : base(handle)
         {
             Console.WriteLine("called unmanaged");
-
         }
 
-        public PostProcessMenuItem(CGRect rect) : base(rect)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostProcessMenuItem"/> class.
+        /// Constructor used when constructed from code. Takes a rect that is used to define tracking area.
+        /// </summary>
+        /// <param name="rect"></param>
+        public PostProcessMenuItem(CGRect rect)
+            : base(rect)
         {
-            //WantsLayer = true;
             Console.WriteLine("called rect");
             LayerContentsRedrawPolicy = NSViewLayerContentsRedrawPolicy.OnSetNeedsDisplay;
             trackingArea = new NSTrackingArea(new CGRect(0, 0, rect.Width, rect.Height), NSTrackingAreaOptions.ActiveAlways | NSTrackingAreaOptions.MouseEnteredAndExited, this, null);
             AddTrackingArea(trackingArea);
         }
 
+        /// <summary>
+        /// Drag change event handler.
+        /// </summary>
+        internal event EventHandler<TrackingEventArgs> OnDragChange = (sender, e) => { };
+
+        /// <summary>
+        /// Gets a value indicating whether the view needs update layer.
+        /// Override neccesity for mouse tracking.
+        /// </summary>
+        public override bool WantsUpdateLayer => true;
+
+        /// <summary>
+        /// Main way to construct this object from code.
+        /// Constructs the correct rect via the itemnumber.
+        /// </summary>
+        /// <param name="itemnumber">Placement in line of submenuitems.</param>
+        /// <param name="text">Text to be displayed.</param>
+        /// <returns>PostProcessMenuItem instance.</returns>
         public static PostProcessMenuItem StdSize(int itemnumber, string text)
         {
-            string trunctext = (text.Length > 23 ? text.Substring(0, 23).TrimEnd() + "..." : text);
+            string trunctext = text.Length > 23 ? text.Substring(0, 23).TrimEnd() + "..." : text;
 
             // Position vars
             int itemContainerHeight = 40;
@@ -55,37 +81,27 @@ namespace AstroWall
                 itemContainerX,
                 itemContainerY,
                 itemContainerWidth,
-                itemContainerHeight
-                );
+                itemContainerHeight);
             CGRect outerTFContainerRect = new CGRect(
                 itemOuterTFX,
                 itemOuterTFY,
                 itemOuterTFWidth,
-                itemOuterTFHeight
-                );
+                itemOuterTFHeight);
             CGRect innerTFContainerRect = new CGRect(
                 itemInnerTFX,
                 itemInnerTFY,
                 itemInnerTFWidth,
-                itemInnerTFHeight
-                );
+                itemInnerTFHeight);
             CGRect imageRect = new CGRect(
     0,
     0,
-   itemContainerHeight,
-    itemContainerHeight
-    );
-            //string trunctext = (text.Length > 23 ? text.Substring(0, 23).TrimEnd() + "..." : text);
-
-            //CGRect smContainerRect = new CGRect(0, 10, 200, 40);
-            //CGRect outerTFContainerRect = new CGRect(6, 10, 188, 34);
-            //CGRect innerTFContainerRect = new CGRect(8, 13, 190, 32);
-
+    itemContainerHeight,
+    itemContainerHeight);
 
             PostProcessMenuItem sm = new PostProcessMenuItem(smContainerRect);
 
             // Settings of outer TF
-            sm.outerTextField = NSTextField.CreateLabel("");
+            sm.outerTextField = NSTextField.CreateLabel(string.Empty);
             sm.outerTextField.AutoresizingMask = NSViewResizingMask.NotSizable;
             sm.outerTextField.Frame = outerTFContainerRect;
             sm.outerTextField.WantsLayer = true;
@@ -106,59 +122,77 @@ namespace AstroWall
             sm.outerTextField.AddSubview(imageView);
             sm.outerTextField.AddSubview(innerTextField);
 
-            //sm.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
-
             return sm;
         }
 
+        /// <summary>
+        /// Handles mouse enter event.
+        /// </summary>
         public override void MouseEntered(NSEvent theEvent)
         {
             base.MouseEntered(theEvent);
-            setHoverColor();
+            SetHoverColor();
             Console.WriteLine("mouseenter");
             OnDragChange(this, new TrackingEventArgs("Mouse Entered"));
         }
 
+        /// <summary>
+        /// Handles mouse exit event.
+        /// </summary>
         public override void MouseExited(NSEvent theEvent)
         {
             base.MouseExited(theEvent);
-            if (selected) setSelectedColor();
-            else setNoColor();
+            if (selected)
+            {
+                SetSelectedColor();
+            }
+            else
+            {
+                SetNoColor();
+            }
+
             OnDragChange(this, new TrackingEventArgs("Mouse Exited"));
         }
 
+        /// <summary>
+        /// Handles mouse down event.
+        /// </summary>
         public override void MouseDown(NSEvent theEvent)
         {
             OnDragChange(this, new TrackingEventArgs("Mouse Down"));
-            setClickColor();
+            SetClickColor();
         }
 
+        /// <summary>
+        /// Handles mouse up event.
+        /// </summary>
         public override void MouseUp(NSEvent theEvent)
         {
             OnDragChange(this, new TrackingEventArgs("Mouse Up"));
-            setSelectedColor();
+            SetSelectedColor();
         }
 
-        public void setClickColor()
-        {
-            outerTextField.Layer.BackgroundColor = NSColor.SelectedContentBackground.CGColor;
-        }
-
-        public void setSelectedColor()
+        /// <summary>
+        /// Sets selected color of item.
+        /// </summary>
+        internal void SetSelectedColor()
         {
             outerTextField.Layer.BackgroundColor = NSColor.SystemGray.ColorWithAlphaComponent(new nfloat(0.4)).CGColor;
         }
 
-        public void setHoverColor()
+        private void SetClickColor()
+        {
+            outerTextField.Layer.BackgroundColor = NSColor.SelectedContentBackground.CGColor;
+        }
+
+        private void SetHoverColor()
         {
             outerTextField.Layer.BackgroundColor = NSColor.SystemGray.ColorWithAlphaComponent(new nfloat(0.7)).CGColor;
-
         }
-        public void setNoColor()
+
+        private void SetNoColor()
         {
             outerTextField.Layer.BackgroundColor = null;
         }
     }
-
 }
-

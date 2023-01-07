@@ -1,65 +1,94 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using Foundation;
+using System.Runtime.Remoting.Contexts;
 using AppKit;
 using CoreGraphics;
-using System.Drawing;
-using System.Runtime.Remoting.Contexts;
+using Foundation;
 using SpriteKit;
 
 namespace AstroWall
 {
+    /// <summary>
+    /// Submenu item, that supports tracking events.
+    /// </summary>
     public partial class SubMenuItemHover : AppKit.NSView
     {
-        #region Constructors
-        NSTrackingArea trackingArea;
-        public override bool WantsUpdateLayer => true;
-        public event EventHandler<TrackingEventArgs> OnDragChange = delegate { };
+        private NSTrackingArea trackingArea;
         private NSTextField outerTextField;
 
-
-        // Called when created from unmanaged code
-        public SubMenuItemHover(IntPtr handle) : base(handle)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SubMenuItemHover"/> class.
+        /// XCode default constructor.
+        /// </summary>
+        /// <param name="handle"></param>
+        public SubMenuItemHover(IntPtr handle)
+            : base(handle)
         {
-
         }
 
-        public SubMenuItemHover(CGRect rect) : base(rect)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SubMenuItemHover"/> class.
+        /// Constructor used when constructed from code. Takes a rect that is used to define tracking area.
+        /// </summary>
+        /// <param name="rect"></param>
+        public SubMenuItemHover(CGRect rect)
+            : base(rect)
         {
-
-            //WantsLayer = true;
-
             LayerContentsRedrawPolicy = NSViewLayerContentsRedrawPolicy.OnSetNeedsDisplay;
             trackingArea = new NSTrackingArea(rect, NSTrackingAreaOptions.ActiveAlways | NSTrackingAreaOptions.MouseEnteredAndExited, this, null);
             AddTrackingArea(trackingArea);
-
         }
 
-        // Called when created directly from a XIB file
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SubMenuItemHover"/> class.
+        /// TODO needed???.
+        /// Called when created directly from a XIB file.
+        /// </summary>
+        /// <param name="coder"></param>
         [Export("initWithCoder:")]
-        public SubMenuItemHover(NSCoder coder) : base(coder)
+        public SubMenuItemHover(NSCoder coder)
+            : base(coder)
         {
-
         }
 
-        // XIP
-        public SubMenuItemHover() : base()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SubMenuItemHover"/> class.
+        /// XIP constructor.
+        /// TODO needed???.
+        /// </summary>
+        public SubMenuItemHover()
+            : base()
         {
-
         }
 
+        /// <summary>
+        /// Drag change event handler.
+        /// </summary>
+        internal event EventHandler<TrackingEventArgs> OnDragChange = (sender, e) => { };
+
+        /// <summary>
+        /// Gets a value indicating whether the view needs update layer.
+        /// Override neccesity for mouse tracking.
+        /// </summary>
+        public override bool WantsUpdateLayer => true;
+
+        /// <summary>
+        /// Main way to construct this object from code.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns>SubMenuItemHover instance.</returns>
         public static SubMenuItemHover StdSize(string text)
         {
-            string trunctext = (text.Length > 23 ? text.Substring(0, 23).TrimEnd() + "..." : text);
+            string trunctext = text.Length > 23 ? text.Substring(0, 23).TrimEnd() + "..." : text;
 
             CGRect smContainerRect = new CGRect(0, 0, 200, 22);
             CGRect outerTFContainerRect = new CGRect(6, 0, 188, 22);
             CGRect innerTFContainerRect = new CGRect(8, 3, 190, 17);
             SubMenuItemHover sm = new SubMenuItemHover(smContainerRect);
 
-
-            sm.outerTextField = NSTextField.CreateLabel("");
+            sm.outerTextField = NSTextField.CreateLabel(string.Empty);
             sm.outerTextField.AutoresizingMask = NSViewResizingMask.NotSizable;
             sm.outerTextField.Frame = outerTFContainerRect;
             sm.outerTextField.WantsLayer = true;
@@ -69,16 +98,16 @@ namespace AstroWall
             innerTextField.AutoresizingMask = NSViewResizingMask.NotSizable;
             innerTextField.Frame = innerTFContainerRect;
 
-
             Console.WriteLine("layer: " + innerTextField.Layer == null);
             sm.AddSubview(sm.outerTextField);
             sm.outerTextField.AddSubview(innerTextField);
 
-            //sm.AutoresizingMask = NSViewResizingMask.HeightSizable | NSViewResizingMask.WidthSizable;
-
             return sm;
         }
 
+        /// <summary>
+        /// Handles mouse enter event.
+        /// </summary>
         public override void MouseEntered(NSEvent theEvent)
         {
             base.MouseEntered(theEvent);
@@ -86,6 +115,9 @@ namespace AstroWall
             OnDragChange(this, new TrackingEventArgs("Mouse Entered"));
         }
 
+        /// <summary>
+        /// Handles mouse exit event.
+        /// </summary>
         public override void MouseExited(NSEvent theEvent)
         {
             base.MouseExited(theEvent);
@@ -93,33 +125,38 @@ namespace AstroWall
             OnDragChange(this, new TrackingEventArgs("Mouse Exited"));
         }
 
+        /// <summary>
+        /// Handles mouse move event.
+        /// TODO needed?.
+        /// </summary>
         public override void MouseMoved(NSEvent theEvent)
         {
             base.MouseMoved(theEvent);
             OnDragChange(this, new TrackingEventArgs("Mouse Moved"));
         }
 
+        /// <summary>
+        /// Handles mouse down event.
+        /// </summary>
         public override void MouseDown(NSEvent theEvent)
         {
             OnDragChange(this, new TrackingEventArgs("Mouse Down"));
         }
 
+        /// <summary>
+        /// Enables selections color.
+        /// </summary>
         public void EnableBGSelectionColor()
         {
             outerTextField.Layer.BackgroundColor = NSColor.SelectedContentBackground.CGColor;
         }
+
+        /// <summary>
+        /// Disables selection color.
+        /// </summary>
         public void DisableBGSelectionColor()
         {
             outerTextField.Layer.BackgroundColor = null;
         }
-
-        #endregion
-    }
-
-    public class TrackingEventArgs : EventArgs
-    {
-        public TrackingEventArgs(string description) { Description = description; }
-
-        public string Description { get; set; }
     }
 }

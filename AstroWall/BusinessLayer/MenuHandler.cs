@@ -35,7 +35,7 @@ namespace AstroWall.BusinessLayer
         // Log
         private Action<string> log = Logging.GetLogger("Menu handler");
 
-        public MenuHandler(AppDelegate del, ApplicationHandler app)
+        internal MenuHandler(AppDelegate del, ApplicationHandler app)
         {
             appDelegate = del;
             appHandler = app;

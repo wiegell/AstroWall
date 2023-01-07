@@ -93,7 +93,7 @@ namespace AstroWall.ApplicationLayer
             var window = freshInstallWindowController.Window;
             window.Delegate = new UpdatesWindowDelegate(window);
             var view = (FreshInstallViewController)freshInstallWindowController.ContentViewController.View;
-            view.regSaveCallback(callback);
+            view.RegSaveCallback(callback);
             if (AppHandler.IncorrectInstallPath)
             {
                 view.DisableUpdatesOptions();
@@ -128,7 +128,7 @@ namespace AstroWall.ApplicationLayer
         /// </summary>
         /// <param name="oldPrefs"></param>
         /// <param name="callbackWithNewPostProcess"></param>
-        internal void LaunchPostProcessPrompt(Preferences oldPrefs, Action<AddText> callbackWithNewPostProcess)
+        internal void LaunchPostProcessPrompt(Preferences oldPrefs, Action<AddTextPreference> callbackWithNewPostProcess)
         {
             // Don't spawn new window if already opened
             if (!CheckIfWindowIsAlreadyOpened(postProcessPromptWindowController))
@@ -139,8 +139,8 @@ namespace AstroWall.ApplicationLayer
                 var window = postProcessPromptWindowController.Window;
                 var splitViewController = (NSSplitViewController)postProcessPromptWindowController.ContentViewController;
                 var contentView = (PostProcessTextSettings)splitViewController.SplitViewItems[1].ViewController.View;
-                contentView.setData(oldPrefs.AddTextPostProcess);
-                contentView.regChangePrefsCallback(callbackWithNewPostProcess);
+                contentView.SetData(oldPrefs.AddTextPostProcess);
+                contentView.RegChangePrefsCallback(callbackWithNewPostProcess);
                 postProcessPromptWindowController.ShowWindow(postProcessPromptWindowController);
                 window.OrderFront(null);
                 NSApplication.SharedApplication.ActivateIgnoringOtherApps(true);

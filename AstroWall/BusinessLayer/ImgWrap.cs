@@ -187,7 +187,7 @@ namespace AstroWall.BusinessLayer
             return;
         }
 
-        public async Task createPostProcessedImages(Dictionary<string, Screen> screens, Dictionary<Preferences.PostProcessType, Preferences.PostProcess> postProcessPrefsDictionary)
+        internal async Task createPostProcessedImages(Dictionary<string, Screen> screens, Dictionary<Preferences.PostProcessPreferenceEnum, Preferences.PostProcessPreference> postProcessPrefsDictionary)
         {
             log("creating postprocessed images on thread: " + Environment.CurrentManagedThreadId);
 
@@ -221,7 +221,7 @@ namespace AstroWall.BusinessLayer
                     () => unProcessedImagesByScreen,
                     Wallpaper.PostProcess.ScaleAndCrop,
                     Wallpaper.PostProcess.AddTextCurry(
-                        (Preferences.AddText)postProcessPrefsDictionary[Preferences.PostProcessType.AddText],
+                        (Preferences.AddTextPreference)postProcessPrefsDictionary[Preferences.PostProcessPreferenceEnum.AddText],
                         Title,
                         Description,
                         Credit

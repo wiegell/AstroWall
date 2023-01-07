@@ -5,12 +5,28 @@ using Foundation;
 
 namespace AstroWall.ApplicationLayer
 {
+    /// <summary>
+    /// Helper class for stuff related to system events, e.g. wake and login.
+    /// </summary>
     public sealed class SystemEvents
     {
-        //Singleton
+        // Singleton related fields
         private static volatile SystemEvents instance;
         private static object syncRoot = new object();
-        public static SystemEvents Instance
+
+        // Handlers
+        private NSObject updateWakeHandlerObserver;
+        private NSObject wallpaperLoginHandlerObserver;
+
+        // Should only be available as singleton, therefore priv. constructor
+        private SystemEvents()
+        {
+        }
+
+        /// <summary>
+        /// Gets singleton.
+        /// </summary>
+        internal static SystemEvents Instance
         {
             get
             {
@@ -19,7 +35,9 @@ namespace AstroWall.ApplicationLayer
                     lock (syncRoot)
                     {
                         if (instance == null)
+                        {
                             instance = new SystemEvents();
+                        }
                     }
                 }
 
@@ -27,43 +45,14 @@ namespace AstroWall.ApplicationLayer
             }
         }
 
-        NSObject updateWakeHandlerObserver;
-        NSObject wallpaperLoginHandlerObserver;
-
-        private SystemEvents()
+        /// <summary>
+        /// Sets launch agent to launch app on login.
+        /// </summary>
+        internal static void SetLaunchAgent()
         {
-        }
-
-        public void UnRegisterUpdateWakeHandler()
-        {
-            NSWorkspace.SharedWorkspace.NotificationCenter.RemoveObserver(updateWakeHandlerObserver);
-        }
-
-        public void RegisterUpdateWakeHandler(Action<NSNotification> ac)
-        {
-            updateWakeHandlerObserver =
-            NSWorkspace.SharedWorkspace.NotificationCenter.AddObserver(NSWorkspace.DidWakeNotification, ac);
-        }
-
-        public void UnRegisterWallpaperLoginHandler()
-        {
-            NSWorkspace.SharedWorkspace.NotificationCenter.RemoveObserver(wallpaperLoginHandlerObserver);
-        }
-
-        public void RegisterWallpaperWakeHandler(Action<NSNotification> ac)
-        {
-            wallpaperLoginHandlerObserver =
-            NSWorkspace.
-            SharedWorkspace
-            .NotificationCenter.AddObserver(NSWorkspace.DidWakeNotification, ac);
-
-        }
-
-
-        public static void SetAsLaunchAgent()
-        {
-            string ap = agentPath();
-            string agentXmlContent = $@"<?xml version=""1.0"" encoding=""UTF-8""?>
+            string ap = GetAgentPath();
+            string agentXmlContent =
+$@"<?xml version=""1.0"" encoding=""UTF-8""?>
 <!DOCTYPE plist PUBLIC ""-//Apple//DTD PLIST 1.0//EN"" ""http://www.apple.com/DTDs/PropertyList-1.0.dtd"">
 <plist version=""1.0"">
 <dict>
@@ -82,18 +71,61 @@ namespace AstroWall.ApplicationLayer
             File.WriteAllText(ap, agentXmlContent);
         }
 
-
-        public static void RemoveLaunchAgent()
+        /// <summary>
+        /// Removes launch agent to not start app on login.
+        /// </summary>
+        internal static void RemoveLaunchAgent()
         {
-            string ap = agentPath();
+            string ap = GetAgentPath();
             if (File.Exists(ap))
             {
                 Console.WriteLine("Deleting agent at: " + ap);
                 File.Delete(ap);
-            };
+            }
         }
 
-        private static string agentPath()
+        /// <summary>
+        /// Registers update action to be called on wake.
+        /// </summary>
+        internal void RegisterUpdateWakeHandler(Action<NSNotification> ac)
+        {
+            updateWakeHandlerObserver =
+            NSWorkspace.SharedWorkspace.NotificationCenter.AddObserver(NSWorkspace.DidWakeNotification, ac);
+        }
+
+        /// <summary>
+        /// Unregisters callback on wake.
+        /// </summary>
+        internal void UnRegisterUpdateWakeHandler()
+        {
+            // TODO possible null exception?
+            NSWorkspace.SharedWorkspace.NotificationCenter.RemoveObserver(updateWakeHandlerObserver);
+        }
+
+        /// <summary>
+        /// Registers wallpaper refresh action to be called on wake.
+        /// </summary>
+        internal void RegisterWallpaperWakeHandler(Action<NSNotification> ac)
+        {
+            wallpaperLoginHandlerObserver =
+            NSWorkspace.
+            SharedWorkspace
+            .NotificationCenter.AddObserver(NSWorkspace.DidWakeNotification, ac);
+        }
+
+        /// <summary>
+        /// Unregisters wallpaper refresh callback on login.
+        /// </summary>
+        internal void UnRegisterWallpaperLoginHandler()
+        {
+            // TODO possible null exception?
+            NSWorkspace.SharedWorkspace.NotificationCenter.RemoveObserver(wallpaperLoginHandlerObserver);
+        }
+
+        /// <summary>
+        /// Gets path of launch agent. Creates the folder if it does not exist.
+        /// </summary>
+        private static string GetAgentPath()
         {
             string agentFolder = NSFileManager.HomeDirectory + "/Library/LaunchAgents/";
 
@@ -101,8 +133,8 @@ namespace AstroWall.ApplicationLayer
             {
                 Directory.CreateDirectory(agentFolder);
             }
+
             return agentFolder + "com.astro.wall.Astro-Wall.plist";
         }
     }
 }
-
